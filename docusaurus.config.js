@@ -45,6 +45,10 @@ const config = {
           showReadingTime: true,
           blogSidebarTitle: 'All posts',
           blogSidebarCount: 'ALL',
+          feedOptions: {
+            type: 'all',
+            copyright: `Copyright © ${new Date().getFullYear()} Netdata`,
+          },
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
