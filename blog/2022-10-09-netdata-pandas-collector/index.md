@@ -35,7 +35,7 @@ temperature:
         context: "temperature"
         type: "line"
         units: "Celsius"
-        df_steps: &gt;
+        df_steps: >
           pd.DataFrame.from_dict(
             {city: requests.get(
                 f'https://api.open-meteo.com/v1/forecast?latitude={lat}&amp;longitude={lng}&amp;hourly=temperature_2m'

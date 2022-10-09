@@ -105,6 +105,11 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      //colorMode: {
+      //  defaultMode: 'dark',
+      //  disableSwitch: false,
+      //  respectPrefersColorScheme: false,
+      //},
       navbar: {
         title: 'Blog',
         logo: {
@@ -120,6 +125,11 @@ const config = {
               {
                 to: 'https://learn.netdata.cloud/',
                 label: 'Learn',
+                position: 'left',
+              },
+              {
+                to: 'https://app.netdata.cloud/',
+                label: 'App',
                 position: 'left',
               },
               {
