@@ -21,7 +21,7 @@ Let's take a look at a realistic example where we have some HTTP or API that ret
 
 We will use the awesome free api from <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> and the Pandas collector to pull some temperature forecasts for today across a range of cities and store the mean, min, and max for today in Netdata.
 
-With the Pandas collector a user just needs to define a sequence of <code>df_steps</code> as part of their collector configuration. Below is the configuration used in this example. We will focus mostly on the <code>df_steps</code> parameter as that's really where all the logic lives.
+With the Pandas collector a user just needs to define a sequence of `df_steps` as part of their collector configuration. Below is the configuration used in this example. We will focus mostly on the `df_steps` parameter as that's really where all the logic lives.
 
 ```yaml
 # example pulling some hourly temperature data
