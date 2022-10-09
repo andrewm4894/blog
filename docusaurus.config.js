@@ -87,48 +87,77 @@ const config = {
       footer: {
         style: 'dark',
         links: [
-          //{
-          //  title: 'Docs',
-          //  items: [
-          //    {
-          //      label: 'Tutorial',
-          //      to: '/docs/intro',
-          //    },
-          //  ],
-          //},
-          {
-            title: 'Community',
-            items: [
-              {
-                label: 'Community',
-                href: 'https://community.netdata.cloud/',
-              },
-              {
-                label: 'Discord',
-                href: 'https://discord.com/invite/mPZ6WZKKG2',
-              },
-              {
-                label: 'Twitter',
-                href: 'https://twitter.com/linuxnetdata',
-              },
-            ],
-          },
-          {
-            title: 'More',
-            items: [
-                {
-                    label: 'Website',
-                    href: 'https://www.netdata.cloud',
-                  },
-                  {
-                    label: 'GitHub',
-                    href: 'https://github.com/netdata/',
-                  },
-            ],
-          },
+            {
+                title: 'Products',
+                items: [
+                    {
+                        label: 'Agent',
+                        to: 'https://netdata.cloud/agent',
+                    },
+                    {
+                        label: 'Cloud',
+                        to: 'https://netdata.cloud/cloud',
+                    },
+                    {
+                        label: 'Integrations',
+                        to: 'https://www.netdata.cloud/integrations/',
+                    },
+                    {
+                        label: 'Status',
+                        to: 'https://status.netdata.cloud',
+                    },
+                ],
+            },
+            {
+                title: 'Resources',
+                items: [
+                    {
+                        label: 'Learn',
+                        to: '/',
+                    },
+                    {
+                        label: 'Blog',
+                        to: 'https://netdata.cloud/blog',
+                    },
+                    {
+                        label: 'GitHub',
+                        to: 'https://github.com/netdata/netdata',
+                    },
+                ],
+            },
+            {
+                title: 'Community',
+                items: [
+                    {
+                        label: 'Overview',
+                        to: 'https://www.netdata.cloud/community-overview/',
+                    },
+                    {
+                        label: 'Forums',
+                        to: 'https://community.netdata.cloud/',
+                    },
+                ],
+            },
+            {
+                title: 'Company',
+                items: [
+                    {
+                        label: 'About',
+                        to: 'https://netdata.cloud',
+                    },
+                    {
+                        label: 'News',
+                        to: 'https://www.netdata.cloud/news/',
+                    },
+                    {
+                        label: 'Careers',
+                        to: 'https://careers.netdata.cloud/',
+                    },
+                ],
+            },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} Netdata. Built with Docusaurus.`,
-      },
+        copyright: `Copyright © ${new Date().getFullYear()} Netdata, Inc.`,
+    },
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
