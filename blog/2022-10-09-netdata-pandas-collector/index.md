@@ -280,13 +280,13 @@ df.transpose()
 
 This row is then converted (by the collector internally) into a python dictionary of key value pairs.
 
-```javascript
+```json
 {'athens_max': 26.2, 'athens_mean': 19.45952380952381, 'athens_min': 12.2, 'berlin_max': 17.6, 'berlin_mean': 10.798214285714286, 'berlin_min': 5.7, 'dublin_max': 15.3, 'dublin_mean': 12.008928571428571, 'dublin_min': 6.6, 'london_max': 18.9, 'london_mean': 12.513690476190478, 'london_min': 5.2, 'paris_max': 19.3, 'paris_mean': 12.059523809523808, 'paris_min': 4.8}
 ```
 
 And that's it, this should end up in a chart in Netdata like below.
 
-<img class="aligncenter size-medium wp-image-17758" src="https://netdatacloud20.kinsta.cloud/wp-content/uploads/2022/10/pandas-collector-600x186.png" alt="" width="600" height="186" />
+![screenshot](./Screenshot%202022-10-09%20192600.jpg)
 
 ## Try it yourself
 
