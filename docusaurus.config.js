@@ -8,7 +8,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const config = {
   title: 'Netdata Blog',
   tagline: 'Home of the Netdata blog',
-  url: 'https://your-docusaurus-test-site.com',
+  url: 'https://main--reliable-dolphin-966b1b.netlify.app',
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
@@ -119,3 +119,9 @@ const config = {
 };
 
 module.exports = config;
+//module.exports = [
+//    config,
+//    {
+//    url: 'https://main--reliable-dolphin-966b1b.netlify.app',
+//    baseUrl: '/',
+//  }];
