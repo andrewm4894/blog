@@ -57,6 +57,51 @@ const config = {
     ],
   ],
 
+  stylesheets: [
+    {
+        href: '/font/ibm-plex-sans-v8-latin-regular.woff2',
+        rel: 'preload',
+        as: 'font',
+        type: 'font/woff2',
+        crossorigin: '',
+    },
+    {
+        href: '/font/ibm-plex-sans-v8-latin-500.woff2',
+        rel: 'preload',
+        as: 'font',
+        type: 'font/woff2',
+        crossorigin: '',
+    },
+    {
+        href: '/font/ibm-plex-sans-v8-latin-700.woff2',
+        rel: 'preload',
+        as: 'font',
+        type: 'font/woff2',
+        crossorigin: '',
+    },
+    {
+        href: '/font/ibm-plex-mono-v6-latin-regular.woff2',
+        rel: 'preload',
+        as: 'font',
+        type: 'font/woff2',
+        crossorigin: '',
+    },
+],
+
+  plugins: [
+    async function myPlugin(context, options) {
+      return {
+        name: "docusaurus-tailwindcss",
+        configurePostCss(postcssOptions) {
+          // Appends TailwindCSS and AutoPrefixer.
+          postcssOptions.plugins.push(require("tailwindcss"));
+          postcssOptions.plugins.push(require("autoprefixer"));
+          return postcssOptions;
+        },
+      };
+    },
+  ],
+
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
