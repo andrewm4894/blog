@@ -166,9 +166,3 @@ const config = {
 };
 
 module.exports = config;
-//module.exports = [
-//    config,
-//    {
-//    url: 'https://main--reliable-dolphin-966b1b.netlify.app',
-//    baseUrl: '/',
-//  }];
