@@ -125,4 +125,10 @@ const config = {
     }),
 };
 
-module.exports = config;
+//module.exports = config;
+module.exports = {
+    title: 'Netdata Blog',
+    url: 'https://reliable-dolphin-966b1b.netlify.app', // Url to your site with no trailing slash
+    baseUrl: '/', // Base directory of your site relative to your repo
+    // ...
+  };
