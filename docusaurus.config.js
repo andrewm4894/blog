@@ -113,17 +113,17 @@ const config = {
         },
         items: [
             {
-                href: 'https://www.netdata.cloud/',
+                to: 'https://www.netdata.cloud/',
                 label: 'Website',
                 position: 'left',
               },
               {
-                href: 'https://learn.netdata.cloud/',
+                to: 'https://learn.netdata.cloud/',
                 label: 'Learn',
                 position: 'left',
               },
               {
-                href: 'https://app.netdata.cloud/',
+                to: 'https://app.netdata.cloud/',
                 label: 'Sign In',
                 position: 'right',
               },
