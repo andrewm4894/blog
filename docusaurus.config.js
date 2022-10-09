@@ -6,18 +6,13 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'My Site',
-  tagline: 'Dinosaurs are cool',
+  title: 'Netdata Blog',
+  tagline: 'Home of the Netdata blog',
   url: 'https://your-docusaurus-test-site.com',
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
-
-  // GitHub pages deployment config.
-  // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'facebook', // Usually your GitHub org/user name.
-  projectName: 'docusaurus', // Usually your repo name.
 
   // Even if you don't use internalization, you can use this field to set useful
   // metadata like html lang. For example, if your site is Chinese, you may want
@@ -32,13 +27,7 @@ const config = {
       'classic',
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
-        docs: {
-          sidebarPath: require.resolve('./sidebars.js'),
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
-        },
+        docs: false,
         blog: {
           routeBasePath: '/', 
           showReadingTime: true,
@@ -54,23 +43,27 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       navbar: {
-        title: 'Netdata Blog',
+        title: 'Blog',
         logo: {
-          alt: 'My Site Logo',
+          alt: 'Netdata',
           src: 'img/logo.svg',
         },
         items: [
-          {
-            href: 'https://www.netdata.cloud/',
-            label: 'Netdata',
-            position: 'left',
-          },
-          {to: '/', label: 'Blog', position: 'left'},
-          {
-            href: 'https://github.com/andrewm4894/blog',
-            label: 'GitHub',
-            position: 'right',
-          },
+            {
+                href: 'https://www.netdata.cloud/',
+                label: 'Website',
+                position: 'left',
+              },
+              {
+                href: 'https://learn.netdata.cloud/',
+                label: 'Learn',
+                position: 'left',
+              },
+              {
+                href: 'https://app.netdata.cloud/',
+                label: 'Sign In',
+                position: 'right',
+              },
         ],
       },
       footer: {
@@ -89,34 +82,34 @@ const config = {
             title: 'Community',
             items: [
               {
-                label: 'Stack Overflow',
-                href: 'https://stackoverflow.com/questions/tagged/docusaurus',
+                label: 'Community',
+                href: 'https://community.netdata.cloud/',
               },
               {
                 label: 'Discord',
-                href: 'https://discordapp.com/invite/docusaurus',
+                href: 'https://discord.com/invite/mPZ6WZKKG2',
               },
               {
                 label: 'Twitter',
-                href: 'https://twitter.com/docusaurus',
+                href: 'https://twitter.com/linuxnetdata',
               },
             ],
           },
           {
             title: 'More',
             items: [
-              {
-                label: 'Blog',
-                to: '/blog',
-              },
-              {
-                label: 'GitHub',
-                href: 'https://github.com/facebook/docusaurus',
-              },
+                {
+                    label: 'Website',
+                    href: 'https://www.netdata.cloud',
+                  },
+                  {
+                    label: 'GitHub',
+                    href: 'https://github.com/netdata/',
+                  },
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} Netdata. Built with Docusaurus.`,
       },
       prism: {
         theme: lightCodeTheme,
@@ -125,10 +118,4 @@ const config = {
     }),
 };
 
-//module.exports = config;
-module.exports = {
-    title: 'Netdata Blog',
-    url: 'https://reliable-dolphin-966b1b.netlify.app', // Url to your site with no trailing slash
-    baseUrl: '/', // Base directory of your site relative to your repo
-    // ...
-  };
+module.exports = config;
