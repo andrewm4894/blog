@@ -22,6 +22,18 @@ const config = {
     locales: ['en'],
   },
 
+  themes: [
+    [
+      require.resolve("@easyops-cn/docusaurus-search-local"),
+      {
+        hashed: true,
+        indexDocs: false,
+        indexBlog: true,
+        blogRouteBasePath: "./blog"
+      },
+    ],
+  ],
+
   presets: [
     [
       'classic',
@@ -31,6 +43,8 @@ const config = {
         blog: {
           routeBasePath: '/', 
           showReadingTime: true,
+          blogSidebarTitle: 'All posts',
+          blogSidebarCount: 'ALL',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
