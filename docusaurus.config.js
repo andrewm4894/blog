@@ -113,7 +113,7 @@ const config = {
       posthog: {
         apiKey: 'phc_dqzj2jEKyZVh8qPAIRlXHD1iBsuQr8Pxy4uHXXaN3dg',
         appUrl: 'https://app.posthog.com',
-        enableInDevelopment: false,
+        enableInDevelopment: true,
       },
       navbar: {
         title: 'Blog',
