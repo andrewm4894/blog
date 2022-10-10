@@ -4,6 +4,12 @@ andy:
   url: https://www.linkedin.com/in/andrewm4894/
   image_url: http://1.gravatar.com/avatar/4c7612cf17338f9267b624ef914fb3b2
 
+hugo:
+  name: Hugo Valente
+  title: Technical Product Manager
+  url: https://www.linkedin.com/in/hugo-valente/
+  image_url: https://secure.gravatar.com/avatar/cec3341913fc1623c220afac99b18acd?s=96&d=mm&r=g
+
 endi:
   name: Endilie Yacop Sucipto
   title: Maintainer of Docusaurus
