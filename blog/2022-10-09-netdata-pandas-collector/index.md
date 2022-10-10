@@ -1,6 +1,7 @@
 ---
 slug: netdata-pandas-collector
 title: Introducing the Netdata Pandas collector
+image: ./netdata-pandas-image.jpeg
 authors: andy
 tags: [collectors, python, pandas]
 ---
