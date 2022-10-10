@@ -6219,6 +6219,11 @@
     "nanoid" "^3.1.23"
     "source-map-js" "^0.6.2"
 
+"posthog-docusaurus@^1.0.4":
+  "integrity" "sha512-p7oJRqBzf6+AyI2e0yG6Z5kc/pHn6a5m76F2DOZaowAI3v+n1ABxa42smT+C5kjmhEGYfnRq3hFtd1naviwBRw=="
+  "resolved" "https://registry.npmjs.org/posthog-docusaurus/-/posthog-docusaurus-1.0.4.tgz"
+  "version" "1.0.4"
+
 "prepend-http@^2.0.0":
   "integrity" "sha512-ravE6m9Atw9Z/jjttRUZ+clIXogdghyZAuWJ3qEzjT+jI/dL1ifAqhZeC5VHzQp1MSt1+jxKkFNemj/iO7tVUA=="
   "resolved" "https://registry.npmjs.org/prepend-http/-/prepend-http-2.0.0.tgz"

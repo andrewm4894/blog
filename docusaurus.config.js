@@ -1,8 +1,8 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-const lightCodeTheme = require('prism-react-renderer/themes/github');
-const darkCodeTheme = require('prism-react-renderer/themes/dracula');
+const lightCodeTheme = require('prism-react-renderer/themes/palenight');
+const darkCodeTheme = require('prism-react-renderer/themes/vsDark');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -110,6 +110,11 @@ const config = {
       //  disableSwitch: false,
       //  respectPrefersColorScheme: false,
       //},
+      posthog: {
+        apiKey: 'phc_dqzj2jEKyZVh8qPAIRlXHD1iBsuQr8Pxy4uHXXaN3dg',
+        appUrl: 'https://app.posthog.cloud',
+        enableInDevelopment: false,
+      },
       navbar: {
         title: 'Blog',
         logo: {
