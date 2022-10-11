@@ -92,9 +92,10 @@ const config = {
         type: 'font/woff2',
         crossorigin: '',
     },
-],
+  ],
 
   plugins: [
+    require.resolve("posthog-docusaurus"),
     async function myPlugin(context, options) {
       return {
         name: "docusaurus-tailwindcss",
