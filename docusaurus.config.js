@@ -95,7 +95,7 @@ const config = {
   ],
 
   plugins: [
-    //"posthog-docusaurus",
+    "posthog-docusaurus",
     async function myPlugin(context, options) {
       return {
         name: "docusaurus-tailwindcss",
