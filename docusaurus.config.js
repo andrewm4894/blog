@@ -141,6 +141,11 @@ const config = {
                 position: 'left',
               },
               {
+                to: 'https://community.netdata.cloud/',
+                label: 'Community',
+                position: 'left',
+              },
+              {
                 to: 'https://app.netdata.cloud/',
                 label: 'App',
                 position: 'left',

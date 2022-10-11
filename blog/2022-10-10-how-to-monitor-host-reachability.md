@@ -8,9 +8,13 @@ authors: chris
 slug: how-to-monitor-host-reachability
 ---
 
+Most sysadmins and developers have at some point used a few of the popular <a href="https://www.tecmint.com/linux-networking-commands" target="_blank" rel="noopener">Linux networking commands</a> or their Windows equivalents to answer the common questions of host reachability - that is, whether a host or service is reachable and how fast it responds.
+
+<!--truncate-->
+
 ## Common approaches to reachability
 
-Most sysadmins and developers have at some point used a few of the popular <a href="https://www.tecmint.com/linux-networking-commands" target="_blank" rel="noopener">Linux networking commands</a> or their Windows equivalents to answer the common questions of host reachability- that is, whether a host or service is reachable and how fast it responds.<!--truncate--> One of the simplest, common checks, is to simply `ping` a host to verify that it’s reachable from where you issue the command, and to see the total time it takes for the host to receive your request. 
+One of the simplest, common checks, is to simply `ping` a host to verify that it’s reachable from where you issue the command, and to see the total time it takes for the host to receive your request. 
 
 However, to go from a simple manual check executed once on a given node, to proactively monitoring host reachability, you need a proper monitoring tool. Netdata Cloud has the capability to send reachability notifications for any Netdata node that loses its connection to the cloud. You just need to change the notification settings of your personal profile to <strong>All Alerts and unreachable</strong> for every room you want to receive such notifications from:
 
