@@ -26,11 +26,11 @@ We are huge fans of Open-Source culture. Open-source is deeply rooted in Netdata
 
 Instead, we want to focus on what we currently do well while also providing as much easy interoperability as possible with other important tools in the ecosystem, with Grafana obviously being a majorly important one.
 
-<img class="size-medium wp-image-17604 aligncenter" src="https://netdatacloud20.kinsta.cloud/wp-content/uploads/2022/09/image11-600x145.png" alt="" width="600" height="145" />
+![](https://netdatacloud20.kinsta.cloud/wp-content/uploads/2022/09/image11-600x145.png)
 
 ## How does it work?
 
-<img class="size-medium wp-image-17618 aligncenter" src="https://netdatacloud20.kinsta.cloud/wp-content/uploads/2022/09/image71-600x403.png" alt="" width="600" height="403" />
+![](https://netdatacloud20.kinsta.cloud/wp-content/uploads/2022/09/image71-600x403.png)
 
 Netdata’s data source plugin connects directly to our Netdata Cloud APIs, meaning that you’ll need to have your nodes (hosts) connected to Netdata Cloud in order to be able to have them exposed on our plugin. For security purposes, you will also need an API token for authentication (which you can get from within your Netdata profile).
 
@@ -40,11 +40,11 @@ If you already have a Netdata Cloud account created, most probably during instal
 
 Once you have all your nodes connected to Netdata Cloud you must proceed with creating an API token, which will be linked to your Netdata Cloud account. The API token provides a means to authenticate external calls to our APIs, allowing the same access as you to the Spaces and Rooms you can see on Netdata Cloud.
 
-<img class="size-medium wp-image-17614 aligncenter" src="https://netdatacloud20.kinsta.cloud/wp-content/uploads/2022/09/image51-600x354.png" alt="" width="600" height="354" />
+![](https://netdatacloud20.kinsta.cloud/wp-content/uploads/2022/09/image51-600x354.png)
 
 This API token will be required when you are installing the Netdata data source plugin on Grafana Cloud or locally
 
-<img class="size-medium wp-image-17616 aligncenter" src="https://netdatacloud20.kinsta.cloud/wp-content/uploads/2022/09/image61-600x354.png" alt="" width="600" height="354" />
+![](https://netdatacloud20.kinsta.cloud/wp-content/uploads/2022/09/image61-600x354.png)
 
 Having completed all the above steps, you’re ready to start taking advantage of Netdata’s troubleshooting capabilities in Grafana!
 
@@ -52,7 +52,7 @@ Having completed all the above steps, you’re ready to start taking advantage o
 
 Once you have selected Netdata as your data source, this is how the query builder will look.
 
-<img class="size-medium wp-image-17610 aligncenter" src="https://netdatacloud20.kinsta.cloud/wp-content/uploads/2022/09/image31-1-600x219.png" alt="" width="600" height="219" />
+![](https://netdatacloud20.kinsta.cloud/wp-content/uploads/2022/09/image31-1-600x219.png)
 
 To retrieve data from our APIs the minimum attributes you need to define are: Space and Room, which will allow you to restrict to a specific set of Nodes, and Context (more on this) do define what metrics you want to retrieve. Having defined these 3 attributes you will be seeing data displayed on the chart, which should be the same as the one you see on your Overview tab on Netdata Cloud.
 
@@ -68,7 +68,7 @@ We provide additional attributes to: filter more on the data you are retrieving,
 
 Sample dashboard
 
-<img class="size-medium wp-image-17622 aligncenter" src="https://netdatacloud20.kinsta.cloud/wp-content/uploads/2022/09/postgresql_dash-600x354.png" alt="" width="600" height="354" />
+![](https://netdatacloud20.kinsta.cloud/wp-content/uploads/2022/09/postgresql_dash-600x354.png)
 
 ## How to install it on your Grafana environment?
 
@@ -82,7 +82,8 @@ In order to start using the Netdata data source plugin on your Grafana envi ronm
 
 ### Docker
 
-<h3 class="vicinity rich-diff-level-zero" dir="auto">Pre-buit script - setup-demo-environment</h3>
+#### Pre-buit script - setup-demo-environment
+
 We provide you a script <code class="rich-diff-level-one">setup-demo-environment.sh</code> that will help you setting this up real fast. To start the container with the Netdata datasource plugin already installed you just need to:
 <div class="snippet-clipboard-content notranslate position-relative overflow-auto">
 <p class="notranslate"><code>setup-demo-environment.sh run</code></p>
@@ -99,7 +100,9 @@ We provide you a script <code class="rich-diff-level-one">setup-demo-environmen
  	<li>Install the Netdata datasource plugin in <strong><em>/var/lib/grafana/plugins</em></strong></li>
  	<li>Start grafana</li>
 </ol>
-<h3 class="vicinity rich-diff-level-zero" dir="auto">Manual step-by-step</h3>
+
+#### Manual step-by-step
+
 </div>
 <ul>
  	<li>Setup your grafana docker container with the the permissions to load netdata plugin as an unsinged plugin
@@ -167,7 +170,7 @@ We provide you a script <code class="rich-diff-level-one">setup-demo-environmen
 </li>
  	<li>Copy the contents of the Netdata data source plugin to the Grafana plugins directory, by default C:\Program Files\GrafanaLabs\grafana\data\plugins
 <ul>
- 	<li><code>Expand-Archive \.netdata-datasource-&lt;version_number&gt;.zip \.<i><span> </span></i></code></li>
+ 	<li><code>Expand-Archive \.netdata-datasource-&lt;version_number&gt;.zip \.<i> </i></code></li>
  	<li><code>xcopy .\netdata-datasource\ "C:\Program Files\GrafanaLabs\grafana\data\plugins\netdata-datasource\" /E</code></li>
 </ul>
 </li>
@@ -225,13 +228,13 @@ For more information, refer to the following links:
  	<li><a href="https://learn.netdata.cloud/docs/cloud/visualize/overview#group-by-dimension-node-or-chart">Grouping by</a></li>
  	<li><a href="https://learn.netdata.cloud/docs/cloud/visualize/overview#aggregate-functions-over-data-sources">Grouping function</a></li>
  	<li><a href="https://learn.netdata.cloud/docs/cloud/visualize/overview#aggregate-functions-over-time">Aggregation function (over time)</a></li>
- 	<li><a href="https://learn.netdata.cloud/contribute/handbook"><span >Contributing</span></a></li>
+ 	<li><a href="https://learn.netdata.cloud/contribute/handbook">Contributing</a></li>
 </ul>
 
-<span >Hope you are ready and excited to start taking advantage of Netdata Grafana datasource plugin!</span>
+Hope you are ready and excited to start taking advantage of Netdata Grafana datasource plugin!
 
-<span >If you haven’t already, </span><a href="https://app.netdata.cloud/"><span >sign up now for a free Netdata account!</span></a>
+If you haven’t already, <a href="https://app.netdata.cloud/">sign up now for a free Netdata account!</a>
 
-<span >We’d love to hear from you – if you have any questions, complaints or feedback please reach out to us on </span><a href="https://discord.com/invite/mPZ6WZKKG2"><span>Discord</span></a><span> or </span><a href="https://github.com/netdata/netdata/"><span>Github</span></a><span>. </span>
+We’d love to hear from you – if you have any questions, complaints or feedback please reach out to us on <a href="https://discord.com/invite/mPZ6WZKKG2">Discord</a> or <a href="https://github.com/netdata/netdata/">Github</a>. 
 
-<span >Happy Troubleshooting!</span>
+Happy Troubleshooting!
