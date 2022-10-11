@@ -7,7 +7,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/vsDark');
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Netdata Blog',
-  tagline: 'Home of the Netdata blog',
+  tagline: 'Home of the Netdata blog.',
   url: 'https://reliable-dolphin-966b1b.netlify.app',
   baseUrl: '/',
   onBrokenLinks: 'throw',
@@ -43,10 +43,16 @@ const config = {
         blog: {
           routeBasePath: '/', 
           showReadingTime: true,
+          blogTitle: 'Netdata Blog',
+          blogDescription: 'Home of the Netdata blog about monitoring and troubleshooting.',
           blogSidebarTitle: 'Blog Posts',
           blogSidebarCount: 'ALL',
+          postsPerPage: 'ALL',
           feedOptions: {
             type: 'all',
+            title: 'Netdata Blog',
+            description: 'Home of the Netdata blog about monitoring and troubleshooting.',
+            language: 'en',
             copyright: `Copyright © ${new Date().getFullYear()} Netdata`,
           },
         },
@@ -86,9 +92,10 @@ const config = {
         type: 'font/woff2',
         crossorigin: '',
     },
-],
+  ],
 
   plugins: [
+    //"posthog-docusaurus",
     async function myPlugin(context, options) {
       return {
         name: "docusaurus-tailwindcss",
@@ -110,6 +117,7 @@ const config = {
       //  disableSwitch: false,
       //  respectPrefersColorScheme: false,
       //},
+      metadata: [{name: 'keywords', content: 'netdata, monitoring, troubleshooting, servers'}],
       posthog: {
         apiKey: 'phc_dqzj2jEKyZVh8qPAIRlXHD1iBsuQr8Pxy4uHXXaN3dg',
         appUrl: 'https://app.posthog.com',
@@ -130,6 +138,11 @@ const config = {
               {
                 to: 'https://learn.netdata.cloud/',
                 label: 'Learn',
+                position: 'left',
+              },
+              {
+                to: 'https://community.netdata.cloud/',
+                label: 'Community',
                 position: 'left',
               },
               {
