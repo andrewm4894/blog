@@ -1,9 +1,11 @@
 ---
 slug: netdata-pandas-collector
 title: Introducing the Netdata Pandas collector
+description: Netdata just introduced a Pandas Python based collector.
 image: ./netdata-pandas-image.jpeg
 authors: andy
 tags: [collectors, python, pandas]
+keywords: [collectors, python, pandas]
 ---
 
 # Introducing the Netdata Pandas collector!
