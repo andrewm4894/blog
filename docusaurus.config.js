@@ -95,7 +95,15 @@ const config = {
   ],
 
   plugins: [
-    //"posthog-docusaurus",
+    [
+      "posthog-docusaurus",
+      {
+        apiKey: 'phc_dqzj2jEKyZVh8qPAIRlXHD1iBsuQr8Pxy4uHXXaN3dg',
+        appUrl: 'https://app.posthog.com',
+        enableInDevelopment: true,
+        opt_in_site_apps: true,
+      }
+    ],
     async function myPlugin(context, options) {
       return {
         name: "docusaurus-tailwindcss",
@@ -118,11 +126,6 @@ const config = {
       //  respectPrefersColorScheme: false,
       //},
       metadata: [{name: 'keywords', content: 'netdata, monitoring, troubleshooting, servers'}],
-      posthog: {
-        apiKey: 'phc_dqzj2jEKyZVh8qPAIRlXHD1iBsuQr8Pxy4uHXXaN3dg',
-        appUrl: 'https://app.posthog.com',
-        enableInDevelopment: true,
-      },
       navbar: {
         title: 'Blog',
         logo: {
