@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Translate, {translate} from '@docusaurus/Translate';
 import {PageMetadata} from '@docusaurus/theme-common';
 import Layout from '@theme/Layout';
 export default function NotFound() {
-  window.posthog.capture('page-not-found');
+  useEffect(() => {
+    window.posthog.capture('page-not-found');
+  }, [])
   return (
     <>
       <PageMetadata
