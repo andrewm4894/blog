@@ -3,7 +3,7 @@ import Translate, {translate} from '@docusaurus/Translate';
 import {PageMetadata} from '@docusaurus/theme-common';
 import Layout from '@theme/Layout';
 export default function NotFound() {
-  posthog.capture('page-not-found');
+  window.posthog.capture('page-not-found');
   return (
     <>
       <PageMetadata
