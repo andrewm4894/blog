@@ -10,7 +10,7 @@ const config = {
   tagline: 'Home of the Netdata blog.',
   url: 'https://reliable-dolphin-966b1b.netlify.app',
   baseUrl: '/',
-  onBrokenLinks: 'throw',
+  onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
 
