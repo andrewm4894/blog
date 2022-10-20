@@ -1,5 +1,5 @@
 ---
-slug: netdata-pandas-collector
+slug: pandas-python
 title: "How you can use the Pandas Python collector to monitor weather data"
 description: "How you can use the Pandas Python collector to monitor weather data"
 image: ./netdata-pandas-image.jpeg
