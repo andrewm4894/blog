@@ -56,7 +56,7 @@
         <div style="position: sticky; top: 20px;">
           <h3 style="margin-top: 0;">Recent Posts</h3>
           <div class="posts-list">
-            {% for post in site.posts limit:10 %}
+            {% for post in site.posts limit:50 %}
               <article style="margin-bottom: 1.5em;">
                 <h4 style="margin: 0;">
                   <a href="{{ post.url | relative_url }}" {% if post.url == page.url %}class="current-post"{% endif %}>
@@ -68,7 +68,7 @@
                 </time>
               </article>
             {% endfor %}
-            {% if site.posts.size > 10 %}
+            {% if site.posts.size > 50 %}
               <p style="margin-top: 1em;">
                 <a href="/" style="color: #666;">View all posts →</a>
               </p>

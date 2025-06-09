@@ -15,7 +15,7 @@ layout: post
 
 <figure>
 
-![image](/assets/images/2020-12-02-anomaly-detection-tutorial/mlfunny.jpg)
+![image](/"/assets/images/2020-12-02-anomaly-detection-tutorial/mlfunny.jpg)
 
 <figcaption>
 

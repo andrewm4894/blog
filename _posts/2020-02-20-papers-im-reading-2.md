@@ -36,7 +36,7 @@ Notes:
 - Interesting to see global and local anomalies picked up.
 - Still seems like some parameters to tune/pick - also need to threshold the importance score.   
 
-![](images/46ubCTHX5XhrD-z8o6epHWV75pxxT0_4r92COpA5-Sa0f6geltM5KmQkkE67uczdfRKYAf9S6OPd7APAoq4sFRJhuXUZUAeGe6cnmXRljVOSyffCOUppfVRTGrfrgLcq0SZHq6mE)
+![](/"/images/46ubCTHX5XhrD-z8o6epHWV75pxxT0_4r92COpA5-Sa0f6geltM5KmQkkE67uczdfRKYAf9S6OPd7APAoq4sFRJhuXUZUAeGe6cnmXRljVOSyffCOUppfVRTGrfrgLcq0SZHq6mE)
 
 * * *
 
@@ -76,7 +76,7 @@ Notes:
 - Whole section on anomaly detection as a input into predictive maintenance.  
 - Once you have flagged anomalies maybe you can build models to look for precursor events before the anomaly. Part of discussion on temporal logic based learning. 
 
-![](images/tQUOzqhU11TLw9EIhCMFgAzutsQg25tvXbCHmitC3Zyb9qkikXVy1YAMhzngZCpqd17uhm2XOE_1Q4WyGxE3xk0AzphxFlBJrhF7esK_w0BqnI5SymGQICxrv4dpH3K1XAkkJqa5)
+![](/"/images/tQUOzqhU11TLw9EIhCMFgAzutsQg25tvXbCHmitC3Zyb9qkikXVy1YAMhzngZCpqd17uhm2XOE_1Q4WyGxE3xk0AzphxFlBJrhF7esK_w0BqnI5SymGQICxrv4dpH3K1XAkkJqa5)
 
 * * *
 

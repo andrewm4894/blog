@@ -13,7 +13,7 @@ layout: post
 ---
 
 <figure>
-<img src="/assets/images/2020-09-29-market-basket-analysis-in-python/20170824_103648-300x225.jpg" alt="Market basket photo">
+<img src="/""/""/""/""/""/""/""/""/""/""/""/""/assets/images/2020-09-29-market-basket-analysis-in-python/20170824_103648-300x225.jpg" alt="Market basket photo">
 <figcaption>
 An actual market basket I found in my Google photos.
 </figcaption>
@@ -115,7 +115,7 @@ df_rules.head(10)
 And you should see some results like below.
 
 <figure>
-<img src="/assets/images/2020-09-29-market-basket-analysis-in-python/image-10.png" alt="Market basket analysis results">
+<img src="/""/""/""/""/""/""/""/""/""/""/""/""/assets/images/2020-09-29-market-basket-analysis-in-python/image-10.png" alt="Market basket analysis results">
 <figcaption>
 Example results showing association rules between items
 </figcaption>
