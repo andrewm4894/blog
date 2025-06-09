@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>{{ page.title }} | {{ site.title }}</title>
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+  </head>
+  <body>
+    <div class="wrapper" style="display: flex; max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+      <!-- Main content -->
+      <section style="flex: 1; max-width: 800px; margin-right: 40px;">
+        <div style="margin-bottom: 2em;">
+          <a href="/" style="display: inline-block; padding: 0.5em 1em; background: #f5f5f5; border-radius: 4px; text-decoration: none; color: #333;">
+            ← Back to Home
+          </a>
+        </div>
+
+        {% if page.coverImage %}
+        <div class="cover-image">
+          <img src="/assets/images/{{ page.path | remove: '_posts/' | remove: '.md' }}/{{ page.coverImage | remove: '"' }}" alt="{{ page.title }} cover image">
+        </div>
+        {% endif %}
+
+        <h1>{{ page.title }}</h1>
+
+        <p class="post-meta">
+          <time datetime="{{ page.date | date_to_xmlschema }}">
+            {%- assign date_format = "%b %-d, %Y" -%}
+            {{ page.date | date: date_format }}
+          </time>
+          {%- if page.categories.size > 0 -%}
+          <span class="categories">
+            • Categories: 
+            {% for category in page.categories %}
+            <span class="category">{{ category }}</span>
+            {% unless forloop.last %}, {% endunless %}
+            {% endfor %}
+          </span>
+          {%- endif -%}
+        </p>
+
+        {% assign processed_content = content | replace: '![', '<img src="' | replace: '](/assets/images/', '/assets/images/' | replace: ')"', '" alt="" />' %}
+        {% assign processed_content = processed_content | replace: '.png)', '.png' | replace: '.jpg)', '.jpg' | replace: '.jpeg)', '.jpeg' | replace: '.gif)', '.gif' %}
+        {{ processed_content }}
+
+        <div style="margin-top: 2em; text-align: center;">
+          <a href="/" style="display: inline-block; margin: 1em;">← Back to Home</a>
+        </div>
+      </section>
+
+      <!-- Right sidebar -->
+      <aside style="width: 300px; margin-top: 6em;">
+        <div style="position: sticky; top: 20px;">
+          <h3 style="margin-top: 0;">Recent Posts</h3>
+          <div class="posts-list">
+            {% for post in site.posts limit:10 %}
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="{{ post.url | relative_url }}" {% if post.url == page.url %}class="current-post"{% endif %}>
+                    {{ post.title }}
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  {{ post.date | date: "%B %d, %Y" }}
+                </time>
+              </article>
+            {% endfor %}
+            {% if site.posts.size > 10 %}
+              <p style="margin-top: 1em;">
+                <a href="/" style="color: #666;">View all posts →</a>
+              </p>
+            {% endif %}
+          </div>
+        </div>
+      </aside>
+
+      <style>
+        .cover-image {
+          margin-bottom: 2em;
+          max-width: 100%;
+          overflow: hidden;
+        }
+
+        .cover-image img {
+          width: 100%;
+          height: auto;
+          display: block;
+        }
+
+        .post-meta {
+          color: #666;
+          margin-bottom: 2em;
+        }
+
+        .category {
+          font-style: italic;
+        }
+
+        figure {
+          margin: 1.5em 0;
+          text-align: center;
+        }
+
+        figure img {
+          max-width: 100%;
+          height: auto;
+          display: block;
+          margin: 0 auto;
+        }
+
+        figcaption {
+          color: #666;
+          font-style: italic;
+          margin-top: 0.5em;
+        }
+
+        img {
+          max-width: 100%;
+          height: auto;
+          display: block;
+          margin: 1em auto;
+        }
+
+        code {
+          padding: 0.2em 0.4em;
+          background-color: #f6f8fa;
+          border-radius: 3px;
+          font-size: 85%;
+        }
+
+        pre code {
+          padding: 0;
+          background-color: transparent;
+        }
+
+        .language-plaintext {
+          color: #24292e;
+        }
+
+        .language-python {
+          color: #24292e;
+        }
+
+        .posts-list h4 a {
+          color: #333;
+          text-decoration: none;
+        }
+
+        .posts-list h4 a:hover {
+          color: #267CB9;
+        }
+
+        .posts-list .current-post {
+          color: #267CB9;
+          font-weight: bold;
+        }
+
+        @media screen and (max-width: 1000px) {
+          .wrapper {
+            flex-direction: column;
+          }
+          
+          section {
+            margin-right: 0;
+          }
+
+          aside {
+            width: 100%;
+            margin-top: 3em;
+          }
+        }
+      </style>
+    </div>
+  </body>
+</html> 

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>{{ page.title }} | {{ site.title }}</title>
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+    <style>
+      /* Override default theme styles */
+      header {
+        width: auto;
+        float: none;
+        position: static;
+        padding: 0;
+      }
+      section {
+        width: auto;
+        float: none;
+        padding: 0;
+      }
+      .wrapper {
+        width: auto;
+        margin: 0 auto;
+        padding: 0 20px;
+        max-width: 1200px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      {{ content }}
+    </div>
+  </body>
+</html> 
