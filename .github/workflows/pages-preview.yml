@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-pages@v4
+      - uses: actions/configure-pages@v4
       - name: Build with Jekyll
         run: |
           bundle install --jobs 4 --retry 3
