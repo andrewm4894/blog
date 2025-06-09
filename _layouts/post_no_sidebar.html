@@ -6,21 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>{{ page.title }} | {{ site.title }}</title>
-    <link rel="stylesheet" href="/assets/css/style.css?v=">
+    <link rel="stylesheet" href="{{ site.baseurl }}/assets/css/style.css?v={{ site.time | date: '%Y%m%d%H%M%S' }}">
   </head>
   <body>
     <div class="wrapper" style="display: flex; max-width: 1200px; margin: 0 auto; padding: 0 20px;">
       <!-- Main content -->
       <section style="flex: 1; max-width: 800px; margin-right: 40px;">
         <div style="margin-bottom: 2em;">
-          <a href="/" style="display: inline-block; padding: 0.5em 1em; background: #f5f5f5; border-radius: 4px; text-decoration: none; color: #333;">
+          <a href="{{ site.baseurl }}/" style="display: inline-block; padding: 0.5em 1em; background: #f5f5f5; border-radius: 4px; text-decoration: none; color: #333;">
             ← Back to Home
           </a>
         </div>
 
         {% if page.coverImage %}
         <div class="cover-image">
-          <img src="/assets/images/{{ page.path | remove: '_posts/' | remove: '.md' }}/{{ page.coverImage | remove: '"' }}" alt="{{ page.title }} cover image">
+          <img src="{{ site.baseurl }}/assets/images/{{ page.path | remove: '_posts/' | remove: '.md' }}/{{ page.coverImage | remove: '"' }}" alt="{{ page.title }} cover image">
         </div>
         {% endif %}
 
@@ -42,12 +42,12 @@
           {%- endif -%}
         </p>
 
-        {% assign processed_content = content | replace: '![', '<img src="' | replace: '](/assets/images/', '/assets/images/' | replace: ')"', '" alt="" />' %}
+        {% assign processed_content = content | replace: '![', '<img src="' | replace: '](/assets/images/', site.baseurl | append: '/assets/images/' | replace: ')"', '" alt="" />' %}
         {% assign processed_content = processed_content | replace: '.png)', '.png' | replace: '.jpg)', '.jpg' | replace: '.jpeg)', '.jpeg' | replace: '.gif)', '.gif' %}
         {{ processed_content }}
 
         <div style="margin-top: 2em; text-align: center;">
-          <a href="/" style="display: inline-block; margin: 1em;">← Back to Home</a>
+          <a href="{{ site.baseurl }}/" style="display: inline-block; margin: 1em;">← Back to Home</a>
         </div>
       </section>
 
@@ -70,7 +70,7 @@
             {% endfor %}
             {% if site.posts.size > 50 %}
               <p style="margin-top: 1em;">
-                <a href="/" style="color: #666;">View all posts →</a>
+                <a href="{{ site.baseurl }}/" style="color: #666;">View all posts →</a>
               </p>
             {% endif %}
           </div>

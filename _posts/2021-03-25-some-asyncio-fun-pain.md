@@ -10,7 +10,7 @@ layout: post
 ---
 
 <figure>
-<img src="/""/""/""/""/""/""/""/""/""/""/""/""/""/""/""/""/""/""/assets/images/2021-03-25-some-asyncio-fun-pain/1553.1593611237-1024x576.png" alt="Asyncio diagram">
+<img src="/assets/images/2021-03-25-some-asyncio-fun-pain/1553.1593611237-1024x576.png" alt="Asyncio diagram">
 <figcaption>
 
 Taken from [this great Talk Python Training course](https://training.talkpython.fm/courses/details/async-in-python-with-threading-and-multiprocessing) - get the lifetime bundle if you can!
@@ -29,7 +29,7 @@ On a work project, i have a list of about 200 api endpoints, all returning simil
 To be specific and make this example something anyone can run here is the setup. I have a monitoring dashboard/agent on a server - here is a demo server [https://london.my-netdata.io.](https://london.my-netdata.io)
 
 <figure>
-<img src="/""/""/""/""/""/""/""/""/""/""/""/""/""/""/""/""/""/""/assets/images/2021-03-25-some-asyncio-fun-pain/image-1-1024x471.png" alt="Netdata dashboard">
+<img src="/assets/images/2021-03-25-some-asyncio-fun-pain/image-1-1024x471.png" alt="Netdata dashboard">
 <figcaption>
 
 Example Netdata dashboard that also has a rest api for each chart available.
@@ -146,10 +146,10 @@ if __name__ == "__main__":
 This should run and give you something like this:
 
 <figure>
-<img src="/""/""/""/""/""/""/""/""/""/""/""/""/""/""/""/""/""/""/assets/images/2021-03-25-some-asyncio-fun-pain/image-1024x609.png" alt="Script output">
+<img src="/assets/images/2021-03-25-some-asyncio-fun-pain/image-1024x609.png" alt="Script output">
 <figcaption>
 
-look at all that lovely text!
+Script output
 
 </figcaption>
 </figure>
