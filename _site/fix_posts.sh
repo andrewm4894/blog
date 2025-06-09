@@ -2,6 +2,7 @@
 
 # Create a temporary directory for processing
 mkdir -p _posts_temp
+mkdir -p assets/images
 
 # Process each directory in _posts
 for dir in _posts/*/; do
@@ -17,7 +18,10 @@ for dir in _posts/*/; do
                 cp -r "${dir}images/"* "assets/images/$dirname/"
                 
                 # Update image paths in the markdown file
-                sed 's|images/|/assets/images/'"$dirname"'/|g' "${dir}index.md" > "_posts_temp/$dirname.md"
+                # First, handle markdown image syntax ![alt](images/file.png)
+                sed -e 's|!\[\([^]]*\)\](images/\([^)]*\))|![\1](/assets/images/'"$dirname"'/\2)|g' \
+                    -e 's|coverImage: "\([^"]*\)"|coverImage: "/assets/images/'"$dirname"'/\1"|g' \
+                    "${dir}index.md" > "_posts_temp/$dirname.md"
             else
                 cp "${dir}index.md" "_posts_temp/$dirname.md"
             fi
@@ -32,8 +36,11 @@ for file in _posts/*.md; do
     fi
 done
 
-# Backup original _posts directory
-mv _posts _posts_backup
+# Backup original _posts directory if it hasn't been backed up
+if [ ! -d "_posts_backup" ]; then
+    mv _posts _posts_backup
+fi
 
 # Move new posts into place
+rm -rf _posts
 mv _posts_temp _posts 
