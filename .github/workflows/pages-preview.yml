@@ -2,28 +2,34 @@ name: pages-preview
 
 on:
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: read       # for checkout
+  pages: write         # to deploy Pages
+  id-token: write      # needed by configure-pages
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-            - uses: ruby/setup-ruby@v1
-            with:
-                  ruby-version: '3.2'
-                  bundler-cache: true
-      -       uses: actions/configure-pages@v4
-      -     name: Build with Jekyll
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+
+      - name: Build with Jekyll
         run: |
           bundle install --jobs 4 --retry 3
           bundle exec jekyll build -d _site
-      - uses: actions/upload-pages-artifact@v3
+
+      - name: Upload site artifact
+        uses: actions/upload-pages-artifact@v3
         with:
           path: _site
 
@@ -34,5 +40,9 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/deploy-pages@v4
+      - name: Configure Pages
+        uses: actions/configure-pages@v4
+
+      - name: Deploy to GitHub Pages
         id: deployment
+        uses: actions/deploy-pages@v4
