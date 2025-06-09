@@ -64,7 +64,7 @@
 <p>For the <code class="language-plaintext highlighter-rouge">dag</code> you pass, it will loop over each day and kick off a dag run for the same timestamp you define. So you can just increment the <code class="language-plaintext highlighter-rouge">00:00:01</code> part to <code class="language-plaintext highlighter-rouge">00:00:02</code> if you need to rerun the same backfill again for some reason (like you messed up your “fix” the first time around :) ). This assumes your dags are just using typical params like “<code class="language-plaintext highlighter-rouge">ds</code>” etc and so only need the <code class="language-plaintext highlighter-rouge">execution_date</code> to run properly. If your dag is more complex and depends of specific start and end times then this approach might not work or may need to be extended a little.</p>
 
 <p>https://gist.github.com/andrewm4894/d83fe3a9aa194ae40a7c4acb6ee5eb02</p>
-
+/assets/images/
 
 <style>
 .cover-image {

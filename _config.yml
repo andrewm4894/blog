@@ -2,6 +2,10 @@ title: Andrew M Blog
 description: >
   Personal blog about Data Science and Machine Learning, migrated from WordPress.
 
+# Site configuration
+baseurl: "/blog"  # The subpath of your site, e.g. /blog
+url: "https://andrewmaguire.github.io"  # The base hostname & protocol for your site
+
 # Theme configuration
 remote_theme: pages-themes/minimal@v0.2.0
 plugins:

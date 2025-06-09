@@ -4,7 +4,7 @@ layout: post_no_sidebar
 
 {% if page.coverImage %}
 <div class="cover-image">
-  <img src="/assets/images/{{ page.path | remove: '_posts/' | remove: '.md' }}/{{ page.coverImage | remove: '"' }}" alt="{{ page.title }} cover image">
+  <img src="{{ site.baseurl }}/assets/images/{{ page.path | remove: '_posts/' | remove: '.md' }}/{{ page.coverImage | remove: '"' }}" alt="{{ page.title }} cover image">
 </div>
 {% endif %}
 
@@ -26,7 +26,7 @@ layout: post_no_sidebar
   {%- endif -%}
 </p>
 
-{% assign processed_content = content | replace: '![', '<img src="' | replace: '](/assets/images/', '/assets/images/' | replace: ')"', '" alt="" />' %}
+{% assign processed_content = content | replace: '![', '<img src="' | replace: '](/assets/images/', site.baseurl | append: '/assets/images/' | replace: ')"', '" alt="" />' %}
 {% assign processed_content = processed_content | replace: '.png)', '.png' | replace: '.jpg)', '.jpg' | replace: '.jpeg)', '.jpeg' | replace: '.gif)', '.gif' %}
 {{ processed_content }}
 
