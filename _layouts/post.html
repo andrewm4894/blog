@@ -1,0 +1,99 @@
+---
+layout: default
+---
+
+{% if page.coverImage %}
+<div class="cover-image">
+  <img src="/assets/images/{{ page.path | remove: '_posts/' | remove: '.md' }}/{{ page.coverImage | remove: '"' }}" alt="{{ page.title }} cover image">
+</div>
+{% endif %}
+
+<h1>{{ page.title }}</h1>
+
+<p class="post-meta">
+  <time datetime="{{ page.date | date_to_xmlschema }}">
+    {%- assign date_format = "%b %-d, %Y" -%}
+    {{ page.date | date: date_format }}
+  </time>
+  {%- if page.categories.size > 0 -%}
+  <span class="categories">
+    • Categories: 
+    {% for category in page.categories %}
+    <span class="category">{{ category }}</span>
+    {% unless forloop.last %}, {% endunless %}
+    {% endfor %}
+  </span>
+  {%- endif -%}
+</p>
+
+{% assign processed_content = content | replace: '![', '<img src="' | replace: '](/assets/images/', '/assets/images/' | replace: ')"', '" alt="" />' %}
+{% assign processed_content = processed_content | replace: '.png)', '.png' | replace: '.jpg)', '.jpg' | replace: '.jpeg)', '.jpeg' | replace: '.gif)', '.gif' %}
+{{ processed_content }}
+
+<style>
+.cover-image {
+  margin-bottom: 2em;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.cover-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.post-meta {
+  color: #666;
+  margin-bottom: 2em;
+}
+
+.category {
+  font-style: italic;
+}
+
+figure {
+  margin: 1.5em 0;
+  text-align: center;
+}
+
+figure img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+figcaption {
+  color: #666;
+  font-style: italic;
+  margin-top: 0.5em;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1em auto;
+}
+
+code {
+  padding: 0.2em 0.4em;
+  background-color: #f6f8fa;
+  border-radius: 3px;
+  font-size: 85%;
+}
+
+pre code {
+  padding: 0;
+  background-color: transparent;
+}
+
+.language-plaintext {
+  color: #24292e;
+}
+
+.language-python {
+  color: #24292e;
+}
+</style> 

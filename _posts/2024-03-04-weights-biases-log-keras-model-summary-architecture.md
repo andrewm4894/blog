@@ -10,6 +10,7 @@ tags:
   - "python"
   - "wandb"
 coverImage: "Screenshot-2024-03-04-at-4.10.47 PM.png"
+layout: post
 ---
 
 Maybe i missed something but i could not find any easy and simple out of the box ways to just save Keras `[model.summary()](https://github.com/keras-team/keras/blob/v3.0.5/keras/models/model.py#L217)` and `[plot_model()](https://keras.io/api/utils/model_plotting_utils/#plotmodel-function)` outputs to [wandb](https://wandb.ai/site).

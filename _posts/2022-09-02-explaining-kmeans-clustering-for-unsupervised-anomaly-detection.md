@@ -10,6 +10,7 @@ tags:
   - "machine-learning"
   - "python"
   - "time-series"
+layout: post
 ---
 
 Here is a video I did in work explaining how our anomaly detection works.

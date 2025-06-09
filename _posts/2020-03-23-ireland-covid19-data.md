@@ -5,6 +5,7 @@ tags:
   - "coronavirus"
   - "data"
   - "python"
+layout: post
 ---
 
 ![](/assets/images/2020-03-23-ireland-covid19-data/200130165125-corona-virus-cdc-image-super-tease.jpg)

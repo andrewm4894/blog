@@ -1,3 +1,81 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>KubeFlow Custom Jupyter Image (+ github for notebook source control) | Andrew M Blog</title>
+<meta name="generator" content="Jekyll v3.9.3" />
+<meta property="og:title" content="KubeFlow Custom Jupyter Image (+ github for notebook source control)" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="I’ve been playing around a bit with KubeFlow a bit lately and found that a lot of the tutorials and examples of Jupyter notebooks on KubeFlow do a lot of the pip install and other sort of setup and config stuff in the notebook itself which feels icky." />
+<meta property="og:description" content="I’ve been playing around a bit with KubeFlow a bit lately and found that a lot of the tutorials and examples of Jupyter notebooks on KubeFlow do a lot of the pip install and other sort of setup and config stuff in the notebook itself which feels icky." />
+<link rel="canonical" href="http://localhost:4000/2019/10/20/kubeflow-custom-jupyter-image-github-for-notebook-source-control/" />
+<meta property="og:url" content="http://localhost:4000/2019/10/20/kubeflow-custom-jupyter-image-github-for-notebook-source-control/" />
+<meta property="og:site_name" content="Andrew M Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-10-20T00:00:00+01:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="KubeFlow Custom Jupyter Image (+ github for notebook source control)" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2019-10-20T00:00:00+01:00","datePublished":"2019-10-20T00:00:00+01:00","description":"I’ve been playing around a bit with KubeFlow a bit lately and found that a lot of the tutorials and examples of Jupyter notebooks on KubeFlow do a lot of the pip install and other sort of setup and config stuff in the notebook itself which feels icky.","headline":"KubeFlow Custom Jupyter Image (+ github for notebook source control)","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2019/10/20/kubeflow-custom-jupyter-image-github-for-notebook-source-control/"},"url":"http://localhost:4000/2019/10/20/kubeflow-custom-jupyter-image-github-for-notebook-source-control/"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+    <!--[if lt IE 9]>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <![endif]-->
+    <!-- start custom head snippets, customize with your own _includes/head-custom.html file -->
+
+<!-- Setup Google Analytics -->
+
+
+
+<!-- You can set your favicon here -->
+<!-- link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" -->
+
+<!-- end custom head snippets -->
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1><a href="http://localhost:4000/">Andrew M Blog</a></h1>
+
+        
+
+        <p>Personal blog about Data Science and Machine Learning, migrated from WordPress.
+</p>
+
+        
+
+        
+
+        
+      </header>
+      <section>
+
+      
+
+<h1>KubeFlow Custom Jupyter Image (+ github for notebook source control)</h1>
+
+<p class="post-meta">
+  <time datetime="2019-10-20T00:00:00+01:00">Oct 20, 2019
+  </time><span class="categories">
+    • Categories: 
+    
+    <span class="category">kubeflow</span>
+    , 
+    
+    <span class="category">machine-learning</span>
+    
+    
+  </span></p>
+
+
+
 <p>I’ve been playing around a bit with <a href="https://www.kubeflow.org/">KubeFlow</a> a bit lately and found that a lot of the tutorials and <a href="https://github.com/kubeflow/examples/blob/master/pipelines/simple-notebook-pipeline/Simple%20Notebook%20Pipeline.ipynb">examples</a> of Jupyter notebooks on KubeFlow do a lot of the <code class="language-plaintext highlighter-rouge">pip install</code> and other sort of setup and config stuff in the notebook itself which feels icky.</p>
 
 <p><img src="/assets/images/2019-10-20-kubeflow-custom-jupyter-image-github-for-notebook-source-control/3duv0s.jpg" alt="" /></p>
@@ -14,7 +92,7 @@
 
 <figure>
 
-![](/assets/images/2019-10-20-kubeflow-custom-jupyter-image-github-for-notebook-source-control/Capture.png)
+<img src="/assets/images/2019-10-20-kubeflow-custom-jupyter-image-github-for-notebook-source-control/Capture.png
 
 <figcaption>
 
@@ -33,3 +111,82 @@ Just specify your custom image
 <p>For now i decided to just create a ssh key (<a href="https://help.github.com/en/articles/connecting-to-github-with-ssh">help docs</a>) for the persistent workspace volume connected to the notebook server (see step 10 <a href="https://www.kubeflow.org/docs/notebooks/setup/">here</a>).</p>
 
 <p>Then once you want to <code class="language-plaintext highlighter-rouge">git push</code> from your notebook server you can just hack together a little notebook <a href="https://github.com/andrewm4894/my-kf-notebooks/blob/master/git.ipynb">like this</a> that you can use as a poor man’s git ui :)</p>
+
+
+<style>
+.cover-image {
+  margin-bottom: 2em;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.cover-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.post-meta {
+  color: #666;
+  margin-bottom: 2em;
+}
+
+.category {
+  font-style: italic;
+}
+
+figure {
+  margin: 1.5em 0;
+  text-align: center;
+}
+
+figure img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+figcaption {
+  color: #666;
+  font-style: italic;
+  margin-top: 0.5em;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1em auto;
+}
+
+code {
+  padding: 0.2em 0.4em;
+  background-color: #f6f8fa;
+  border-radius: 3px;
+  font-size: 85%;
+}
+
+pre code {
+  padding: 0;
+  background-color: transparent;
+}
+
+.language-plaintext {
+  color: #24292e;
+}
+
+.language-python {
+  color: #24292e;
+}
+</style> 
+
+      </section>
+      <footer>
+        
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="/assets/js/scale.fix.js"></script>
+  </body>
+</html>

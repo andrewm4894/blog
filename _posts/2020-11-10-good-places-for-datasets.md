@@ -4,6 +4,7 @@ date: 2020-11-10
 tags: 
   - "data"
   - "open-data"
+layout: post
 ---
 
 I get asked this a lot by students so decided to make a little list in here that I can add to and point people towards.

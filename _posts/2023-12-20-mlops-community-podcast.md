@@ -8,6 +8,7 @@ tags:
   - "mlops"
   - "podcast"
 coverImage: "Screenshot-2024-12-03-at-1.30.20 PM.png"
+layout: post
 ---
 
 What a time to be alive when nerds like us can geek out every week listening to leaders in the field chatting about what their favourite coffee is and all the cool stuff they are working on!

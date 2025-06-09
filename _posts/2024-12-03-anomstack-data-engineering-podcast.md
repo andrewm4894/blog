@@ -10,6 +10,7 @@ tags:
   - "data"
   - "machine-learning"
 coverImage: "638557928872209534cover.webp"
+layout: post
 ---
 
 I was recently on the [Data Engineering Podcast](https://www.dataengineeringpodcast.com/) to chat about anomaly detection and a open source side project im working on - [anomstack](https://github.com/andrewm4894/anomstack).

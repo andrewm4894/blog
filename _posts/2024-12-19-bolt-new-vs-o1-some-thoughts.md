@@ -7,6 +7,7 @@ categories:
 tags: 
   - "llm"
 coverImage: "Screenshot-2024-12-19-at-12.16.10 PM.png"
+layout: post
 ---
 
 this is funny - i tried to make a little app to share daily factoids from chatgpt on a site - just as excuse to learn javascript really.

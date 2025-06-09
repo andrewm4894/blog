@@ -7,6 +7,7 @@ categories:
 tags: 
   - "anomaly-detection"
   - "machine-learning"
+layout: post
 ---
 
 A list of useful Anomaly Detection resources, as I find interesting material I will add to this list.

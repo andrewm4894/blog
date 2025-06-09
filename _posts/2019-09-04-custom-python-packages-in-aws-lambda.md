@@ -7,6 +7,7 @@ tags:
   - "aws-lambda"
   - "python"
   - "serverless"
+layout: post
 ---
 
 <figure>

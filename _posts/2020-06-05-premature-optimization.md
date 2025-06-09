@@ -7,6 +7,7 @@ categories:
 tags: 
   - "python"
   - "scipy"
+layout: post
 ---
 
 ![](/assets/images/2020-06-05-premature-optimization/optimization.png)

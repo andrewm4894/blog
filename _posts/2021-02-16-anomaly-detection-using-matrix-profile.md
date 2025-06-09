@@ -11,6 +11,7 @@ tags:
   - "matrix-profile"
   - "python"
   - "stumpy"
+layout: post
 ---
 
 ![](/assets/images/2021-02-16-anomaly-detection-using-matrix-profile/distance_matrix.gif)

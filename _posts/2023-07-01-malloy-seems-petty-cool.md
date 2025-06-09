@@ -10,6 +10,7 @@ tags:
   - "malloy"
   - "sql"
 coverImage: "malloy.png"
+layout: post
 ---
 
 I discovered [Malloy](https://github.com/malloydata/malloy) recently in [this great talk](https://youtu.be/zmmJgwc3oPI), it seems like a really interesting idea (a higher level abstraction or DSL on top of sql) with some great people behind it ([looker founder](https://www.linkedin.com/in/lloydtabb/) who seems to really know his stuff).

@@ -11,6 +11,7 @@ tags:
   - "go"
   - "machine-learning"
   - "time-series"
+layout: post
 ---
 
 <figure>

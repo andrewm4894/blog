@@ -1,6 +1,7 @@
 ---
 title: "Previous blog posts"
 date: 2019-04-25
+layout: post
 ---
 
 List of blog posts i've done before this site.

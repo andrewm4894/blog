@@ -9,6 +9,7 @@ tags:
   - "kubeflow"
   - "machine-learning"
   - "python"
+layout: post
 ---
 
 I've been playing around a bit with [KubeFlow](https://www.kubeflow.org/) a bit lately and found that a lot of the tutorials and [examples](https://github.com/kubeflow/examples/blob/master/pipelines/simple-notebook-pipeline/Simple%20Notebook%20Pipeline.ipynb) of Jupyter notebooks on KubeFlow do a lot of the `pip install` and other sort of setup and config stuff in the notebook itself which feels icky.

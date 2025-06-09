@@ -3,6 +3,7 @@ title: "Java Hello World cli using args4j"
 date: 2019-05-01
 categories: 
   - "java"
+layout: post
 ---
 
 A simple example of how to use [args4j](https://github.com/kohsuke/args4j) to add command line args to a simple "Hello World" type java application.

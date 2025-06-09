@@ -9,6 +9,7 @@ tags:
   - "python"
   - "streamlit"
   - "web"
+layout: post
 ---
 
 <figure>

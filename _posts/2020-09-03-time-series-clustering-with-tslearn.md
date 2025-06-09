@@ -11,6 +11,7 @@ tags:
   - "python"
   - "time-series"
   - "tslearn"
+layout: post
 ---
 
 ![](/assets/images/2020-09-03-time-series-clustering-with-tslearn/image-9-1024x411.png)

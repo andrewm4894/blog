@@ -6,6 +6,7 @@ categories:
 tags: 
   - "netdata"
 coverImage: "thumbnail.png"
+layout: post
 ---
 
 https://youtu.be/59HLqK01NoI

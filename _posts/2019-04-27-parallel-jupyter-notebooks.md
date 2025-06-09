@@ -6,6 +6,7 @@ tags:
   - "multiprocessing"
   - "papermill"
   - "python"
+layout: post
 ---
 
 I have become master of the notebooks, they bend at my will and exist to serve my data science needs!

@@ -6,6 +6,7 @@ tags:
   - "multiprocessing"
   - "pandas"
   - "python"
+layout: post
 ---
 
 <figure>

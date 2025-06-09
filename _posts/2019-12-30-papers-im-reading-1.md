@@ -7,6 +7,7 @@ categories:
 tags: 
   - "anomaly-detection"
   - "machine-learning"
+layout: post
 ---
 
 I've recently set myself the goal of reading one academic paper a week relating to the ML/AI things i'm working on i'm my current role.

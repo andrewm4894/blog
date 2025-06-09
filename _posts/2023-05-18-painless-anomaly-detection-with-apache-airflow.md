@@ -11,6 +11,7 @@ tags:
   - "machine-learning"
   - "python"
 coverImage: "data-obs-so-hot.jpg"
+layout: post
 ---
 
 Data observability _is_ so hot right now...but do you know what's also hot? Using some tried and tested ingredients like [Apache Airflow](https://airflow.apache.org/) and [PyOD](https://pyod.readthedocs.io/en/latest/) to perform painless anomaly detection on your key business metrics.

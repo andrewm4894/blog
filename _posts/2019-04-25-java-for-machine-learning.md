@@ -5,6 +5,7 @@ categories:
   - "java"
 tags: 
   - "machine-learning"
+layout: post
 ---
 
 I've recently been learning java for machine learning related work (a long story to do with mainframes, and you know, why not).

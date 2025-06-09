@@ -5,6 +5,7 @@ categories:
   - "machine-learning"
 tags: 
   - "machine-learning"
+layout: post
 ---
 
 https://www.youtube.com/watch?v=nzrOzqz8B3U

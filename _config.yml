@@ -11,7 +11,22 @@ plugins:
 
 # Build settings
 markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: false
+  syntax_highlighter: rouge
+  parse_block_html: true
+  parse_span_html: true
 permalink: /:year/:month/:day/:title/
+
+# Defaults
+defaults:
+  -
+    scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
 
 # Exclude directories and files
 exclude:

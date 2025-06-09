@@ -9,18 +9,14 @@ tags:
   - "mlxtend"
   - "pyfim"
   - "python"
+layout: post
 ---
 
 <figure>
-
-![](/assets/images/2020-09-29-market-basket-analysis-in-python/20170824_103648-300x225.jpg)
-
+<img src="/assets/images/2020-09-29-market-basket-analysis-in-python/20170824_103648-300x225.jpg" alt="Market basket photo">
 <figcaption>
-
 An actual market basket I found in my Google photos.
-
 </figcaption>
-
 </figure>
 
 **tl; dr;** if you find yourself doing some association rule mining using [mlxtend](http://rasbt.github.io/mlxtend/) but finding it a bit slow then checkout [PyFIM](https://borgelt.net/pyfim.html) - [here is a colab](https://colab.research.google.com/drive/15UunWEtO3Ga_4KAfmDOXbv0FDVv2dhWH?usp=sharing) I made to get you started.
@@ -118,7 +114,12 @@ df_rules.head(10)
 
 And you should see some results like below.
 
-![](/assets/images/2020-09-29-market-basket-analysis-in-python/image-10.png)
+<figure>
+<img src="/assets/images/2020-09-29-market-basket-analysis-in-python/image-10.png" alt="Market basket analysis results">
+<figcaption>
+Example results showing association rules between items
+</figcaption>
+</figure>
 
 mmmm, eggs and kidney beans and yogurt :)
 

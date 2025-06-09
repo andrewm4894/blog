@@ -5,6 +5,7 @@ tags:
   - "pypi"
   - "python"
   - "visualization"
+layout: post
 ---
 
 I've been threatening to myself to do this for a long time and recently got around to it, so as usual i'm going to try milk it for a blog post (Note: i'm not talking about getting into a box like the below picture, its something much less impressive).

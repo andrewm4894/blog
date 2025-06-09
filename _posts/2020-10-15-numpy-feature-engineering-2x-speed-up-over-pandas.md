@@ -10,6 +10,7 @@ tags:
   - "numpy"
   - "pandas"
   - "python"
+layout: post
 ---
 
 ![](/assets/images/2020-10-15-numpy-feature-engineering-2x-speed-up-over-pandas/Annotation-2020-10-15-133235.jpg)

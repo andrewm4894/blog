@@ -9,6 +9,7 @@ tags:
   - "lstm"
   - "machine-learning"
   - "python"
+layout: post
 ---
 
 This post will walk through a synthetic example illustrating one way to use a multi-variate, multi-step [LSTM](https://en.wikipedia.org/wiki/Long_short-term_memory) for anomaly detection.

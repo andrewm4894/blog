@@ -9,6 +9,7 @@ tags:
   - "r-machinelearning"
   - "terraform"
   - "youtube"
+layout: post
 ---
 
 ![](/assets/images/2020-04-29-terraform-is-magic-r-machinelearning-links/tfismagic.jpg)

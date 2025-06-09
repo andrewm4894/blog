@@ -11,6 +11,7 @@ tags:
   - "stripe"
   - "webhook"
 coverImage: "stripe-functions-2.png"
+layout: post
 ---
 
 This took a couple of days of messing around so decided to make a post out of it.

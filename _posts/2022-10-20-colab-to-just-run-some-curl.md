@@ -5,6 +5,7 @@ categories:
   - "cloud"
 tags: 
   - "python"
+layout: post
 ---
 
 Here is a little google colab notebook to just paste in some `curl` command and get the response back into a json dictionary.

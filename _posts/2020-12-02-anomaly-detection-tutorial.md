@@ -10,6 +10,7 @@ tags:
   - "machine-learning"
   - "pyod"
   - "python"
+layout: post
 ---
 
 <figure>

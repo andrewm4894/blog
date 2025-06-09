@@ -6,18 +6,16 @@ categories:
 tags: 
   - "asyncio"
   - "python"
+layout: post
 ---
 
 <figure>
-
-![](/assets/images/2021-03-25-some-asyncio-fun-pain/1553.1593611237-1024x576.png)
-
+<img src="/assets/images/2021-03-25-some-asyncio-fun-pain/1553.1593611237-1024x576.png" alt="Asyncio diagram">
 <figcaption>
 
 Taken from [this great Talk Python Training course](https://training.talkpython.fm/courses/details/async-in-python-with-threading-and-multiprocessing) - get the lifetime bundle if you can!
 
 </figcaption>
-
 </figure>
 
 You have a list of api endpoints you want to pull data from and collect results into some results list or dataframe for further processing. You could just loop over that list and make a load of `requests.get()` calls right. But no, you are a sexy ML engineer, this is a great excuse to spend half a day fumbling around the internet learning just enough [asyncio](https://docs.python.org/3/library/asyncio.html) to be dangerous!
@@ -31,15 +29,12 @@ On a work project, i have a list of about 200 api endpoints, all returning simil
 To be specific and make this example something anyone can run here is the setup. I have a monitoring dashboard/agent on a server - here is a demo server [https://london.my-netdata.io.](https://london.my-netdata.io)
 
 <figure>
-
-![](/assets/images/2021-03-25-some-asyncio-fun-pain/image-1-1024x471.png)
-
+<img src="/assets/images/2021-03-25-some-asyncio-fun-pain/image-1-1024x471.png" alt="Netdata dashboard">
 <figcaption>
 
 Example Netdata dashboard that also has a rest api for each chart available.
 
 </figcaption>
-
 </figure>
 
 Now on this agent i have also a rest api endpoint for each chart so i can get the data if i want. For example here is an api call to get the recent data for the "system.cpu" chart (click it, go on): [https://london.my-netdata.io/api/v1/data?chart=system.cpu](https://london.my-netdata.io/api/v1/data?chart=system.cpu).
@@ -151,15 +146,12 @@ if __name__ == "__main__":
 This should run and give you something like this:
 
 <figure>
-
-![](/assets/images/2021-03-25-some-asyncio-fun-pain/image-1024x609.png)
-
+<img src="/assets/images/2021-03-25-some-asyncio-fun-pain/image-1024x609.png" alt="Script output">
 <figcaption>
 
 look at all that lovely text!
 
 </figcaption>
-
 </figure>
 
 And that's that! Got enough of a speed up for what i need and get to show my boss i used asyncio and how great i am.

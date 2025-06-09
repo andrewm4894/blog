@@ -6,6 +6,7 @@ categories:
 tags: 
   - "airflow"
   - "python"
+layout: post
 ---
 
 You have some dag that runs multiple times a day but you need to do a manual backfill of last 30 days.

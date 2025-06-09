@@ -10,6 +10,7 @@ tags:
   - "machine-learning"
   - "python"
   - "time-series"
+layout: post
 ---
 
 <figure>

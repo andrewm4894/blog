@@ -1,6 +1,7 @@
 ---
 title: "Clustering Cell Tower Usage Data"
 date: 2019-07-20
+layout: post
 ---
 
 Below is a little mini project i did a while back looking at cell tower usage data.

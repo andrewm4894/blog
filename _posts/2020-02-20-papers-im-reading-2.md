@@ -6,6 +6,7 @@ tags:
   - "anomaly-detection"
   - "machine-learning"
   - "research"
+layout: post
 ---
 
 Continuation from [this post](https://andrewm4894.com/2019/12/30/papers-im-reading-1/).

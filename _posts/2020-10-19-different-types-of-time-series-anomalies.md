@@ -7,6 +7,7 @@ categories:
   - "time-series"
 tags: 
   - "anomaly-detection"
+layout: post
 ---
 
 I find myself having to refer to this enough times that I decided to make a little infographic I can just more easily link to :)

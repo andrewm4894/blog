@@ -8,6 +8,7 @@ tags:
   - "python"
   - "serverless"
   - "webhooks"
+layout: post
 ---
 
 ![](/assets/images/2020-01-28-github-webhook-cloud-function-bigquery/pic.jpg)

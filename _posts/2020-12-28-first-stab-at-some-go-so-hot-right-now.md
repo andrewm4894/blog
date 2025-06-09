@@ -8,6 +8,7 @@ tags:
   - "golang"
   - "hansel"
   - "python"
+layout: post
 ---
 
 It may be a combination of starting to go stir crazy over the Christmas break and some self loathing at the amount of FIFA i've been playing that's driven me to finally start learning some Go for a few data science and machine learning related projects i'm working on where it offers unique advantages.

@@ -10,6 +10,7 @@ tags:
   - "machine-learning"
   - "nlp"
   - "python"
+layout: post
 ---
 
 I have been working a bit lately with some text classification stuff using Hugging Face - its great n all but their docs can actually be a bit overwhelming.

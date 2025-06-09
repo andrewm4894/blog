@@ -6,6 +6,7 @@ categories:
 tags: 
   - "brainteaser"
   - "python"
+layout: post
 ---
 
 ![](/assets/images/2020-02-27-a-little-brainteaser-or-im-an-idiot/ricky.gif)

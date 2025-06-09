@@ -6,6 +6,7 @@ categories:
 tags: 
   - "weka"
   - "weka-api"
+layout: post
 ---
 
 This is just a quick one to save anyone else new to the [Weka api in Java](https://waikato.github.io/weka-wiki/use_weka_in_your_java_code/) spending as much time as i did figuring this one out.

@@ -12,6 +12,7 @@ tags:
   - "observability"
   - "time-series"
 coverImage: "civo.jpg"
+layout: post
 ---
 
 https://www.youtube.com/watch?v=nX32fWot3XA

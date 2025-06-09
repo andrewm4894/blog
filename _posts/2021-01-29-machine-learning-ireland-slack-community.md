@@ -10,6 +10,7 @@ tags:
   - "machine-learning-ireland"
   - "python"
   - "slack"
+layout: post
 ---
 
 <figure>
