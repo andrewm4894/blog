@@ -1,0 +1,72 @@
+<figure>
+
+![](/assets/images/2019-07-04-parallelize-a-wide-df-in-pandas/capture.jpg)
+
+<figcaption>
+
+I was going to make a pretty picture.
+
+</figcaption>
+
+</figure>
+
+<p>Sometimes you end up with a very <a href="https://en.wikipedia.org/wiki/Wide_and_narrow_data#Wide">wide</a> pandas dataframe and you are interested in doing the same types of operations (data processing, building a model etc.) but focused on subsets of the columns.</p>
+
+<p>For example if we had a wide df with different time series kpi’s represented as columns then we might want to do something like look at each kpi at a time, apply some pre-processing and build something like an <a href="https://machinelearningmastery.com/arima-for-time-series-forecasting-with-python/">ARIMA</a> time series model perhaps.</p>
+
+<p>This is the situation i found myself in recently and it took me best part of an afternoon to figure out. Usually when i find myself in that situation i try and squeeze out a blog post in case might be useful for someone else or future me.</p>
+
+<figure>
+
+![](/assets/images/2019-07-04-parallelize-a-wide-df-in-pandas/code.png)
+
+<figcaption>
+
+All the code in one glorious screenshot!
+
+</figcaption>
+
+</figure>
+
+<p><strong>Note</strong>: repository with all code is <a href="https://github.com/andrewm4894/parallelize_wide_df">here</a>. p.s. thanks to <a href="https://towardsdatascience.com/make-your-own-super-pandas-using-multiproc-1c04f41944a1">this</a> and <a href="http://www.racketracer.com/2016/07/06/pandas-in-parallel/">this</a> post that i built off of.</p>
+
+<p>For this example i’m afraid i’m going to use the Iris dataset :0 . This example is as minimal and easy as i could throw together, basically the aim of the code is to:</p>
+
+<ol>
+  <li>Build some function to take in a df, do some processing and spit out a new df.</li>
+  <li>Have that function be parameterized in some way as might be needed (e.g if you wanted to do slightly different work for one subset of columns).</li>
+  <li>Apply that function in parallel across the different subsets of your df that you want to process.</li>
+</ol>
+
+<p>There are two main functions of interest here <strong>parallelize_dataframe()</strong> and <strong>do_work()</strong> both of which live in their own file called <a href="https://github.com/andrewm4894/parallelize_wide_df/blob/master/my_functions.py">my_functions.py</a> which can be imported into your jupyter notebook.</p>
+
+<p>https://gist.github.com/andrewm4894/932304809840d6cef7ed5c7fc21b72cb</p>
+
+<p><strong>parallelize_dataframe()</strong> does the below things:</p>
+
+<ol>
+  <li>Break out df into a list of df’s based on the col_subsets list passed in as a parameter.</li>
+  <li>Wrap the function that was passed in into a partial along with the kwargs (this is how your parameters make it into the do_work() function).</li>
+  <li>Use map() from <a href="https://docs.python.org/3/library/multiprocessing.html">multiprocessing</a> to apply the func (along with the args you want to send it) to each subset of columns from your df in parallel.</li>
+  <li>Reduce all this back into on final df by joining all the resulting df’s from the map() output into one wide df again (note the assumption here of joining back on the df indexes - they need to be stable and meaningful).</li>
+</ol>
+
+<p>The <strong>do_work()</strong> function in this example is just a simple function to add some new columns as examples of types of pandas (or any other) goodness you might want to do. In reality in my case it would be more like a <strong>apply_model()</strong> type function that would take each subset of columns, do some feature extraction, train a model and then also score the data as needed to.</p>
+
+<p>Having the ability to do this for multiple subsets of columns in your wide df can really free up your time to focus on the more important things like dickying around with model parameters and different pre-processing steps :)</p>
+
+<p>That’s pretty much it, a productive afternoon (in the play center with kids i might add) and am quite pleased with myself.</p>
+
+<p><strong>Update:</strong> One addition i made to this as things got more complicated when i went to implement it was the ability to apply different function params to each subset df. For example if you wanted to pass in different parameters to the function for different columns. In the <a href="https://github.com/andrewm4894/parallelize_wide_df/blob/master/do_parallel_zip.ipynb">do_parallel_zip.ipynb</a> and corresponding <a href="https://github.com/andrewm4894/parallelize_wide_df/blob/master/my_functions_zip.py">my_functions_zip.py</a> (i’m calling them “_zip” as they use <a href="https://www.w3schools.com/python/ref_func_zip.asp">zip()</a> to “zip” up both the df_list and the corresponding kwargs to go with it to be unpacked later by <a href="https://github.com/andrewm4894/parallelize_wide_df/blob/master/my_functions_zip.py#L34">do_work_zip()</a>).</p>
+
+<p>To be concrete, if we wanted to multiply the “sepal_…” cols by 100 and the “petal_..” cols by 0.5. We could use the “zip” approach like below (notebook <a href="https://github.com/andrewm4894/parallelize_wide_df/blob/master/do_parallel_zip.ipynb">here</a>):</p>
+
+<p><img src="/assets/images/2019-07-04-parallelize-a-wide-df-in-pandas/capture-2.jpg" alt="" /></p>
+
+<p>Which is using the “zip” approach in <a href="https://github.com/andrewm4894/parallelize_wide_df/blob/master/my_functions_zip.py#L6">parallelize_dataframe_zip()</a></p>
+
+<p><img src="/assets/images/2019-07-04-parallelize-a-wide-df-in-pandas/capture-3.jpg" alt="" /></p>
+
+<p>Where the zipped iterable is then unpacked as needed by the <a href="https://github.com/andrewm4894/parallelize_wide_df/blob/master/my_functions_zip.py#L34">do_work_zip()</a> function:</p>
+
+<p><img src="/assets/images/2019-07-04-parallelize-a-wide-df-in-pandas/capture-4.jpg" alt="" /></p>

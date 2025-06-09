@@ -1,0 +1,158 @@
+<figure>
+
+![](/assets/images/2021-03-25-some-asyncio-fun-pain/1553.1593611237-1024x576.png)
+
+<figcaption>
+
+Taken from [this great Talk Python Training course](https://training.talkpython.fm/courses/details/async-in-python-with-threading-and-multiprocessing) - get the lifetime bundle if you can!
+
+</figcaption>
+
+</figure>
+
+<p>You have a list of api endpoints you want to pull data from and collect results into some results list or dataframe for further processing. You could just loop over that list and make a load of <code class="language-plaintext highlighter-rouge">requests.get()</code> calls right. But no, you are a sexy ML engineer, this is a great excuse to spend half a day fumbling around the internet learning just enough <a href="https://docs.python.org/3/library/asyncio.html">asyncio</a> to be dangerous!</p>
+
+<p>I feel this is generalizable enough to merit a quick write up, and is the second time in last year that i have ‘solved’ this problem for myself so that ticks my boxes for a blog post, if only to help my future self.</p>
+
+<p>On a work project, i have a list of about 200 api endpoints, all returning similar json data, that i want to combine and further wrangle. I tried a quick script to just iterate through all these requests but this was embarrassingly slow and given i want to share this script with some colleagues i decided to try virtue signal a little and use asyncio and in the process got the execution time from about 2 minutes to about 20 seconds which is very meaningful for me given this script is to be run a lot and iteratively as part of exploring a new feature i am working on.</p>
+
+<p><strong>Note</strong>: one important constraint is that this needs to be in base libraries in Python 3 (well ignoring requests :) ) so the the people i share this with only need to have Python 3. Otherwise i would probably use <a href="https://trio.readthedocs.io/en/stable/">trio</a>.</p>
+
+<p>To be specific and make this example something anyone can run here is the setup. I have a monitoring dashboard/agent on a server - here is a demo server <a href="https://london.my-netdata.io">https://london.my-netdata.io.</a></p>
+
+<figure>
+
+![](/assets/images/2021-03-25-some-asyncio-fun-pain/image-1-1024x471.png)
+
+<figcaption>
+
+Example Netdata dashboard that also has a rest api for each chart available.
+
+</figcaption>
+
+</figure>
+
+<p>Now on this agent i have also a rest api endpoint for each chart so i can get the data if i want. For example here is an api call to get the recent data for the “system.cpu” chart (click it, go on): <a href="https://london.my-netdata.io/api/v1/data?chart=system.cpu">https://london.my-netdata.io/api/v1/data?chart=system.cpu</a>.</p>
+
+<p>What i want to do is have a script where you can just copy the url from the dashboard pass it as a parameter to a python script and then have that script go and pull all the charts (available here: <a href="https://london.my-netdata.io/api/v1/charts">https://london.my-netdata.io/api/v1/charts</a>), average all the data for each chart and then just rank those charts based on that average value.</p>
+
+<p>So some fairly simple processing of the data, bunch of urls, all have similar json data, process each in some way, and collect all the results into a list to then further process.</p>
+
+<p>After a bit too much googling and attempts at reading the <a href="https://docs.python.org/3/library/asyncio.html">asyncio docs</a> (which honestly just scared the bejesus out of me) here is a solution i managed to fumble my way to that actually works and is _good enough_tm for what i need so i stopped there.</p>
+
+<p><strong>Another note</strong>: since i’m feeling fancy, <a href="https://colab.research.google.com/drive/1BK4pHv92gjc8VupgKl3SCYVmohdz5trO?usp=sharing">here</a> is a Google colab notebook (assuming they have not killed colab by the time you read this - fingers crossed :) ) that will generate the script as a file and then run it. So feel free to go in there and click stuff.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#!/usr/bin/env python3
+</span>
+<span class="s">"""
+Description:
+Python script to take a url you can copy from a netdata dashboard, parse it and rank all charts based on the average of all their metrics and then print 
+out the top_n of that ranked list of charts along with a link to each chart.
+
+Example Usage:
+python process_charts.py --url="https://london.my-netdata.io"
+"""</span>
+
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="kn">import</span> <span class="n">urlparse</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+
+<span class="k">def</span> <span class="nf">request_sync</span><span class="p">(</span><span class="n">job</span><span class="p">):</span>
+    <span class="s">"""Given a job, which is everything you need to make your api request, 
+    kick off the api call and process the data a little.
+    """</span>
+    <span class="n">chart</span> <span class="o">=</span> <span class="n">job</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">job</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">'getting data from </span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s">'</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">r</span><span class="p">.</span><span class="n">json</span><span class="p">()[</span><span class="s">'data'</span><span class="p">]</span>
+    <span class="n">score</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c1"># some charts might fail and that's ok :)
+</span>        <span class="k">try</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="nb">sum</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">/</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
+            <span class="n">score</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+    <span class="k">return</span> <span class="n">chart</span><span class="p">,</span> <span class="n">score</span>
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">request_async</span><span class="p">(</span><span class="n">job</span><span class="p">):</span>
+    <span class="s">"""Wrap the requests.get() job in an asyncio loop.
+    """</span>
+    <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="p">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="n">loop</span><span class="p">.</span><span class="n">run_in_executor</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="n">request_sync</span><span class="p">,</span> <span class="n">job</span><span class="p">)</span>
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">jobs</span><span class="p">):</span>
+    <span class="s">"""Kick off all the jobs from a list of jobs, await and gather results.
+    """</span>
+    <span class="n">coroutines</span> <span class="o">=</span> <span class="p">[</span><span class="n">request_async</span><span class="p">(</span><span class="n">job</span><span class="p">)</span> <span class="k">for</span> <span class="n">job</span> <span class="ow">in</span> <span class="n">jobs</span><span class="p">]</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="p">.</span><span class="n">gather</span><span class="p">(</span><span class="o">*</span><span class="n">coroutines</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">results</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">"__main__"</span><span class="p">:</span>
+
+    <span class="c1"># handle args
+</span>    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="p">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s">'Process charts.'</span><span class="p">)</span>
+    <span class="n">parser</span><span class="p">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">'--url'</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">'url from netdata dashboard'</span><span class="p">,</span>
+                        <span class="n">default</span><span class="o">=</span><span class="s">'http://london.my-netdata.io/'</span><span class="p">)</span>
+    <span class="n">parser</span><span class="p">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">'--n'</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">'top n charts by score'</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="p">.</span><span class="n">parse_args</span><span class="p">()</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">args</span><span class="p">.</span><span class="n">url</span>
+    <span class="n">top_n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">args</span><span class="p">.</span><span class="n">n</span><span class="p">)</span>
+
+    <span class="c1"># parse url
+</span>    <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">'url is : </span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s">'</span><span class="p">)</span>
+    <span class="n">http</span> <span class="o">=</span> <span class="n">url</span><span class="p">.</span><span class="n">split</span><span class="p">(</span><span class="s">'://'</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">url_parsed</span> <span class="o">=</span> <span class="n">urlparse</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+    <span class="c1"># get params from url
+</span>    <span class="n">host</span> <span class="o">=</span> <span class="n">url_parsed</span><span class="p">.</span><span class="n">netloc</span>
+    <span class="n">fragments</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="n">x</span><span class="p">.</span><span class="n">split</span><span class="p">(</span><span class="s">'='</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">url_parsed</span><span class="p">.</span><span class="n">fragment</span><span class="p">.</span><span class="n">split</span><span class="p">(</span><span class="s">';'</span><span class="p">)</span> <span class="k">if</span> <span class="s">'='</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]}</span>
+    <span class="n">after</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">fragments</span><span class="p">[</span><span class="s">'after'</span><span class="p">])</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">)</span> <span class="k">if</span> <span class="s">'after'</span> <span class="ow">in</span> <span class="n">fragments</span> <span class="k">else</span> <span class="o">-</span><span class="mi">600</span>
+    <span class="n">before</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">fragments</span><span class="p">[</span><span class="s">'before'</span><span class="p">])</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">)</span> <span class="k">if</span> <span class="s">'before'</span> <span class="ow">in</span> <span class="n">fragments</span> <span class="k">else</span> <span class="mi">0</span>
+
+    <span class="c1"># get charts available
+</span>    <span class="n">charts</span> <span class="o">=</span> <span class="n">requests</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s">'</span><span class="si">{</span><span class="n">http</span><span class="si">}</span><span class="s">://</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s">/api/v1/charts'</span><span class="p">).</span><span class="n">json</span><span class="p">()[</span><span class="s">'charts'</span><span class="p">]</span>
+    <span class="n">charts_href</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">chart</span><span class="p">:</span> <span class="sa">f</span><span class="s">"#menu_</span><span class="si">{</span><span class="n">charts</span><span class="p">[</span><span class="n">chart</span><span class="p">][</span><span class="s">'type'</span><span class="p">].</span><span class="n">replace</span><span class="p">(</span><span class="s">'.'</span><span class="p">,</span> <span class="s">'_'</span><span class="p">)</span><span class="si">}</span><span class="s">_submenu_</span><span class="si">{</span><span class="n">charts</span><span class="p">[</span><span class="n">chart</span><span class="p">][</span><span class="s">'family'</span><span class="p">].</span><span class="n">replace</span><span class="p">(</span><span class="s">'.'</span><span class="p">,</span> <span class="s">'_'</span><span class="p">)</span><span class="si">}</span><span class="s">"</span>
+        <span class="k">for</span> <span class="n">chart</span> <span class="ow">in</span> <span class="n">charts</span>
+    <span class="p">}</span>
+
+    <span class="c1"># get scores via asyncio event loop
+</span>    <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="p">.</span><span class="n">new_event_loop</span><span class="p">()</span>
+    <span class="n">asyncio</span><span class="p">.</span><span class="n">set_event_loop</span><span class="p">(</span><span class="n">loop</span><span class="p">)</span>
+    <span class="n">jobs</span> <span class="o">=</span> <span class="p">[(</span><span class="n">c</span><span class="p">,</span> <span class="sa">f</span><span class="s">'http://</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s">/api/v1/data?chart=</span><span class="si">{</span><span class="n">c</span><span class="si">}</span><span class="s">&amp;points=5&amp;after=</span><span class="si">{</span><span class="n">after</span><span class="si">}</span><span class="s">&amp;before=</span><span class="si">{</span><span class="n">before</span><span class="si">}</span><span class="s">'</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">charts</span><span class="p">]</span>
+    <span class="n">scores</span> <span class="o">=</span> <span class="n">loop</span><span class="p">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">main</span><span class="p">(</span><span class="n">jobs</span><span class="p">))</span>
+
+    <span class="c1"># create sorted dict from scores
+</span>    <span class="n">scores</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">sorted</span><span class="p">({</span><span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">scores</span><span class="p">}.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">item</span><span class="p">:</span> <span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+
+    <span class="c1"># print top n
+</span>    <span class="k">print</span><span class="p">(</span><span class="s">'--'</span> <span class="o">*</span> <span class="mi">20</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">'top </span><span class="si">{</span><span class="n">top_n</span><span class="si">}</span><span class="s"> charts'</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">'--'</span> <span class="o">*</span> <span class="mi">20</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">chart</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">scores</span><span class="p">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">:</span><span class="n">top_n</span><span class="p">]):</span>
+        <span class="k">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">).</span><span class="n">ljust</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">chart</span><span class="p">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">40</span><span class="p">),</span> <span class="nb">format</span><span class="p">(</span><span class="n">scores</span><span class="p">[</span><span class="n">chart</span><span class="p">],</span> <span class="s">'.2f'</span><span class="p">),</span>
+              <span class="sa">f</span><span class="s">'link = </span><span class="si">{</span><span class="n">http</span><span class="si">}</span><span class="s">://</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s">/</span><span class="si">{</span><span class="n">charts_href</span><span class="p">[</span><span class="n">chart</span><span class="p">]</span><span class="si">}</span><span class="s">;after=</span><span class="si">{</span><span class="n">after</span> <span class="o">*</span> <span class="mi">1000</span><span class="si">}</span><span class="s">;before=</span><span class="si">{</span><span class="n">before</span> <span class="o">*</span> <span class="mi">1000</span><span class="si">}</span><span class="s">'</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>This should run and give you something like this:</p>
+
+<figure>
+
+![](/assets/images/2021-03-25-some-asyncio-fun-pain/image-1024x609.png)
+
+<figcaption>
+
+look at all that lovely text!
+
+</figcaption>
+
+</figure>
+
+<p>And that’s that! Got enough of a speed up for what i need and get to show my boss i used asyncio and how great i am.</p>
+
+<p>Fully confident that i will be returning to this in future next time the need arises.</p>
+
+<p>P.S i’d love to hear if there are better ways to do this that are sexier and more pythonic as i in no way consider myself an expert here.</p>

@@ -1,0 +1,249 @@
+<p>Continuation from <a href="https://andrewm4894.com/2019/12/30/papers-im-reading-1/">this post</a>.</p>
+
+<h2 id="an-unsupervised-spatiotemporal-graphical-modeling-approach-to-anomaly-detection-in-distributed-cps-cyber-physical-systems">An unsupervised spatiotemporal graphical modeling approach to anomaly detection in distributed CPS (Cyber Physical Systems).</h2>
+
+<p><a href="http://web.me.iastate.edu/soumiks/pdf/Conference/LGJS16_conf.pdf">Link</a></p>
+
+<p>My Summary: Really interesting paper - PGM’s, HMM’s and all that good stuff. Quite complicated though and no clear route to implementation. Also I would wonder how well it scales beyond 10’s of time series. More good for learning about some different approaches as opposed to anything that could be implemented easily. </p>
+
+<p>Notes:</p>
+
+<ul>
+  <li>“Spatiotemporal” feature extraction, “Symbolic dynamics”, “Causal interactions”… some fancy sounding stuff, seems to try get at causal relationships which might be a bit too strong a claim be defo interesting stuff that i had not come across before.</li>
+  <li>CPS = power plants, power grids, transport systems etc. </li>
+  <li>Symbolic dynamic filtering - look this up.</li>
+  <li>General setting in this paper is a probabilistic graphical model type set up.</li>
+  <li>State, Alphabet, Symbol generation matrix, Importance Score - similar sort of set up to HMM type models.</li>
+  <li>Partitioning → States → Spatiotemporal Pattern Network (STPN).</li>
+  <li>Energy based models another way to frame and think about these models.</li>
+  <li>I wonder how well this model scales to many time series? My gut says probably ok for a handful of time series as opposed to 100’s.</li>
+  <li>Some nice pictures of how it all hangs together. </li>
+  <li>All focused on short subsequences as the core inputs it learns on. Can be overlapping windows. </li>
+  <li>Lots of maths and symbols in this paper! Very complicated and hard to follow - would need to read 10 times.</li>
+  <li>Does not look like any code or implementations out there so not sure if easily implementable. </li>
+  <li>Nice results on synthetic data with multiple modalities. </li>
+  <li>Interesting results on real world smart home (HVAC and underfloor heating) data too. Just a handful of time series and nice an clear case study with obvious causal chains. </li>
+  <li>Interesting to see global and local anomalies picked up.</li>
+  <li>Still seems like some parameters to tune/pick - also need to threshold the importance score.   </li>
+</ul>
+
+<p><img src="images/46ubCTHX5XhrD-z8o6epHWV75pxxT0_4r92COpA5-Sa0f6geltM5KmQkkE67uczdfRKYAf9S6OPd7APAoq4sFRJhuXUZUAeGe6cnmXRljVOSyffCOUppfVRTGrfrgLcq0SZHq6mE" alt="" /></p>
+
+<hr />
+
+<h2 id="recent-advances-in-anomaly-detection-methods-applied-to-aviation">Recent Advances in Anomaly Detection Methods applied to Aviation.</h2>
+
+<p><a href="https://www.preprints.org/manuscript/201909.0326/v1">Link</a></p>
+
+<p>My Summary: Interesting paper focusing specifically on aviation but in a broad sense and in an up to date manner covering many newer techniques too. Still seems in reality a lot of domain specific and traditional methods is what is actually used in reality as opposed to in the research.</p>
+
+<p>Notes:</p>
+
+<ul>
+  <li>Good food for thought on differences and similarities between novelty detection and anomaly detection. </li>
+  <li>They use the usual typical taxonomy of point, contextual, and collective.</li>
+  <li>Lots of references to explainability as well, which makes sense in an aviation setting.  </li>
+  <li>“Temporal Logic Based Models” - sounds interesting need to look into  this more.</li>
+  <li>“Model Driven” (rules from experts) vs “Data Driven” (Machine learned).</li>
+  <li>Really nice taxonomy below.</li>
+  <li>3 types of clustering based assumptions:
+    <ul>
+      <li>Anomaly as outside any cluster.</li>
+      <li>Anomaly as far away from centroids.</li>
+      <li>Density based whereby cluster can be a sparse cluster that are all anomalies. </li>
+    </ul>
+  </li>
+  <li>Nice discussion and motivation for Isolation Forest based approach. “Anomalies should be easier to isolate and so should have a shorter path length on average. </li>
+  <li>Need to look up reference on online isolation forest: “<a href="https://www.sciencedirect.com/science/article/pii/S1474667016314999">An Anomaly Detection Approach Based on Isolation Forest Algorithm for Streaming Data using Sliding Window</a>”</li>
+  <li>Statistical methods - estimation of probability densities. Can be quicker at inference time than clustering. </li>
+  <li>GMM’s as example approach here. But you still need to pick the number of gaussians. Bayesian GMM’s as option.</li>
+  <li>ICA application to AD is worth looking at. </li>
+  <li><a href="https://ti.arc.nasa.gov/opensource/projects/mkad/">NASA MKAD</a> seems to get a lot of mention and looks like maybe SOTA in this setting.  </li>
+  <li>PCA based motivation - if less important comps have bigger values then thats a sign of an anomaly. </li>
+  <li>Autoencoders motivation - anomalies cannot be compressed well. </li>
+  <li>Extreme Learning Machines (ELM) - some references to this - need to look it up.</li>
+  <li>Overlapping sliding windows as feature transformers. </li>
+  <li><a href="https://arxiv.org/pdf/1811.08055.pdf">MSCRED</a> encdec+conv+lstm approach. Worth looking into. </li>
+  <li>A section and discussion around cases when interpretability matters and “temporal logic based learning” that can learn signal temporal logic (STL) predicates that human domain experts can then understand. No idea what this stuff is, need to look into it. Maybe start <a href="https://ieeexplore.ieee.org/document/7500142/">here</a>. </li>
+  <li>Good discussion on a range of different applications to the aviation sector. </li>
+  <li>Still what’s actually in production a lot of the times in domain expert systems with manual thresholds.</li>
+  <li>OC-SVM seems to come up quite a bit in the paper. </li>
+  <li>Whole section on anomaly detection as a input into predictive maintenance.  </li>
+  <li>Once you have flagged anomalies maybe you can build models to look for precursor events before the anomaly. Part of discussion on temporal logic based learning. </li>
+</ul>
+
+<p><img src="images/tQUOzqhU11TLw9EIhCMFgAzutsQg25tvXbCHmitC3Zyb9qkikXVy1YAMhzngZCpqd17uhm2XOE_1Q4WyGxE3xk0AzphxFlBJrhF7esK_w0BqnI5SymGQICxrv4dpH3K1XAkkJqa5" alt="" /></p>
+
+<hr />
+
+<h2 id="anomaly-detection-in-flight-recorder-data-a-dynamic-data-driven-approach-nasa">Anomaly Detection in Flight Recorder Data: A Dynamic Data-driven Approach (NASA).</h2>
+
+<p><a href="https://pdfs.semanticscholar.org/5cf8/81d1db19834f123fcfc79ad32097aeafe17f.pdf">Link</a></p>
+
+<p>My Summary: A nice look at the different systems and approaches used in aviation. Interesting type of feature engineering proposed Symbolic Dynamic Filtering (SDF). </p>
+
+<p>Notes:</p>
+
+<ul>
+  <li>Idea: What about using SDF feature extraction and then applying point based AD algos.</li>
+  <li>SDF &gt; PCA for feature based extraction and dimensionality reduction in some of the examples they looked at. </li>
+  <li>Seems like a lot more focus on unusual patterns as opposed to just point detection in flight setting. </li>
+  <li>Lots of good references on more traditional approaches and systems used in aviation.</li>
+  <li>SDF - notions of fast scale vs slow scale time features in an interesting idea. </li>
+  <li>They used simple enough correlation based preprocessing to throw away and reduce redundant features.</li>
+  <li>Looks like they compared normalised zscores to sdf based scores. </li>
+  <li>Big question is if SDF features can efficiently be calculated in an online setting. </li>
+</ul>
+
+<hr />
+
+<h2 id="histogram-based-outlier-score-hbos-a-fast-unsupervised-anomaly-detection-algorithm">Histogram-based Outlier Score (HBOS): A fast Unsupervised Anomaly Detection Algorithm</h2>
+
+<p><a href="https://pdfs.semanticscholar.org/5cf8/81d1db19834f123fcfc79ad32097aeafe17f.pdf">Link</a></p>
+
+<p>My Summary: Very quick and crisp paper, big focus on computational efficiency and linear time of HBOS. Main downside is HBOS seems mainly univariate. </p>
+
+<p>Notes:</p>
+
+<ul>
+  <li>Linear scoring time.</li>
+  <li>But does perform poorly on local outlier problems as opposed to global ones.</li>
+  <li>Fast.</li>
+  <li>3 main categories of unsupervised AD:
+    <ul>
+      <li>Nearest Neighbour</li>
+      <li>Clustering </li>
+      <li>Statistical
+        <ul>
+          <li>Parametric
+            <ul>
+              <li>GMM</li>
+            </ul>
+          </li>
+          <li>Non-Parametric
+            <ul>
+              <li>Hist</li>
+              <li>KDE</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>Main idea - just use histograms as density estimators!</li>
+  <li>Dynamic bin’s recommended.</li>
+  <li>One problem is that it’s still just a point anomaly detector - scores a point at a time.
+    <ul>
+      <li>Maybe could get around this with post scoring smoothing or something but still a limitation.</li>
+    </ul>
+  </li>
+  <li>When and how to update the reference histogram?</li>
+  <li>Maybe with careful feature processing or grouping it could be done in multivariate setting.</li>
+  <li>Would be interesting to see how hbos compares to traditional zscore based approach.  </li>
+</ul>
+
+<hr />
+
+<h2 id="visualizing-big-data-outliers-through-distributed-aggregation-hdoutliers">Visualizing Big Data Outliers through Distributed Aggregation (HDOutliers)</h2>
+
+<p><a href="https://www.cs.uic.edu/~wilkinson/Publications/outliers.pdf">Link</a></p>
+
+<p>My Summary: Seems to have some nice properties but not clear if is suitable at all for an online setting.</p>
+
+<p>Notes:</p>
+
+<ul>
+  <li>Nice plots and discussion around boxen plots and letter-value-boxplot or dixons plot. 
+    <ul>
+      <li>IQR and traditional box plots flag way too much as outliers when data size is large, due to the ways percentiles are calculated, is an inherent property.</li>
+    </ul>
+  </li>
+  <li>Good discussion on underlying assumptions, their typical violations etc.</li>
+  <li>Typical zscore based approaches assume normality but use estimated mean and stdev from data which are very sensitive to the presence of outliers - so there is a circularity here to be careful of. Some robust extensions to this are possible.</li>
+  <li>Gaps based approach to univariate anomaly detection sound interesting. Not really applicable to multivariate data.</li>
+  <li>All seems to revolve around a normalized X vector. </li>
+  <li>Unclear on the efficiency of the inference step if any.</li>
+  <li>Mentions LOF as one of the most popular algos and does some comparisons to it.</li>
+  <li>Interesting use of parallel coords chart to explore anomalies once detected.</li>
+  <li>Non parametrics smoothers often used for time series setting, smoother as model and residuals as anomaly score. </li>
+  <li>HDOutliers does give a probability based threshold which is a nice property.    </li>
+</ul>
+
+<hr />
+
+<h2 id="anomaly-detection-for-discrete-sequences-a-survey">Anomaly Detection for Discrete Sequences: A Survey</h2>
+
+<p><a href="http://i2pc.es/coss/Docencia/SignalProcessingReviews/Chandola2012.pdf">Link</a></p>
+
+<p>My Summary: Interesting enough survey of a totally different way of potentially framing time series AD. Paper is from 2012 so a little old, but a good overview of higher level approaches in a more traditional sense.</p>
+
+<p>Notes:</p>
+
+<ul>
+  <li>We can sometimes map our anomaly detection problem into a sequence detection problem with a predefined alphabet. </li>
+  <li>There is a design choice around full sequence vs subsequence approach. </li>
+  <li>Computational complexity can be a concern if focusing on subsequences within long sequences (potential parallels to genomics in this regard).</li>
+  <li>Wide range of domains and applications - this paper tries to give a more universal overview and approach that is agnostic of domain and application specifics.</li>
+  <li>Three broad problem formulations
+    <ul>
+      <li>Entire sequence anomaly detection</li>
+      <li>Subsequence anomaly detection</li>
+      <li>Frequency lookup/reference based anomaly detection given a specific query sequence.</li>
+    </ul>
+  </li>
+  <li>Formulation 1 and 2 can be considered special cases of each other in certain circumstances. </li>
+  <li>For online time series AD we are either in 1 or 2 formulation.</li>
+  <li>If anomaly length is known in advance then this can impact design a lot (e.g. known mutation lengths in DNA for example).</li>
+  <li>Looks to me like this approach is fundamentally univariate based which could be one big drawback. </li>
+  <li>There are similarities to something like a language model and if probability for the ‘sentence’ is very small then it might be an anomaly. </li>
+  <li>Rolling window based approaches can better find localised anomalies. </li>
+  <li>Markovian and ‘model’ based approaches.</li>
+  <li>Sparse markovian approaches allow for more flexible and inexact anomaly pattern matching. </li>
+  <li>HMM approaches can be very sensitive to underlying assumptions and params.</li>
+  <li>Seems like these sequence based approaches could be useful to explore as a totally different way to attack the problem. So could not be strong enough on their own but could be useful in a more ensemble based approach. </li>
+  <li>Anomalous ‘discord’ detection within a sequence.</li>
+  <li>Mentions Hot Sax paper - must look into this. </li>
+  <li>Some talk of bitmap based representations - need to look into this. </li>
+  <li>Third approach is to ask “What is the expected frequency of this sequence pattern?”.</li>
+</ul>
+
+<hr />
+
+<h2 id="anomaly-detection-in-streams-with-extreme-value-theory-spot">Anomaly Detection in Streams with Extreme Value Theory (SPOT)</h2>
+
+<p><a href="https://hal.archives-ouvertes.fr/hal-01640325/document">Link</a></p>
+
+<p>My Summary: Very interesting paper, hbos seems to have lots of advantages as being fast and making little assumptions. Very much focused on point anomaly setting.</p>
+
+<p>Notes:</p>
+
+<ul>
+  <li>Makes no assumptions about underlying distributions.</li>
+  <li>Risk is only input parameter. </li>
+  <li>Can be used to automatically set dynamic thresholds.</li>
+  <li>Idea: would it be possible to convert contextual or collective into a point detection setting by using clever feature transformations (e.g Catch22 etc).</li>
+  <li>EVT is like a CLT type result but for extreme values.</li>
+  <li>DSPOT for non-stationary case (D for Drift).</li>
+  <li>They are working in a univariate and unimodal setting &lt;- potential limitation. </li>
+  <li>Builds on Peak Over Thresholds (POT) approach to EVT estimation.</li>
+  <li>DSPOT reacts quickly to change in stream properties. </li>
+  <li>Me: DSPOT is really comparable to zscore based approach for spike detection type setting. </li>
+  <li>They use typical taxonomy of distance based, nearest neighbour, or clustering. </li>
+  <li>Lots of interesting discussion and motivation around EVT and the nice properties it has. </li>
+  <li>Some detailed discussion on estimation approaches to EVT. </li>
+  <li>MLE as best way to estimate EVD properties. </li>
+  <li>Idea: potential to slice windows for feeding into DSPOT in non standard ways. </li>
+  <li>There is a burn in or ‘calibration’ phase that you kind of can think of an initial training step. N&gt;=1000 is their recommendation. Just not too small. </li>
+  <li>Initial threshold t = 0.98, determines initialisation. </li>
+  <li>Python3 implementation here: <a href="https://gforge.inria.fr/scm/browser.php?group_id=9388">https://gforge.inria.fr/scm/browser.php?group_id=9388</a></li>
+  <li>SPOT is robust.</li>
+  <li>Nice example application with some feature engineering around network attack setting. </li>
+  <li>Idea: using DSPOT and smoothing/preprocessing to tune various properties of the detector. </li>
+  <li>q param as a false positive regulator. Interesting ROC curve showing TPR vs FPR for different q values. </li>
+  <li>Another reference to <a href="https://www.comp-engine.org/">https://www.comp-engine.org/</a> was made.   </li>
+  <li>Curious why not preprocess to look at abs(diffs) in some of the examples they discuss. They also show evidence that this is slightly faster as opposed to bi-DSPOT.</li>
+  <li>Well worth playing around with this algo to compare to traditional zscore based approach. </li>
+  <li>Maybe implementing it at different granularities could be useful/interesting. </li>
+</ul>
+
+<hr />

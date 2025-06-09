@@ -1,0 +1,107 @@
+<figure>
+
+![](/assets/images/2020-09-29-market-basket-analysis-in-python/20170824_103648-300x225.jpg)
+
+<figcaption>
+
+An actual market basket I found in my Google photos.
+
+</figcaption>
+
+</figure>
+
+<p><strong>tl; dr;</strong> if you find yourself doing some association rule mining using <a href="http://rasbt.github.io/mlxtend/">mlxtend</a> but finding it a bit slow then checkout <a href="https://borgelt.net/pyfim.html">PyFIM</a> - <a href="https://colab.research.google.com/drive/15UunWEtO3Ga_4KAfmDOXbv0FDVv2dhWH?usp=sharing">here is a colab</a> I made to get you started.</p>
+
+<p>I have recently been looking to do some market basket analysis (“<a href="https://en.wikipedia.org/wiki/Association_rule_learning">Association rule learning</a>”) on event log type data (to find insights about what types of events tend to occur together).</p>
+
+<p>After a quick bit of Googling it seemed like the <a href="http://rasbt.github.io/mlxtend/">mlxtend</a> library was a pretty good place to start as it has some great <a href="http://rasbt.github.io/mlxtend/user_guide/frequent_patterns/apriori/#example-1-generating-frequent-itemsets">examples</a> and <a href="http://rasbt.github.io/mlxtend/user_guide/frequent_patterns/apriori/">documentation</a> as well as a pretty good community.</p>
+
+<p>However once I got my use case up and running I was finding mlxtend, while easy to use, was very slow in terms of running time. I tried to tweak a few things as best I could but still was finding it way too slow for what I would need. I was beginning to feel like my bright idea might turn out to be a dead end after all :( .</p>
+
+<p>But then I came across <a href="https://github.com/rasbt/mlxtend/issues/644">this issue</a> in the repository that seems to help explain some of the slowness and offer some glimmers of hope maybe. Slow, Slow, Java? hmm, PyFIM, 149 ms - hello!</p>
+
+<p>I’d been googling around for about a week and this was the first I had seen of <a href="https://borgelt.net/pyfim.html">PyFIM</a> which seems to be a wrapper library for a lower level C based implementation of some common itemset mining algorithms (you had me at “C wrapper” :) ).</p>
+
+<p>So hope was restored and I began to play with PyFIM - which took me about two days to get going with as the documentation, while insanely detailed, is quite old school and academic (which is probably why Google didn’t just send me there in the first place when I was originally searching around).</p>
+
+<p>And indeed it was faster, much faster.</p>
+
+<p>To hopefully save anyone else this effort I decided to bash together a quick <a href="https://colab.research.google.com/drive/15UunWEtO3Ga_4KAfmDOXbv0FDVv2dhWH?usp=sharing">Google colab notebook</a> and share it in this post.</p>
+
+<p><strong>Note</strong>: You can also see the notebook on Github <a href="https://nbviewer.jupyter.org/github/andrewm4894/colabs/blob/master/pyfim_explore.ipynb">here</a> via nbviewer.</p>
+
+<p>There is not much to the example so here is a quick walk through. You should definetly check out the docs too by using <code class="language-plaintext highlighter-rouge">??arules</code> if in jupyter or colab.</p>
+
+<p>Set up some inputs for support (<code class="language-plaintext highlighter-rouge">supp</code>), confidence (<code class="language-plaintext highlighter-rouge">conf</code>) and <code class="language-plaintext highlighter-rouge">report</code> (which will determine what metrics you get back).</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># inputs
+</span><span class="n">supp</span> <span class="o">=</span> <span class="mi">2</span> <span class="c1"># minimum support of an assoc. rule (default: 10)
+</span><span class="n">conf</span> <span class="o">=</span> <span class="mi">50</span> <span class="c1"># minimum confidence of an assoc. rule (default: 80%)
+</span><span class="n">report</span> <span class="o">=</span> <span class="s">'asC'</span>
+</code></pre></div></div>
+
+<p>Create a toy dataset of transactions to play with, in the format expected by PyFIM.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># create a toy dataset of transactions
+</span><span class="n">dataset</span> <span class="o">=</span> <span class="p">[[</span><span class="s">'Milk'</span><span class="p">,</span> <span class="s">'Onion'</span><span class="p">,</span> <span class="s">'Nutmeg'</span><span class="p">,</span> <span class="s">'Kidney Beans'</span><span class="p">,</span> <span class="s">'Eggs'</span><span class="p">,</span> <span class="s">'Yogurt'</span><span class="p">],</span>
+           <span class="p">[</span><span class="s">'Dill'</span><span class="p">,</span> <span class="s">'Onion'</span><span class="p">,</span> <span class="s">'Nutmeg'</span><span class="p">,</span> <span class="s">'Kidney Beans'</span><span class="p">,</span> <span class="s">'Eggs'</span><span class="p">,</span> <span class="s">'Yogurt'</span><span class="p">],</span>
+           <span class="p">[</span><span class="s">'Milk'</span><span class="p">,</span> <span class="s">'Apple'</span><span class="p">,</span> <span class="s">'Kidney Beans'</span><span class="p">,</span> <span class="s">'Eggs'</span><span class="p">],</span>
+           <span class="p">[</span><span class="s">'Milk'</span><span class="p">,</span> <span class="s">'Unicorn'</span><span class="p">,</span> <span class="s">'Corn'</span><span class="p">,</span> <span class="s">'Kidney Beans'</span><span class="p">,</span> <span class="s">'Yogurt'</span><span class="p">],</span>
+           <span class="p">[</span><span class="s">'Corn'</span><span class="p">,</span> <span class="s">'Onion'</span><span class="p">,</span> <span class="s">'Onion'</span><span class="p">,</span> <span class="s">'Kidney Beans'</span><span class="p">,</span> <span class="s">'Ice cream'</span><span class="p">,</span> <span class="s">'Eggs'</span><span class="p">],</span>
+           <span class="p">[</span><span class="s">'Milk'</span><span class="p">,</span> <span class="s">'Unicorn'</span><span class="p">,</span> <span class="s">'Corn'</span><span class="p">,</span> <span class="s">'Yogurt'</span><span class="p">,</span> <span class="s">'Eggs'</span><span class="p">],</span>
+           <span class="p">[</span><span class="s">'Milk'</span><span class="p">,</span> <span class="s">'Unicorn'</span><span class="p">,</span> <span class="s">'Eggs'</span><span class="p">,</span> <span class="s">'Kidney Beans'</span><span class="p">,</span> <span class="s">'Yogurt'</span><span class="p">],</span>
+           <span class="p">[</span><span class="s">'Corn'</span><span class="p">,</span> <span class="s">'Onion'</span><span class="p">,</span> <span class="s">'Onion'</span><span class="p">,</span> <span class="s">'Kidney Beans'</span><span class="p">,</span> <span class="s">'Yogurt'</span><span class="p">,</span> <span class="s">'Eggs'</span><span class="p">],</span>
+           <span class="p">[</span><span class="s">'Corn'</span><span class="p">,</span> <span class="s">'Yogurt'</span><span class="p">,</span> <span class="s">'Onion'</span><span class="p">,</span> <span class="s">'Kidney Beans'</span><span class="p">,</span> <span class="s">'Ice cream'</span><span class="p">,</span> <span class="s">'Eggs'</span><span class="p">],</span>
+           <span class="p">[</span><span class="s">'Milk'</span><span class="p">,</span> <span class="s">'Unicorn'</span><span class="p">,</span> <span class="s">'Corn'</span><span class="p">,</span> <span class="s">'Yogurt'</span><span class="p">,</span> <span class="s">'Eggs'</span><span class="p">],</span>
+           <span class="p">]</span>
+</code></pre></div></div>
+
+<p>Make a little helper dictionary to give more meaningful names of the fields you can ask for.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># make dict for nicer looking column names
+</span><span class="n">report_colnames</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">'a'</span><span class="p">:</span> <span class="s">'support_itemset_absolute'</span><span class="p">,</span>
+    <span class="s">'s'</span><span class="p">:</span> <span class="s">'support_itemset_relative'</span><span class="p">,</span>
+    <span class="s">'S'</span><span class="p">:</span> <span class="s">'support_itemset_relative_pct'</span><span class="p">,</span>
+    <span class="s">'b'</span><span class="p">:</span> <span class="s">'support_bodyset_absolute'</span><span class="p">,</span>
+    <span class="s">'x'</span><span class="p">:</span> <span class="s">'support_bodyset_relative'</span><span class="p">,</span>
+    <span class="s">'X'</span><span class="p">:</span> <span class="s">'support_bodyset_relative_pct'</span><span class="p">,</span>
+    <span class="s">'h'</span><span class="p">:</span> <span class="s">'support_headitem_absolute'</span><span class="p">,</span>
+    <span class="s">'y'</span><span class="p">:</span> <span class="s">'support_headitem_relative'</span><span class="p">,</span>
+    <span class="s">'Y'</span><span class="p">:</span> <span class="s">'support_headitem_relative_pct'</span><span class="p">,</span>
+    <span class="s">'c'</span><span class="p">:</span> <span class="s">'confidence'</span><span class="p">,</span>
+    <span class="s">'C'</span><span class="p">:</span> <span class="s">'confidence_pct'</span><span class="p">,</span>
+    <span class="s">'l'</span><span class="p">:</span> <span class="s">'lift'</span><span class="p">,</span>
+    <span class="s">'L'</span><span class="p">:</span> <span class="s">'lift_pct'</span><span class="p">,</span>
+    <span class="s">'e'</span><span class="p">:</span> <span class="s">'evaluation'</span><span class="p">,</span>
+    <span class="s">'E'</span><span class="p">:</span> <span class="s">'evaluation_pct'</span><span class="p">,</span>
+    <span class="s">'Q'</span><span class="p">:</span> <span class="s">'xx'</span><span class="p">,</span>
+    <span class="s">'S'</span><span class="p">:</span> <span class="s">'support_emptyset'</span><span class="p">,</span>
+    <span class="p">}</span>
+</code></pre></div></div>
+
+<p>Run the <code class="language-plaintext highlighter-rouge">arules</code> function on your data with your inputs.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># run apriori
+</span><span class="n">result</span> <span class="o">=</span> <span class="n">arules</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">supp</span><span class="o">=</span><span class="n">supp</span><span class="p">,</span> <span class="n">conf</span><span class="o">=</span><span class="n">conf</span><span class="p">,</span> <span class="n">report</span><span class="o">=</span><span class="n">report</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>And, as always, wrangle your results into a pretty Pandas dataframe.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># make df of results
+</span><span class="n">colnames</span> <span class="o">=</span> <span class="p">[</span><span class="s">'consequent'</span><span class="p">,</span> <span class="s">'antecedent'</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">report_colnames</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">report</span><span class="p">)]</span>
+<span class="n">df_rules</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">colnames</span><span class="p">)</span>
+<span class="n">df_rules</span> <span class="o">=</span> <span class="n">df_rules</span><span class="p">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s">'support_itemset_absolute'</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">df_rules</span><span class="p">.</span><span class="n">shape</span><span class="p">)</span>
+
+<span class="c1"># look at some higher support rules
+</span><span class="n">df_rules</span><span class="p">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>And you should see some results like below.</p>
+
+<p><img src="/assets/images/2020-09-29-market-basket-analysis-in-python/image-10.png" alt="" /></p>
+
+<p>mmmm, eggs and kidney beans and yogurt :)</p>
+
+<p><strong>Update</strong>: After more playing around it seems a huge part of the ‘slowness’ I was seeing with mlxtend (and even was also crashing pyfim - and my machine lol) was that I had some ‘baskets’ of events that had 300+ items in them and this was just blowing things up even though I was only looking at hundreds of ‘transactions’ from the event logs. Luckily for me the vast majority of these were sort of dirty data that slipped in and was safe for me to exclude. So now I’m using both mlxtend and pyfim, now next challenge will be to explain the results and concepts like support, confidence and lift to my non technical end users - fun times :)</p>

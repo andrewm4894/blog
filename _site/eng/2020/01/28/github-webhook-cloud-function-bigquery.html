@@ -1,0 +1,139 @@
+<p><img src="/assets/images/2020-01-28-github-webhook-cloud-function-bigquery/pic.jpg" alt="" /></p>
+
+<p>I have recently needed to watch and track various activities on specific github repos i’m working on, however the rest api from Gtihub can sometimes be a bit limited (for example, best i could see, if you want to get the most recent list of people who began watching your repo you need to make a lot of paginated api calls and do battle with rate limiting 💩).</p>
+
+<p>This is where <a href="https://developer.github.com/webhooks/">Github Webhooks</a> can be a very useful alternative way to trigger certain events of interest to some endpoint where you can then handle the data as you need. The use case i was interested in was triggering an event any time someone starred, unstarred, watched or forked a specific repository. I wanted to then store that info in a table in <a href="https://cloud.google.com/bigquery/">Google BigQuery</a> where it can be used to track repository activity over time for various reasons you might want (outreach to the community around the repository, or just tracking growth over time).</p>
+
+<p>After the usual few hours of googling around i landed upon the idea of having the webhook for Github send events to a <a href="https://cloud.google.com/functions/">Google Cloud Function</a>, from there my cloud function can process and append the data onto a BigQuery table. To make developing and maintaining the cloud function easy i used <a href="https://serverless.com/">Serverless</a> and built on <a href="https://serverless.com/examples/google-python-simple-http-endpoint/">this example</a> in particular.</p>
+
+<p>p.s. i also found <a href="https://github.com/carlos-jenkins/python-github-webhooks">this repository</a> very useful as well as <a href="https://github.com/bloomberg/python-github-webhook">this one</a> from Bloomberg. Also i think you could maybe get something similar done without any code using something like <a href="https://zapier.com/apps/github/integrations/webhook">Zapier</a> (although i don’t think they have all the Github Webhook events available).</p>
+
+<p>p.p.s all the code is in <a href="https://github.com/andrewm4894/cloud-functions/tree/master/handle-github-events">this repo</a>.</p>
+
+<h2 id="step-1---serverless">Step 1 - Serverless</h2>
+
+<p>We start by leveraging <a href="https://serverless.com/examples/google-python-simple-http-endpoint/">this Serverless example</a> to create the bare bones structure for our cloud function.</p>
+
+<p>In a folder where we want the code to live we run the below to install Serverless if needed, and pull down the <em>google-python-simple-http-endpoint</em> template and save it into a new Serverless project called <em>handle-github-events</em>.</p>
+
+<p>https://gist.github.com/andrewm4894/46d292132ed99d99937e3e3558fb78d3</p>
+
+<p>The approach i am taking also depends on using a .env file to handle secrets and enviornmental variables so we also need to install the <a href="https://serverless.com/plugins/serverless-dotenv-plugin/">serverless-dotenv-plugin</a>, and run npm install for everything else we need.</p>
+
+<p>https://gist.github.com/andrewm4894/ba719ffb96218c18337f9b0d41487c18</p>
+
+<h2 id="step-2---cloud-function">Step 2 - Cloud Function</h2>
+
+<p>Once we have the bare bones serverless template in place we can build on it to create the function we want for handling incoming requests from the Github webhook. All the code is in <a href="https://github.com/andrewm4894/cloud-functions/tree/master/handle-github-events">this repository</a> and i’ll walk through the main points below.</p>
+
+<p>The core of what we want to do in our Cloud function is in <a href="https://github.com/andrewm4894/cloud-functions/blob/master/handle-github-events/main.py">main.py</a>. What it tries to do is:</p>
+
+<ol>
+  <li>Validate that the request is coming from a known Github ip address.</li>
+  <li>Validate that the hashed secret key stored in Github when you create your webhook matches what is expected by the cloud function as pulled from the GITHUB_WEBHOOK_SECRET environment variable.</li>
+  <li>Parse the json received from the Github request and append it to a table somewhere in BigQuery.</li>
+  <li>Return as the response to Github some info about the event.</li>
+</ol>
+
+<p>https://gist.github.com/andrewm4894/6e3b6d1a7c9ba185d685ca98bb59f5b5</p>
+
+<p>Our serverless.yml file looks like below. Note that it is pulling environment variables required for serverless to deploy from a .env file you would need to create yourself (<a href="https://github.com/andrewm4894/cloud-functions/blob/master/handle-github-events/.env.example">here</a> is an example in the repo).</p>
+
+<p>https://gist.github.com/andrewm4894/b465ec54dc1aa09f5a32132f5ad8528a</p>
+
+<h2 id="step-3---deploy">Step 3 - Deploy</h2>
+
+<p>Once we are ready we run `serverless deploy` and if all goes well see output like below:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt;serverless deploy -v
+Serverless: DOTENV: Loading environment variables from .env:
+Serverless:      - GITHUB_WEBHOOK_SECRET
+Serverless:      - GCP_KEY_FILE
+Serverless:      - GCP_PROJECT_NAME
+Serverless:      - GCP_REGION_NAME
+Serverless:      - BQ_DATASET_NAME
+Serverless:      - BQ_TABLE_NAME
+Serverless:      - BQ_IF_EXISTS
+Serverless: Packaging service...
+Serverless: Excluding development dependencies...
+Serverless: Compiling function "github_event"...
+Serverless: Uploading artifacts...
+Serverless: Artifacts successfully uploaded...
+Serverless: Updating deployment...
+Serverless: Checking deployment update progress...
+....................
+Serverless: Done...
+Service Information
+service: handle-github-events
+project: &lt;your project name will be here&gt;
+stage: dev
+region: &lt;your region will be here&gt;
+
+Deployed functions
+github_event
+  https://&lt;your-region&gt;-&lt;your-project-name&gt;.cloudfunctions.net/github_event
+
+Serverless: Removing old artifacts...
+</code></pre></div></div>
+
+<p>Now you should have a cloud function alive at some url like <a href="https://-.cloudfunctions.net/github_event">https://your-region-your-project-name.cloudfunctions.net/github_event</a>.</p>
+
+<h2 id="step-4---github-webhook">Step 4 - Github Webhook</h2>
+
+<p>Once your function is deployed (or in reality you might make the Gtibhub webhook first and then iterate on the function to get it doing what you want) you can create and test Github Webhook you want to send events from.</p>
+
+<p>In my case and for this post i’m going to add the webhook to my <a href="https://github.com/andrewm4894/random">andrewm4894/random</a> repository for illustration. Payload URL is the url of the cloud function we created and Secret should be the same string you are storing in your .env file as “GITHUB_WEBHOOK_SECRET”.</p>
+
+<p><img src="/assets/images/2020-01-28-github-webhook-cloud-function-bigquery/webhook1.jpg" alt="" /></p>
+
+<p>Check whatever events you want to trigger on - i’m my case it was star, watch and fork events (Note: the function might not work if you were to send all events or different events - you would just need to adapt it accordingly).</p>
+
+<p><img src="/assets/images/2020-01-28-github-webhook-cloud-function-bigquery/webhook2.jpg" alt="" /></p>
+
+<h2 id="fingers-crossed">Fingers Crossed</h2>
+
+<p>Now we can try see if it works by triggering some events. In this example i logged on as a second username i have and pressed some star, watch, and fork buttons to see what happened.</p>
+
+<p>You can see recent triggers of the webhook in Github and this can be very useful for debugging things and while developing.</p>
+
+<figure>
+
+![](/assets/images/2020-01-28-github-webhook-cloud-function-bigquery/example_request.jpg)
+
+<figcaption>
+
+An example request sent to the cloud function.
+
+</figcaption>
+
+</figure>
+
+<p>And you can also see the response received from the cloud function. In this case showing that “andrewm4894netdata” (my other user) deleted a star from the “andrewm4894/random” repository 😔.</p>
+
+<figure>
+
+![](/assets/images/2020-01-28-github-webhook-cloud-function-bigquery/example_response.jpg)
+
+<figcaption>
+
+Example response back from our cloud function.
+
+</figcaption>
+
+</figure>
+
+<p>And then finally we can see the stored events in our table in BigQuery:</p>
+
+<figure>
+
+![](/assets/images/2020-01-28-github-webhook-cloud-function-bigquery/bq.jpg)
+
+<figcaption>
+
+We have the data!!
+
+</figcaption>
+
+</figure>
+
+<p>And that’s it! We have our Github Webhook sending events to our Google Cloud Function which is in turn appending them onto a daily table in BigQuery. Go Webhooks!</p>

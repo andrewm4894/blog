@@ -1,0 +1,93 @@
+<p><img src="/assets/images/2020-10-15-numpy-feature-engineering-2x-speed-up-over-pandas/Annotation-2020-10-15-133235.jpg" alt="" /></p>
+
+<h2 id="the-setup">The Setup</h2>
+
+<p>This is a little one I was surprised to see. Recently I had a need to do some pretty basic feature engineering to a pandas dataframe prior to training some models. Basically I needed to take differences of each column, apply some smoothing, and then add a number of lagged columns for each feature.</p>
+
+<p>The beauty of pandas is that this took me about 5 minutes to bash together and is really clear for anyone else to read who may pick up the code later.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">make_features_pd</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">lags_n</span><span class="p">,</span> <span class="n">diffs_n</span><span class="p">,</span> <span class="n">smooth_n</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">diffs_n</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="n">diff</span><span class="p">(</span><span class="n">diffs_n</span><span class="p">).</span><span class="n">dropna</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">smooth_n</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="n">rolling</span><span class="p">(</span><span class="n">smooth_n</span><span class="p">).</span><span class="n">mean</span><span class="p">().</span><span class="n">dropna</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">lags_n</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df</span><span class="p">.</span><span class="n">shift</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">lags_n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">).</span><span class="n">dropna</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">df</span>
+</code></pre></div></div>
+
+<p>Basically three lines of code, very clear and straightforward, job done and move on.</p>
+
+<p>However the particular application I was using this for has some sensitivities around performance (is related to some monitoring functionality and so should try to be as lightweight as possible). So I decided to see if I could re-implement my “make_features” function in <a href="https://numpy.org/">Numpy</a> and if that would give me any performance gains (as we all love Numpy don’t we?….don’t we :) ).</p>
+
+<p>I settled in for what turned out to be a whole evening of googling around to try various approaches in Numpy.</p>
+
+<p><strong>Side note</strong>: I hate using numpy and probably only really understand about 50% of the things I’ve ever done with it. I actually find it one of the most unintuitive things I’ve ever worked with and am now comfortable enough in my own skin to put this out there.</p>
+
+<p>Anyway, below is what I ended up with (again after quite a lot of googling, which I am very good at :) ) - nice, clean, unintuitive and not very legible - I must be onto something.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">make_features_np</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">lags_n</span><span class="p">,</span> <span class="n">diffs_n</span><span class="p">,</span> <span class="n">smooth_n</span><span class="p">,</span> <span class="n">colnames</span><span class="p">):</span>
+    
+    <span class="k">def</span> <span class="nf">lag</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+        <span class="n">res</span><span class="p">[:</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">nan</span>
+        <span class="n">res</span><span class="p">[</span><span class="n">n</span><span class="p">:]</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[:</span><span class="o">-</span><span class="n">n</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">res</span>
+    
+    <span class="k">if</span> <span class="n">diffs_n</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">diff</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">diffs_n</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">arr</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="o">~</span><span class="n">np</span><span class="p">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">arr</span><span class="p">).</span><span class="nb">any</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)]</span>
+
+    <span class="k">if</span> <span class="n">smooth_n</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">arr</span><span class="p">[</span><span class="n">smooth_n</span><span class="p">:]</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="n">smooth_n</span><span class="p">:]</span> <span class="o">-</span> <span class="n">arr</span><span class="p">[:</span><span class="o">-</span><span class="n">smooth_n</span><span class="p">]</span>
+        <span class="n">arr</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="n">smooth_n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:]</span> <span class="o">/</span> <span class="n">smooth_n</span>
+
+    <span class="k">if</span> <span class="n">lags_n</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">colnames</span> <span class="o">=</span> <span class="n">colnames</span> <span class="o">+</span> <span class="p">[</span><span class="sa">f</span><span class="s">'</span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s">_lag</span><span class="si">{</span><span class="n">lag</span><span class="si">}</span><span class="s">'</span> <span class="k">for</span> <span class="n">lag</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">lags_n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">colnames</span><span class="p">]</span>
+        <span class="n">arr_orig</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">copy</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">lag_n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">lags_n</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">arr</span><span class="p">,</span> <span class="n">lag</span><span class="p">(</span><span class="n">arr_orig</span><span class="p">,</span> <span class="n">lag_n</span><span class="p">)),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">arr</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="o">~</span><span class="n">np</span><span class="p">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">arr</span><span class="p">).</span><span class="nb">any</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)]</span>
+
+    <span class="k">return</span> <span class="n">colnames</span><span class="p">,</span> <span class="n">arr</span>
+</code></pre></div></div>
+
+<h2 id="the-results">The Results</h2>
+
+<p>So I generated a little toy example dataset to see if my evening had been wasted or not.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+
+<span class="c1"># input params
+</span><span class="n">n_rows</span> <span class="o">=</span> <span class="mi">10000</span>
+<span class="n">n_cols</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">lags_n</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">smooth_n</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">diffs_n</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="c1"># make some data
+</span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">rand</span><span class="p">(</span><span class="n">n_rows</span><span class="p">,</span><span class="n">n_cols</span><span class="p">),</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s">'col_</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s">'</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">n_cols</span><span class="o">+</span><span class="mi">1</span><span class="p">)])</span>
+<span class="n">arr</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="n">values</span>
+<span class="n">colnames</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="p">.</span><span class="n">columns</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">df</span><span class="p">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">df</span><span class="p">.</span><span class="n">head</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p><img src="/assets/images/2020-10-15-numpy-feature-engineering-2x-speed-up-over-pandas/image.png" alt="" /></p>
+
+<p>Now some <code class="language-plaintext highlighter-rouge">%%timeit</code> magic and we shall see…</p>
+
+<p><img src="/assets/images/2020-10-15-numpy-feature-engineering-2x-speed-up-over-pandas/image-1.png" alt="" /></p>
+
+<p>And there we have it - a <strong>2.09x speed up!</strong> I’ll take that for the sake of an evening off from Netflix (was an easy sell anyway as my wife is currently knee deep in re-watching Glee).</p>
+
+<p><a href="https://colab.research.google.com/drive/1HaMrCM9v-HokL-AohEriHrszAmvpRoSh?usp=sharing">Here</a> is a Google Colab with all the code.</p>
+
+<p>Now I just need to figure out how to easily pull the columns for each feature from the Numpy array by name :)</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">get_array_cols</span><span class="p">(</span><span class="n">startswith</span><span class="p">,</span> <span class="n">colnames</span><span class="p">,</span> <span class="n">arr</span><span class="p">):</span>
+        <span class="n">cols_idx</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">colnames</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span><span class="p">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">startswith</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="n">arr</span><span class="p">[:,</span><span class="n">cols_idx</span><span class="p">]</span>
+</code></pre></div></div>

@@ -1,0 +1,147 @@
+<p><img src="/assets/images/2020-09-03-time-series-clustering-with-tslearn/image-9-1024x411.png" alt="" /></p>
+
+<p>I’ve recently been playing around with some time series clustering tasks and came across the <a href="https://tslearn.readthedocs.io/en/stable/index.html">tslearn</a> library. I was interested in seeing how easy it would be to get up and running some of the <a href="https://tslearn.readthedocs.io/en/stable/gen_modules/tslearn.clustering.html#module-tslearn.clustering">clustering</a> functionality that is already built into tslearn, turns out it was quite easy and straight forward, perfect blog post fodder :)</p>
+
+<p><strong>tl;dr</strong> <a href="https://colab.research.google.com/drive/1ngpyXDYcDfbaVu_TVhalUuGsoDRqQJa8?usp=sharing">here</a> is a Google Colab notebook you can just copy, run and play with for yourself.</p>
+
+<p>First lets import the libraries we will need:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">from</span> <span class="nn">tslearn.clustering</span> <span class="kn">import</span> <span class="n">TimeSeriesKMeans</span><span class="p">,</span> <span class="n">KShape</span><span class="p">,</span> <span class="n">KernelKMeans</span>
+<span class="kn">from</span> <span class="nn">tslearn.preprocessing</span> <span class="kn">import</span> <span class="n">TimeSeriesScalerMeanVariance</span>
+<span class="kn">from</span> <span class="nn">netdata_pandas.data</span> <span class="kn">import</span> <span class="n">get_data</span><span class="p">,</span> <span class="n">get_chart_list</span>
+<span class="kn">from</span> <span class="nn">am4894plots.plots</span> <span class="kn">import</span> <span class="n">plot_lines</span><span class="p">,</span> <span class="n">plot_lines_grid</span>
+</code></pre></div></div>
+
+<p><a href="https://netdata.github.io/netdata-pandas/">netdata_pandas</a> is a helper library i created to pull some time series data from servers running <a href="https://www.netdata.cloud/">Netdata</a> (where i work) into a pandas dataframe. In this example we will use a demo server, <a href="http://london.my-netdata.io/">http://london.my-netdata.io/</a>, so as to have somewhat realistic (messy) time series data.</p>
+
+<p><a href="https://am4894plots.readthedocs.io/en/latest/">am4894plots</a> is another library i made for myself that i add common plotting functionality i find myself returning to time and time again (because i never really ‘learned’ matplotlib and at this stage refuse to!).</p>
+
+<p>Lets define our inputs, basically anything that is something we can play with and change is worth adding as an input at top of the notebook:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># inputs
+</span><span class="n">host</span> <span class="o">=</span> <span class="s">'london.my-netdata.io'</span> <span class="c1"># host running netdata that we want to pull data from
+</span><span class="n">n</span> <span class="o">=</span> <span class="mi">60</span><span class="o">*</span><span class="mi">5</span> <span class="c1"># how many seconds of most recent data to pull
+</span><span class="n">n_charts</span> <span class="o">=</span> <span class="bp">None</span> <span class="c1"># If None then pull data for all charts otherwise sample n_charts randomly
+</span><span class="n">n_clusters</span> <span class="o">=</span> <span class="mi">50</span> <span class="c1"># number of clusters to fit
+</span><span class="n">diff</span> <span class="o">=</span> <span class="bp">False</span> <span class="c1"># take diffs of the data or not
+</span><span class="n">preprocessing_meanvar</span> <span class="o">=</span> <span class="bp">False</span> <span class="c1"># True to use TimeSeriesScalerMeanVariance preprocessing
+</span><span class="n">smooth_n</span> <span class="o">=</span> <span class="mi">15</span> <span class="c1"># n observations to smooth over
+</span><span class="n">smooth_func</span> <span class="o">=</span> <span class="s">'mean'</span> <span class="c1"># one of ['mean','min','max','sum']
+</span><span class="n">norm</span> <span class="o">=</span> <span class="bp">True</span> <span class="c1"># normalize the data to 0-1 range
+</span><span class="n">model</span> <span class="o">=</span> <span class="s">'kmeans'</span> <span class="c1"># one of ['kmeans','kshape','kernelkmeans','dtw']
+</span></code></pre></div></div>
+
+<p>Next we will get our data and do some fairly standard pre-processing:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># get charts
+</span><span class="k">if</span> <span class="n">n_charts</span><span class="p">:</span>
+    <span class="n">charts</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">choice</span><span class="p">(</span><span class="n">get_chart_list</span><span class="p">(</span><span class="n">host</span><span class="p">),</span> <span class="n">n_charts</span><span class="p">).</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">charts</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">charts</span> <span class="o">=</span> <span class="n">get_chart_list</span><span class="p">(</span><span class="n">host</span><span class="p">)</span>
+<span class="c1"># get data
+</span><span class="n">df</span> <span class="o">=</span> <span class="n">get_data</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">charts</span><span class="p">,</span> <span class="n">after</span><span class="o">=-</span><span class="n">n</span><span class="p">,</span> <span class="n">before</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="c1"># remove duplicate columns that we might get from get_data()
+</span><span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="n">loc</span><span class="p">[:,</span><span class="o">~</span><span class="n">df</span><span class="p">.</span><span class="n">columns</span><span class="p">.</span><span class="n">duplicated</span><span class="p">()]</span>
+<span class="c1"># drop any empty columns (it can happen)
+</span><span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s">'all'</span><span class="p">)</span>
+<span class="c1"># forward fill and backward fill to try remove any N/A values
+</span><span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="n">ffill</span><span class="p">().</span><span class="n">bfill</span><span class="p">()</span>
+<span class="c1"># take differences if specified
+</span><span class="k">if</span> <span class="n">diff</span><span class="p">:</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="n">diff</span><span class="p">()</span>
+<span class="c1"># do any smoothing as specified
+</span><span class="k">if</span> <span class="n">smooth_n</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">smooth_func</span> <span class="o">==</span> <span class="s">'mean'</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="n">rolling</span><span class="p">(</span><span class="n">smooth_n</span><span class="p">).</span><span class="n">mean</span><span class="p">().</span><span class="n">dropna</span><span class="p">(</span><span class="n">how</span><span class="o">=</span><span class="s">'all'</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">smooth_func</span> <span class="o">==</span> <span class="s">'max'</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="n">rolling</span><span class="p">(</span><span class="n">smooth_n</span><span class="p">).</span><span class="nb">max</span><span class="p">().</span><span class="n">dropna</span><span class="p">(</span><span class="n">how</span><span class="o">=</span><span class="s">'all'</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">smooth_func</span> <span class="o">==</span> <span class="s">'min'</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="n">rolling</span><span class="p">(</span><span class="n">smooth_n</span><span class="p">).</span><span class="nb">min</span><span class="p">().</span><span class="n">dropna</span><span class="p">(</span><span class="n">how</span><span class="o">=</span><span class="s">'all'</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">smooth_func</span> <span class="o">==</span> <span class="s">'sum'</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="n">rolling</span><span class="p">(</span><span class="n">smooth_n</span><span class="p">).</span><span class="nb">sum</span><span class="p">().</span><span class="n">dropna</span><span class="p">(</span><span class="n">how</span><span class="o">=</span><span class="s">'all'</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="n">rolling</span><span class="p">(</span><span class="n">smooth_n</span><span class="p">).</span><span class="n">mean</span><span class="p">().</span><span class="n">dropna</span><span class="p">(</span><span class="n">how</span><span class="o">=</span><span class="s">'all'</span><span class="p">)</span>
+<span class="c1"># normalize the data if specified
+</span><span class="k">if</span> <span class="n">norm</span><span class="p">:</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="p">(</span><span class="n">df</span><span class="o">-</span><span class="n">df</span><span class="p">.</span><span class="nb">min</span><span class="p">())</span><span class="o">/</span><span class="p">(</span><span class="n">df</span><span class="p">.</span><span class="nb">max</span><span class="p">()</span><span class="o">-</span><span class="n">df</span><span class="p">.</span><span class="nb">min</span><span class="p">())</span>
+<span class="c1"># drop any empty columns that may remain
+</span><span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s">'all'</span><span class="p">)</span>
+<span class="c1"># set index to be a datetime for better plotting later
+</span><span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">pd</span><span class="p">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">.</span><span class="n">index</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s">'s'</span><span class="p">))</span>
+
+<span class="c1"># look at our data
+</span><span class="k">print</span><span class="p">(</span><span class="n">df</span><span class="p">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">df</span><span class="p">.</span><span class="n">head</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>Now time to build our clustering model using tslearn (there is a few more parameters here we probably should have added as separate inputs but not to worry):</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># get values to cluster on
+</span><span class="n">X</span> <span class="o">=</span> <span class="n">df</span><span class="p">.</span><span class="n">transpose</span><span class="p">().</span><span class="n">values</span>
+<span class="k">if</span> <span class="n">preprocessing_meanvar</span><span class="p">:</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">TimeSeriesScalerMeanVariance</span><span class="p">().</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">X</span><span class="p">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">df</span><span class="p">.</span><span class="n">shape</span><span class="p">),</span> <span class="n">columns</span><span class="o">=</span><span class="n">df</span><span class="p">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">df</span><span class="p">.</span><span class="n">index</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">model</span> <span class="o">==</span> <span class="s">'kshape'</span><span class="p">:</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">KShape</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="n">n_clusters</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">n_init</span><span class="o">=</span><span class="mi">2</span><span class="p">).</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="k">elif</span> <span class="n">model</span> <span class="o">==</span> <span class="s">'kmeans'</span><span class="p">:</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">TimeSeriesKMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="n">n_clusters</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s">"euclidean"</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">n_init</span><span class="o">=</span><span class="mi">2</span><span class="p">).</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="k">elif</span> <span class="n">model</span> <span class="o">==</span> <span class="s">'dtw'</span><span class="p">:</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">TimeSeriesKMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="n">n_clusters</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s">"dtw"</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">n_init</span><span class="o">=</span><span class="mi">2</span><span class="p">).</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="k">elif</span> <span class="n">model</span> <span class="o">==</span> <span class="s">'kernelkmeans'</span><span class="p">:</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">KernelKMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="n">n_clusters</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="s">"gak"</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">n_init</span><span class="o">=</span><span class="mi">2</span><span class="p">).</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">TimeSeriesKMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="n">n_clusters</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s">"euclidean"</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">n_init</span><span class="o">=</span><span class="mi">2</span><span class="p">).</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Once we have our clusters we can make some helper objects to use later:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># build helper df to map metrics to their cluster labels
+</span><span class="n">df_cluster</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">df</span><span class="p">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">model</span><span class="p">.</span><span class="n">labels_</span><span class="p">)),</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s">'metric'</span><span class="p">,</span> <span class="s">'cluster'</span><span class="p">])</span>
+
+<span class="c1"># make some helper dictionaries and lists
+</span><span class="n">cluster_metrics_dict</span> <span class="o">=</span> <span class="n">df_cluster</span><span class="p">.</span><span class="n">groupby</span><span class="p">([</span><span class="s">'cluster'</span><span class="p">])[</span><span class="s">'metric'</span><span class="p">].</span><span class="nb">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]).</span><span class="n">to_dict</span><span class="p">()</span>
+<span class="n">cluster_len_dict</span> <span class="o">=</span> <span class="n">df_cluster</span><span class="p">[</span><span class="s">'cluster'</span><span class="p">].</span><span class="n">value_counts</span><span class="p">().</span><span class="n">to_dict</span><span class="p">()</span>
+<span class="n">clusters_dropped</span> <span class="o">=</span> <span class="p">[</span><span class="n">cluster</span> <span class="k">for</span> <span class="n">cluster</span> <span class="ow">in</span> <span class="n">cluster_len_dict</span> <span class="k">if</span> <span class="n">cluster_len_dict</span><span class="p">[</span><span class="n">cluster</span><span class="p">]</span><span class="o">==</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">clusters_final</span> <span class="o">=</span> <span class="p">[</span><span class="n">cluster</span> <span class="k">for</span> <span class="n">cluster</span> <span class="ow">in</span> <span class="n">cluster_len_dict</span> <span class="k">if</span> <span class="n">cluster_len_dict</span><span class="p">[</span><span class="n">cluster</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">clusters_final</span><span class="p">.</span><span class="n">sort</span><span class="p">()</span>
+
+<span class="n">df_cluster</span><span class="p">.</span><span class="n">head</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>Finally, the fun part, lets plot each cluster separately and see what we have:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span> <span class="n">cluster_number</span> <span class="ow">in</span> <span class="n">clusters_final</span><span class="p">:</span>
+    <span class="c1"># get a rough quality score based on the correlation between metrics in the cluster
+</span>    <span class="n">x_corr</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">cluster_metrics_dict</span><span class="p">[</span><span class="n">cluster_number</span><span class="p">]].</span><span class="n">corr</span><span class="p">().</span><span class="nb">abs</span><span class="p">().</span><span class="n">values</span>
+    <span class="n">x_corr_mean</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">x_corr</span><span class="p">[</span><span class="n">np</span><span class="p">.</span><span class="n">triu_indices</span><span class="p">(</span><span class="n">x_corr</span><span class="p">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">1</span><span class="p">)].</span><span class="n">mean</span><span class="p">(),</span><span class="mi">2</span><span class="p">)</span>
+    <span class="c1"># plot each cluster
+</span>    <span class="n">plot_title</span> <span class="o">=</span> <span class="sa">f</span><span class="s">'cluster </span><span class="si">{</span><span class="n">cluster_number</span><span class="si">}</span><span class="s"> (quality=</span><span class="si">{</span><span class="n">x_corr_mean</span><span class="si">}</span><span class="s">, n=</span><span class="si">{</span><span class="n">cluster_len_dict</span><span class="p">[</span><span class="n">cluster_number</span><span class="p">]</span><span class="si">}</span><span class="s">)'</span>
+    <span class="n">plot_lines</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="n">cluster_metrics_dict</span><span class="p">[</span><span class="n">cluster_number</span><span class="p">],</span> <span class="n">renderer</span><span class="o">=</span><span class="s">'colab'</span><span class="p">,</span> <span class="n">theme</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">plot_title</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Here are some good examples:</p>
+
+<p><img src="/assets/images/2020-09-03-time-series-clustering-with-tslearn/image-1024x409.png" alt="" /></p>
+
+<p><img src="/assets/images/2020-09-03-time-series-clustering-with-tslearn/image-1-1024x411.png" alt="" /></p>
+
+<p><img src="/assets/images/2020-09-03-time-series-clustering-with-tslearn/image-2-1024x409.png" alt="" /></p>
+
+<p><img src="/assets/images/2020-09-03-time-series-clustering-with-tslearn/image-6-1024x415.png" alt="" /></p>
+
+<p><img src="/assets/images/2020-09-03-time-series-clustering-with-tslearn/image-7-1024x422.png" alt="" /></p>
+
+<p>And some not so good ones:</p>
+
+<p><img src="/assets/images/2020-09-03-time-series-clustering-with-tslearn/image-3-1024x425.png" alt="" /></p>
+
+<p><img src="/assets/images/2020-09-03-time-series-clustering-with-tslearn/image-4-1024x419.png" alt="" /></p>
+
+<p><img src="/assets/images/2020-09-03-time-series-clustering-with-tslearn/image-8-1024x383.png" alt="" /></p>
+
+<p>As is typical with clustering you are always going to get some pretty bad random looking ones, especially since i have really just picked a lot of the parameters above off the top of my head, most importantly k the number of clusters which i set to 50 given the high number of metrics we had (over 700).</p>
+
+<p>All in all, i found the tslearn library very useful as it saved me quite a bit of time to get a quick working prototype up and running so i’m looking forward to also playing with some of the other time series related functionality it offers.</p>

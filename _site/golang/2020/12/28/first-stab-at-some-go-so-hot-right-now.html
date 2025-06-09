@@ -1,0 +1,128 @@
+<p>It may be a combination of starting to go stir crazy over the Christmas break and some self loathing at the amount of FIFA i’ve been playing that’s driven me to finally start learning some Go for a few data science and machine learning related projects i’m working on where it offers unique advantages.</p>
+
+<p>(In reality, the final straw here was a long discussion with an SRE colleague who explained to me how much easier it would be for us to ship the ML code in Go vs Python which should, for our project, ultimately make it easier for people to adopt and use the ML powered features - which is really what i’m most interested in, even if i may not yet have as many fancy ML models and libraries to leverage in Go).</p>
+
+<p>So the first step of my journey is actually pulling the data (using asynchronous goroutines - like i said, so hot right now) i need from a list of api endpoints and basically shoving it into the equivalent of a <a href="https://pandas.pydata.org/">Pandas</a> dataframe in Go.</p>
+
+<p>I am using the <a href="https://github.com/go-gota/gota">Gota</a> package, but there is also a few others you can see <a href="https://github.com/avelino/awesome-go#data-structures">here</a>.</p>
+
+<p>So after a bit of searching around and some YouTube videos below is a verbosely commented version of what i have that i think is a decent enough starting point for now (would appreciate any tips if you know Go and have any suggestions).</p>
+
+<p>I think i might actually quite like this Go malarky, or at least continue learning it to make me feel like the hipster i really wish i was.</p>
+
+<p>p.s. I will probably make some more posts as I learn more.</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span><span class="err"> </span><span class="n">main</span>
+
+<span class="k">import</span><span class="err"> </span><span class="p">(</span>
+<span class="err">    </span><span class="s">"fmt"</span>
+<span class="err">    </span><span class="s">"io/ioutil"</span>
+<span class="err">    </span><span class="s">"net/http"</span>
+<span class="err">    </span><span class="s">"regexp"</span>
+<span class="err">    </span><span class="s">"strings"</span>
+<span class="err">    </span><span class="s">"sync"</span>
+
+<span class="err">    </span><span class="s">"github.com/go-gota/gota/dataframe"</span>
+<span class="p">)</span>
+
+<span class="c">// Create a wait group</span>
+<span class="k">var</span><span class="err"> </span><span class="n">wg</span><span class="err"> </span><span class="n">sync</span><span class="o">.</span><span class="n">WaitGroup</span>
+
+<span class="c">// Get api response (expects format=csv) and make a dataframe from it</span>
+<span class="k">func</span><span class="err"> </span><span class="n">getDf</span><span class="p">(</span><span class="n">url</span><span class="err"> </span><span class="kt">string</span><span class="p">,</span><span class="err"> </span><span class="n">c</span><span class="err"> </span><span class="k">chan</span><span class="err"> </span><span class="n">dataframe</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span><span class="err"> </span><span class="p">{</span>
+
+<span class="err">    </span><span class="c">// Need to make sure we tell wait group we done</span>
+<span class="err">    </span><span class="k">defer</span><span class="err"> </span><span class="n">wg</span><span class="o">.</span><span class="n">Done</span><span class="p">()</span>
+
+<span class="err">    </span><span class="c">// Pull chart name from the url</span>
+<span class="err">    </span><span class="n">re</span><span class="err"> </span><span class="o">:=</span><span class="err"> </span><span class="n">regexp</span><span class="o">.</span><span class="n">MustCompile</span><span class="p">(</span><span class="s">"chart=(.*?)&amp;"</span><span class="p">)</span>
+<span class="err">    </span><span class="n">match</span><span class="err"> </span><span class="o">:=</span><span class="err"> </span><span class="n">re</span><span class="o">.</span><span class="n">FindStringSubmatch</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="err">    </span><span class="n">chart</span><span class="err"> </span><span class="o">:=</span><span class="err"> </span><span class="n">match</span><span class="p">[</span><span class="m">1</span><span class="p">]</span>
+<span class="err">    </span><span class="n">resp</span><span class="p">,</span><span class="err"> </span><span class="n">_</span><span class="err"> </span><span class="o">:=</span><span class="err"> </span><span class="n">http</span><span class="o">.</span><span class="n">Get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+<span class="err">    </span><span class="c">// Get body as string for ReadCSV</span>
+<span class="err">    </span><span class="n">bodyBytes</span><span class="p">,</span><span class="err"> </span><span class="n">_</span><span class="err"> </span><span class="o">:=</span><span class="err"> </span><span class="n">ioutil</span><span class="o">.</span><span class="n">ReadAll</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">Body</span><span class="p">)</span>
+<span class="err">    </span><span class="n">bodyString</span><span class="err"> </span><span class="o">:=</span><span class="err"> </span><span class="kt">string</span><span class="p">(</span><span class="n">bodyBytes</span><span class="p">)</span>
+<span class="err">    </span><span class="n">df</span><span class="err"> </span><span class="o">:=</span><span class="err"> </span><span class="n">dataframe</span><span class="o">.</span><span class="n">ReadCSV</span><span class="p">(</span><span class="n">strings</span><span class="o">.</span><span class="n">NewReader</span><span class="p">(</span><span class="n">bodyString</span><span class="p">))</span>
+
+<span class="err">    </span><span class="c">// Add chart suffix to each col name</span>
+<span class="err">    </span><span class="c">// (ignore first col which should be "time" and used for joins later)</span>
+<span class="err">    </span><span class="n">colnames</span><span class="err"> </span><span class="o">:=</span><span class="err"> </span><span class="n">df</span><span class="o">.</span><span class="n">Names</span><span class="p">()</span>
+<span class="err">    </span><span class="k">for</span><span class="err"> </span><span class="n">i</span><span class="p">,</span><span class="err"> </span><span class="n">colname</span><span class="err"> </span><span class="o">:=</span><span class="err"> </span><span class="k">range</span><span class="err"> </span><span class="n">colnames</span><span class="err"> </span><span class="p">{</span>
+<span class="err">        </span><span class="k">if</span><span class="err"> </span><span class="n">i</span><span class="err"> </span><span class="o">!=</span><span class="err"> </span><span class="m">0</span><span class="err"> </span><span class="p">{</span>
+<span class="err">            </span><span class="n">df</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">df</span><span class="o">.</span><span class="n">Rename</span><span class="p">(</span><span class="n">chart</span><span class="o">+</span><span class="s">"|"</span><span class="o">+</span><span class="n">colname</span><span class="p">,</span><span class="err"> </span><span class="n">colname</span><span class="p">)</span>
+<span class="err">        </span><span class="p">}</span>
+<span class="err">    </span><span class="p">}</span>
+
+<span class="err">    </span><span class="c">// send df to channel</span>
+<span class="err">    </span><span class="n">c</span><span class="err"> </span><span class="o">&lt;-</span><span class="err"> </span><span class="n">df</span>
+
+<span class="p">}</span>
+
+<span class="k">func</span><span class="err"> </span><span class="n">main</span><span class="p">()</span><span class="err"> </span><span class="p">{</span>
+
+<span class="err">    </span><span class="c">// Define a list of api calls we want data from</span>
+<span class="err">    </span><span class="c">// In this example we have an api call for each chart data we want in our df</span>
+<span class="err">    </span><span class="n">urls</span><span class="err"> </span><span class="o">:=</span><span class="err"> </span><span class="p">[]</span><span class="kt">string</span><span class="p">{</span>
+<span class="err">        </span><span class="s">"https://london.my-netdata.io/api/v1/data?chart=system.cpu&amp;format=csv&amp;after=-10"</span><span class="p">,</span>
+<span class="err">        </span><span class="s">"https://london.my-netdata.io/api/v1/data?chart=system.net&amp;format=csv&amp;after=-10"</span><span class="p">,</span>
+<span class="err">        </span><span class="s">"https://london.my-netdata.io/api/v1/data?chart=system.load&amp;format=csv&amp;after=-10"</span><span class="p">,</span>
+<span class="err">        </span><span class="s">"https://london.my-netdata.io/api/v1/data?chart=system.io&amp;format=csv&amp;after=-10"</span><span class="p">,</span>
+<span class="err">    </span><span class="p">}</span>
+
+<span class="err">    </span><span class="c">// Create a channel of dataframes the size of number of api calls we need to make</span>
+<span class="err">    </span><span class="n">dfChannel</span><span class="err"> </span><span class="o">:=</span><span class="err"> </span><span class="nb">make</span><span class="p">(</span><span class="k">chan</span><span class="err"> </span><span class="n">dataframe</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span><span class="err"> </span><span class="nb">len</span><span class="p">(</span><span class="n">urls</span><span class="p">))</span>
+
+<span class="err">    </span><span class="c">// Create empty df we will outer join into from the df channel later</span>
+<span class="err">    </span><span class="n">df</span><span class="err"> </span><span class="o">:=</span><span class="err"> </span><span class="n">dataframe</span><span class="o">.</span><span class="n">ReadJSON</span><span class="p">(</span><span class="n">strings</span><span class="o">.</span><span class="n">NewReader</span><span class="p">(</span><span class="s">`[{"time":"1900-01-01 00:00:01"}]`</span><span class="p">))</span>
+
+<span class="err">    </span><span class="c">// Kick off a go routine for each url</span>
+<span class="err">    </span><span class="k">for</span><span class="err"> </span><span class="n">_</span><span class="p">,</span><span class="err"> </span><span class="n">url</span><span class="err"> </span><span class="o">:=</span><span class="err"> </span><span class="k">range</span><span class="err"> </span><span class="n">urls</span><span class="err"> </span><span class="p">{</span>
+<span class="err">        </span><span class="n">wg</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="m">1</span><span class="p">)</span>
+<span class="err">        </span><span class="k">go</span><span class="err"> </span><span class="n">getDf</span><span class="p">(</span><span class="n">url</span><span class="p">,</span><span class="err"> </span><span class="n">dfChannel</span><span class="p">)</span>
+<span class="err">    </span><span class="p">}</span>
+
+<span class="err">    </span><span class="c">// Handle synchronization of channel</span>
+<span class="err">    </span><span class="n">wg</span><span class="o">.</span><span class="n">Wait</span><span class="p">()</span>
+<span class="err">    </span><span class="nb">close</span><span class="p">(</span><span class="n">dfChannel</span><span class="p">)</span>
+
+<span class="err">    </span><span class="c">// Pull each df from the channel and outer join onto our original empty df</span>
+<span class="err">    </span><span class="k">for</span><span class="err"> </span><span class="n">dfTmp</span><span class="err"> </span><span class="o">:=</span><span class="err"> </span><span class="k">range</span><span class="err"> </span><span class="n">dfChannel</span><span class="err"> </span><span class="p">{</span>
+<span class="err">        </span><span class="n">df</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">df</span><span class="o">.</span><span class="n">OuterJoin</span><span class="p">(</span><span class="n">dfTmp</span><span class="p">,</span><span class="err"> </span><span class="s">"time"</span><span class="p">)</span>
+<span class="err">    </span><span class="p">}</span>
+
+<span class="err">    </span><span class="c">// Sort based on time</span>
+<span class="err">    </span><span class="n">df</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">df</span><span class="o">.</span><span class="n">Arrange</span><span class="p">(</span><span class="n">dataframe</span><span class="o">.</span><span class="n">Sort</span><span class="p">(</span><span class="s">"time"</span><span class="p">))</span>
+
+<span class="err">    </span><span class="c">// Print df</span>
+<span class="err">    </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="err"> </span><span class="m">10</span><span class="p">,</span><span class="err"> </span><span class="m">5</span><span class="p">)</span>
+
+<span class="err">    </span><span class="c">// Describe df</span>
+<span class="err">    </span><span class="c">//fmt.Println(df.Describe())</span>
+
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Which should return something that looks kinda like a Pandas DataFrame!</p>
+
+<figure>
+
+![](/assets/images/2020-12-28-first-stab-at-some-go-so-hot-right-now/go-1-1024x467.jpg)
+
+<figcaption>
+
+Yes Powershell, come at me bro!
+
+</figcaption>
+
+</figure>
+
+<p>Here is a list of some useful links and resources i’ve used to get this far:</p>
+
+<ul>
+  <li>Great <a href="https://www.youtube.com/watch?v=YS4e4q9oBaU">freeCodeCamp course</a> (first time i’ve used anything from freeCodeCamp - was very impressed and have subscribed!).</li>
+  <li>Stumbled upon <a href="https://pythonprogramming.net/go/introduction-go-language-programming-tutorial/">this Go series</a> from sentdex which was great as I love everything he does.</li>
+  <li>A <a href="https://www.youtube.com/watch?v=LvgVSSpwND8">really clear video</a> from <a href="https://twitter.com/jakewrightuk">Jake Wright</a>.</li>
+  <li><a href="https://github.com/avelino/awesome-go#data-structures">Awesome Go list</a> because of course.</li>
+  <li>A more higher level <a href="https://www.youtube.com/watch?v=gwg_YXyCYBw">Go DS/ML related talk</a> from <a href="https://twitter.com/samkreter">Sam Kreter</a>.</li>
+</ul>

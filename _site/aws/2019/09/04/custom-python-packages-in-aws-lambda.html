@@ -1,0 +1,92 @@
+<figure>
+
+![](/assets/images/2019-09-04-custom-python-packages-in-aws-lambda/so-hot-right-now.png)
+
+<figcaption>
+
+It's True.
+
+</figcaption>
+
+</figure>
+
+<p>I’m pretty sure i’ll be looking this up again at some stage so that passed one of my main thresholds for a blog post.</p>
+
+<p>I’ve recently been porting some data and model development pipelines over to <a href="https://aws.amazon.com/lambda/">AWS Lambda</a> and was mildly horrified to see how clunky the whole process for adding custom python packages to your Lambda was (see docs <a href="https://docs.aws.amazon.com/lambda/latest/dg/lambda-python-how-to-create-deployment-package.html">here</a>).</p>
+
+<p><a href="https://serverless.com/blog/serverless-python-packaging/">This</a> was probably the best post i found but it still did not quite cover custom python packages you might need to include beyond just the more typical pypi ones like numpy, pandas, etc. (p.s. <a href="https://www.youtube.com/watch?v=S6dmyzQb6S8">this video</a> was really useful if you are working in <a href="https://aws.amazon.com/cloud9/">Cloud9</a>).</p>
+
+<p>So i set out to hack together a process that would automate 90% of the work in packaging up any python packages you might want to make available to your AWS Lambda including local custom python packages you might have built yourself.</p>
+
+<p>The result involves a Docker container to build your packages in (i have to use this as using windows based python package local install does not work in Lambda as the install contains some windows stuff Lambda won’t like), and a jupyter notebook (of course there is some jupyter :) ) to take some inputs (what packages you want, what to call the AWS Layer, etc), build local installs of the packages, add them to a zip file, load zip file to S3 and then finally use awscli to make a new layer from said S3 zip file.</p>
+
+<h2 id="dockerfile">Dockerfile</h2>
+
+<p>The first place to start is with the below <a href="https://github.com/andrewm4894/my-aws-python-packages/blob/master/Dockerfile">Dockerfile</a> that creates a basic conda ready docker container with jupyter installed. Note it also includes <a href="https://github.com/conda/conda-build">conda-build</a> and copies over the <strong>packages/</strong> folder into the container (required as i wanted to install my “my_utils” package and have it available to the jupyter notebook).</p>
+
+<p>https://gist.github.com/andrewm4894/7ee15f75af7eab92e61b7ad932b259e5</p>
+
+<p>Build this with:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ docker build -t my-aws-python-packages -f ./Dockerfile ./
+</code></pre></div></div>
+
+<p>And then run it with:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ docker run -it --name my-aws-python-packages 
+    -p 8888:8888
+    --mount type=bind,source="$(pwd)/work",target=/home/jovyan/work
+    --mount type=bind,source="$(pwd)/packages",target=/home/jovyan/packages 
+    -e AWS_ACCESS_KEY_ID=$(aws --profile default configure get aws_access_key_id)
+    -e AWS_SECRET_ACCESS_KEY=$(aws --profile default configure get aws_secret_access_key)
+    my-aws-python-packages
+</code></pre></div></div>
+
+<p>The above runs the container, port forwards 8888 (for jupyter), mounts both the <strong>/packages</strong> and <strong>/work</strong> folders (as for these files we want changes from outside docker or inside to be reflected and vice versa), and passes in my AWS credentials as environment variables to the container (needed for the asw cli commands we will run inside the container). Its last step is to then launch jupyter lab which you then should be able to get to at http://localhost:8888/lab using the token provided by jupyter.</p>
+
+<h2 id="notebook-time---make_layeripynb">Notebook time - make_layer.ipynb</h2>
+
+<p>Once the docker container is running and you are in jupyter the <a href="https://github.com/andrewm4894/my-aws-python-packages/blob/master/work/make_layer.ipynb">make_layer</a> notebook automates the local installation of a list of python packages, zipping them to /work/python.zip folder as expected by <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html">AWS Layers</a> (when unzipped your root folder needs to be /python/…), loading it to an S3 location, and then using awscli to add a new layer or version (if the layer already exists).</p>
+
+<p>The notebook itself is not that big so i’ve included it below.</p>
+
+<p>[iframe src=”https://nbviewer.jupyter.org/github/andrewm4894/my-aws-python-packages/blob/master/work/make_layer.ipynb?flush_cache=true” width=”100%” height=”1800” scrolling=”yes” class=”iframe-class” frameborder=”0”]</p>
+
+<p>For this example i’ve included two custom packages along with <a href="https://pandas.pydata.org/">pandas</a> into my AWS Layer. The custom packages are just two little basic <a href="https://github.com/andrewm4894/my-aws-python-packages/blob/master/packages/my_dev/my_dev/dev.py#L3">hello_world()</a> type packages (one actually creates the <a href="https://github.com/andrewm4894/my-aws-python-packages/blob/master/packages/my_utils/my_utils/os_utils.py#L6">subprocess_execute()</a> function used in the make_layer notebook). I’ve included pandas then as well to illustrate how to include a pypi package.</p>
+
+<h2 id="serverless-deploy">Serverless Deploy!</h2>
+
+<p>To round off the example we then also need to create a little AWS Lambda function to validate that the packages installed in our layer can actually be used by Lambda.</p>
+
+<p>To that end, i’ve adapted the <a href="https://serverless.com/">serverless</a> example cron lamdba from <a href="https://github.com/serverless/examples/tree/master/aws-python-scheduled-cron">here</a> into <a href="https://github.com/andrewm4894/serverless-learn/tree/master/serverless-learn-lambda">my own little lambda</a> using both my custom packages and pandas.</p>
+
+<p>Here is the <a href="https://github.com/andrewm4894/serverless-learn/blob/master/serverless-learn-lambda/handler.py">handler.py</a> that uses my packages:</p>
+
+<p>https://gist.github.com/andrewm4894/7403c9fb50b489b6f6d58f7640421ce4</p>
+
+<p>And the <a href="https://github.com/andrewm4894/serverless-learn/blob/master/serverless-learn-lambda/serverless.yml">serverless.yml</a> used to configure and deploy the lambda:</p>
+
+<p>https://gist.github.com/andrewm4894/aa98b3fad0b4b001ab85719b88b7878b</p>
+
+<p>We then deploy this function (from <a href="https://github.com/andrewm4894/serverless-learn/tree/master/serverless-learn-lambda">here</a>) with:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ serverless deploy
+</code></pre></div></div>
+
+<p>And we can then go into the AWS console to the Lamdba function we just created. We can test it in the UI and see the expected output whereby our custom functions work as expected as does Pandas:</p>
+
+<figure>
+
+![](/assets/images/2019-09-04-custom-python-packages-in-aws-lambda/Capture.jpg)
+
+<figcaption>
+
+Success!
+
+</figcaption>
+
+</figure>
+
+<p>That’s it for this one, i’m hoping someone might find this useful as i was really surprised by how painful it was to get a simple custom package or even pypi packages for that matter available to your AWS Lambda functions.</p>
+
+<p>If you wanted you could convert the ipynb notebook into a python script and automate the whole thing. Although i’m pretty sure Amazon will continue to make the whole experience a bit more seamless and easier over time.</p>
