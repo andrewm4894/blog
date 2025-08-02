@@ -3,8 +3,8 @@ description: >
   Personal blog about Data Science and Machine Learning, migrated from WordPress.
 
 # Site configuration
-baseurl: "/blog"  # The subpath of your site, e.g. /blog
-url: "https://andrewmaguire.github.io"  # The base hostname & protocol for your site
+baseurl: ""  # No subpath since the entire domain serves the blog
+url: "https://andrewm4894.com"  # Your custom domain
 
 # Theme configuration
 remote_theme: pages-themes/minimal@v0.2.0
