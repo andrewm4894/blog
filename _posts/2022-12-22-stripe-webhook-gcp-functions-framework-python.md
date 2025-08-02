@@ -10,7 +10,7 @@ tags:
   - "python"
   - "stripe"
   - "webhook"
-coverImage: "stripe-functions-2.png"
+coverImage: "/assets/images/2022-12-22-stripe-webhook-gcp-functions-framework-python/stripe-functions-2.png"
 layout: post
 ---
 

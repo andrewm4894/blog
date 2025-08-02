@@ -1,4 +1,4 @@
-.PHONY: install serve build clean preview
+.PHONY: install serve build clean preview check-images
 
 # Install dependencies
 install:
@@ -30,11 +30,31 @@ clean:
 
 # Preview current branch locally as it would appear in production
 preview:
-	./preview-local.sh
+	./scripts/preview-local.sh
 
 # Preview a specific branch locally
 preview-branch:
-	@read -p "Enter branch name: " branch; ./preview-local.sh $$branch
+	@read -p "Enter branch name: " branch; ./scripts/preview-local.sh $$branch
+
+# Check for broken image links in posts
+check-images:
+	python3 scripts/check_broken_image_links.py
+
+# Generate detailed report of broken image links
+check-images-report:
+	python3 scripts/check_broken_image_links.py --report
+
+# Generate script to fix broken image links
+check-images-fix:
+	python3 scripts/check_broken_image_links.py --fix-script
+
+# Fix markdown image links in posts (dry run)
+fix-image-links:
+	python3 scripts/fix_markdown_image_links.py
+
+# Actually apply image link fixes
+fix-image-links-apply:
+	python3 scripts/fix_markdown_image_links.py --apply
 
 # Default target
 all: install serve 

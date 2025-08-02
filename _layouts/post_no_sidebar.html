@@ -47,9 +47,7 @@
           {%- endif -%}
         </p>
 
-        {% assign processed_content = content | replace: '![', '<img src="' | replace: '](/assets/images/', site.baseurl | append: '/assets/images/' | replace: ')"', '" alt="" />' %}
-        {% assign processed_content = processed_content | replace: '.png)', '.png' | replace: '.jpg)', '.jpg' | replace: '.jpeg)', '.jpeg' | replace: '.gif)', '.gif' %}
-        {{ processed_content }}
+        {{ content }}
 
         <!-- Comments section -->
         <div id="comments" style="margin-top: 3em; margin-bottom: 2em;">
