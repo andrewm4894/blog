@@ -1,40 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.3">Jekyll</generator><link href="https://andrewm4894.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://andrewm4894.com/" rel="alternate" type="text/html" /><updated>2025-08-02T15:01:37+00:00</updated><id>https://andrewm4894.com/feed.xml</id><title type="html">andrewm4894.com</title><subtitle>Personal blog blah blah, migrated from WordPress.
-</subtitle><entry><title type="html">Dummy CI Test Post - Testing Feature Branch Previews</title><link href="https://andrewm4894.com/2025/08/02/dummy-ci-test-post/" rel="alternate" type="text/html" title="Dummy CI Test Post - Testing Feature Branch Previews" /><published>2025-08-02T00:00:00+00:00</published><updated>2025-08-02T00:00:00+00:00</updated><id>https://andrewm4894.com/2025/08/02/dummy-ci-test-post</id><content type="html" xml:base="https://andrewm4894.com/2025/08/02/dummy-ci-test-post/">&lt;p&gt;This is a dummy blog post created to test the CI preview functionality on feature branches.&lt;/p&gt;
-
-&lt;h2 id=&quot;why-this-post-exists&quot;&gt;Why This Post Exists&lt;/h2&gt;
-
-&lt;p&gt;This post serves as a test case to verify that:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;GitHub Actions workflows properly trigger on feature branches&lt;/li&gt;
-  &lt;li&gt;Preview deployments are working correctly&lt;/li&gt;
-  &lt;li&gt;The Jekyll build process handles new posts appropriately&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;some-dummy-content&quot;&gt;Some Dummy Content&lt;/h2&gt;
-
-&lt;p&gt;Here’s some placeholder content to make this look like a real blog post:&lt;/p&gt;
-
-&lt;h3 id=&quot;code-example&quot;&gt;Code Example&lt;/h3&gt;
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;dummy_function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Hello from the dummy CI test!&quot;&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__name__&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;__main__&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dummy_function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;list-of-things&quot;&gt;List of Things&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;Testing CI/CD pipelines&lt;/li&gt;
-  &lt;li&gt;Verifying preview deployments&lt;/li&gt;
-  &lt;li&gt;Making sure Jekyll builds work&lt;/li&gt;
-  &lt;li&gt;Checking that feature branches trigger workflows&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h2&gt;
-
-&lt;p&gt;If you’re reading this in a preview deployment, then the CI is working! 🎉&lt;/p&gt;
-
-&lt;p&gt;This post can be safely deleted once the CI testing is complete.&lt;/p&gt;</content><author><name></name></author><category term="testing" /><category term="ci-cd" /><category term="github-actions" /><category term="jekyll" /><category term="testing" /><summary type="html">This is a dummy blog post created to test the CI preview functionality on feature branches.</summary></entry><entry><title type="html">bolt.new vs o1 - some thoughts</title><link href="https://andrewm4894.com/2024/12/19/bolt-new-vs-o1-some-thoughts/" rel="alternate" type="text/html" title="bolt.new vs o1 - some thoughts" /><published>2024-12-19T00:00:00+00:00</published><updated>2024-12-19T00:00:00+00:00</updated><id>https://andrewm4894.com/2024/12/19/bolt-new-vs-o1-some-thoughts</id><content type="html" xml:base="https://andrewm4894.com/2024/12/19/bolt-new-vs-o1-some-thoughts/">&lt;p&gt;this is funny - i tried to make a little app to share daily factoids from chatgpt on a site - just as excuse to learn javascript really.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.3">Jekyll</generator><link href="https://andrewm4894.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://andrewm4894.com/" rel="alternate" type="text/html" /><updated>2025-08-02T15:24:38+00:00</updated><id>https://andrewm4894.com/feed.xml</id><title type="html">andrewm4894.com</title><subtitle>Personal blog blah blah, migrated from WordPress.
+</subtitle><entry><title type="html">bolt.new vs o1 - some thoughts</title><link href="https://andrewm4894.com/2024/12/19/bolt-new-vs-o1-some-thoughts/" rel="alternate" type="text/html" title="bolt.new vs o1 - some thoughts" /><published>2024-12-19T00:00:00+00:00</published><updated>2024-12-19T00:00:00+00:00</updated><id>https://andrewm4894.com/2024/12/19/bolt-new-vs-o1-some-thoughts</id><content type="html" xml:base="https://andrewm4894.com/2024/12/19/bolt-new-vs-o1-some-thoughts/">&lt;p&gt;this is funny - i tried to make a little app to share daily factoids from chatgpt on a site - just as excuse to learn javascript really.&lt;/p&gt;
 
 &lt;p&gt;bolt.new is great and i felt like a wizard at first just freestyling away on the keys but man what a mess i ended up creating - ended up down various dead ends with firebase and deployment to netlify and lots of infra related mess that ended up waaay too complex for me at that stage down the rabbirt hole to know where to start to try untangle anything.&lt;/p&gt;
 
@@ -395,4 +360,14 @@ stripe trigger payment_intent.succeeded
 
 &lt;p&gt;That’s it, you can then add whatever additional logic you want to handle specific stripe webhook events and control what events make it to this webhook from within the stripe ui itself as needed.&lt;/p&gt;
 
-&lt;p&gt;The developer tools and experience with Stripe is really good and being able to so easily run a cloud function locally with realistic test data from stripe using these two cli’s (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;stripe&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;functions-framework&lt;/code&gt;) is really nice, even if it did take me a few days to realize I needed to use that &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.decode(&apos;utf-8&apos;)&lt;/code&gt; once the function was deployed to GCP cloud - there’s always going to be something that trips you up a little :)&lt;/p&gt;</content><author><name></name></author><category term="cloud" /><category term="eng" /><category term="functions-framework" /><category term="gcp" /><category term="python" /><category term="stripe" /><category term="webhook" /><summary type="html">This took a couple of days of messing around so decided to make a post out of it.</summary></entry></feed>
+&lt;p&gt;The developer tools and experience with Stripe is really good and being able to so easily run a cloud function locally with realistic test data from stripe using these two cli’s (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;stripe&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;functions-framework&lt;/code&gt;) is really nice, even if it did take me a few days to realize I needed to use that &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.decode(&apos;utf-8&apos;)&lt;/code&gt; once the function was deployed to GCP cloud - there’s always going to be something that trips you up a little :)&lt;/p&gt;</content><author><name></name></author><category term="cloud" /><category term="eng" /><category term="functions-framework" /><category term="gcp" /><category term="python" /><category term="stripe" /><category term="webhook" /><summary type="html">This took a couple of days of messing around so decided to make a post out of it.</summary></entry><entry><title type="html">Colab to just run some curl</title><link href="https://andrewm4894.com/2022/10/20/colab-to-just-run-some-curl/" rel="alternate" type="text/html" title="Colab to just run some curl" /><published>2022-10-20T00:00:00+00:00</published><updated>2022-10-20T00:00:00+00:00</updated><id>https://andrewm4894.com/2022/10/20/colab-to-just-run-some-curl</id><content type="html" xml:base="https://andrewm4894.com/2022/10/20/colab-to-just-run-some-curl/">&lt;p&gt;Here is a little google colab notebook to just paste in some &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;curl&lt;/code&gt; command and get the response back into a json dictionary.&lt;/p&gt;
+
+&lt;p&gt;This can be handy when working with backend and frontend engineers who might be using a different language than you and just send you some curl commands that you want to explore results of more in python.&lt;/p&gt;
+
+&lt;p&gt;No command line messing around - just pop into a colab!&lt;/p&gt;
+
+&lt;p&gt;https://gist.github.com/andrewm4894/cf28b69850200bdfceaf32185340ee59&lt;/p&gt;
+
+&lt;p&gt;https://colab.research.google.com/drive/1Lsi6rdsYDd-c3rlhflIleiWCadh1cPod?usp=sharing&lt;/p&gt;
+
+&lt;p&gt;https://github.com/andrewm4894/colabs/blob/master/just_run_some_curl.ipynb&lt;/p&gt;</content><author><name></name></author><category term="cloud" /><category term="python" /><summary type="html">Here is a little google colab notebook to just paste in some curl command and get the response back into a json dictionary.</summary></entry></feed>
