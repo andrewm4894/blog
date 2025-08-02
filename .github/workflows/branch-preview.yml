@@ -113,14 +113,13 @@ jobs:
           </html>
           EOF
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Deploy to GitHub Pages (Branch Preview)
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          path: _site
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./_site
+          destination_dir: preview/${{ steps.preview-path.outputs.path }}
+          keep_files: true
 
       - name: Comment on PR with preview URL
         if: github.event_name == 'pull_request'
@@ -128,8 +127,8 @@ jobs:
         with:
           script: |
             const prNumber = context.issue.number;
-            const previewUrl = `https://andrewm4894.com/preview/pr-${prNumber}/`;
-            const indexUrl = `https://andrewm4894.com/preview/`;
+            const previewUrl = `https://andrewm4894.github.io/blog/preview/pr-${prNumber}/`;
+            const indexUrl = `https://andrewm4894.github.io/blog/preview/`;
             
             const comment = `🚀 **Preview deployment is ready!**
             
@@ -174,7 +173,7 @@ jobs:
           PREVIEW_PATH="${{ steps.preview-path.outputs.path }}"
           echo "## 🚀 Branch Preview Deployed" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Preview URL:** https://andrewm4894.com/preview/$PREVIEW_PATH/" >> $GITHUB_STEP_SUMMARY
-          echo "**All previews:** https://andrewm4894.com/preview/" >> $GITHUB_STEP_SUMMARY
+          echo "**Preview URL:** https://andrewm4894.github.io/blog/preview/$PREVIEW_PATH/" >> $GITHUB_STEP_SUMMARY
+          echo "**All previews:** https://andrewm4894.github.io/blog/preview/" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "The preview will be available in a few minutes after deployment completes." >> $GITHUB_STEP_SUMMARY 
