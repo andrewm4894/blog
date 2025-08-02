@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -18,8 +18,6 @@ concurrency:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -33,41 +31,20 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
-      - name: Checkout current pages to preserve previews
-        run: |
-          # Try to download current site to preserve preview directory
-          mkdir -p _current_site
-          
-          # This will fail on first deployment, which is fine
-          curl -s -f https://andrewm4894.com/preview/ > /dev/null && \
-          wget -r -np -nH -nd -P _current_site/preview https://andrewm4894.com/preview/ || \
-          echo "No existing previews to preserve (this is normal for first deployment)"
-
       - name: Build Jekyll site
         env:
           JEKYLL_ENV: production
         run: |
           bundle install --jobs 4 --retry 3
-          
-          # Build the main site
           bundle exec jekyll build
-          
-          # Preserve any existing preview directory
-          if [ -d "_current_site/preview" ] && [ "$(ls -A _current_site/preview)" ]; then
-            echo "Preserving existing preview directory..."
-            cp -r _current_site/preview _site/ || echo "Could not preserve previews"
-          else
-            echo "No previews to preserve"
-          fi
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Deploy to GitHub Pages (Main Site)
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          path: _site
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./_site
+          keep_files: true
+          exclude_assets: 'preview/**'
 
       - name: Add deployment summary
         run: |
