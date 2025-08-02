@@ -1,0 +1,252 @@
+/* Typography */
+body {
+  font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #333;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  font-weight: 600;
+  color: #1a1a1a;
+  line-height: 1.3;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+h1 { 
+  font-size: 2.5rem; 
+  font-weight: 700; 
+  margin-top: 0; 
+  margin-bottom: 1.5rem;
+}
+h2 { font-size: 2rem; }
+h3 { font-size: 1.5rem; }
+h4 { font-size: 1.25rem; }
+h5 { font-size: 1.125rem; }
+h6 { font-size: 1rem; }
+
+p {
+  margin-bottom: 1.5rem;
+  line-height: 1.7;
+}
+
+code, pre {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+}
+
+code {
+  font-size: 0.9em;
+  font-weight: 500;
+  padding: 0.2em 0.4em;
+  background-color: #f6f8fa;
+  border-radius: 3px;
+}
+
+pre {
+  font-size: 0.85em;
+  line-height: 1.5;
+  overflow-x: auto;
+  padding: 1rem;
+  border-radius: 6px;
+  background-color: #f8f9fa !important;
+}
+
+pre code {
+  padding: 0;
+  background-color: transparent;
+}
+
+/* Improve link styling */
+a {
+  color: #267CB9;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: #1e5a8a;
+  text-decoration: underline;
+}
+
+/* Image and media styles */
+.cover-image {
+  margin-bottom: 2em;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.cover-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.post-meta {
+  color: #666;
+  margin-bottom: 2em;
+  font-size: 0.95rem;
+}
+
+.category {
+  font-style: italic;
+  font-weight: 500;
+}
+
+figure {
+  margin: 1.5em 0;
+  text-align: center;
+}
+
+figure img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+figcaption {
+  color: #666;
+  font-style: italic;
+  margin-top: 0.5em;
+  font-size: 0.9rem;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1em auto;
+}
+
+/* Code syntax highlighting */
+.language-plaintext {
+  color: #24292e;
+}
+
+.language-python {
+  color: #24292e;
+}
+
+/* Post list styling */
+.posts-list h4 a {
+  color: #333;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.posts-list h4 a:hover {
+  color: #267CB9;
+}
+
+.posts-list .current-post {
+  color: #267CB9;
+  font-weight: 600;
+}
+
+/* Responsive design */
+@media screen and (max-width: 1000px) {
+  .wrapper {
+    flex-direction: column;
+  }
+  
+  section {
+    margin-right: 0;
+  }
+
+  aside {
+    width: 100%;
+    margin-top: 3em;
+  }
+  
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.75rem; }
+  h3 { font-size: 1.5rem; }
+}
+
+@media screen and (max-width: 600px) {
+  body {
+    font-size: 15px;
+  }
+  
+  h1 { font-size: 1.75rem; }
+  h2 { font-size: 1.5rem; }
+  h3 { font-size: 1.25rem; }
+  
+  .wrapper {
+    padding: 0 15px;
+  }
+}
+
+/* YouTube Embeds */
+.youtube-embed {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  height: 0;
+  overflow: hidden;
+  width: 95%; /* Even wider */
+  max-width: 580px; /* Larger for better rectangle proportions */
+  margin: 1.5em auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+}
+
+.youtube-embed iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+/* Google Slides Embeds */
+.slides-embed {
+  position: relative;
+  padding-bottom: 59.38%; /* Google Slides aspect ratio */
+  height: 0;
+  overflow: hidden;
+  width: 95%; /* Larger for readability */
+  max-width: 650px; /* Much larger so text is readable */
+  margin: 1.5em auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+}
+
+.slides-embed iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  box-sizing: border-box;
+  border: none;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 1000px) {
+  .youtube-embed {
+    width: 100%;
+    max-width: 100%; /* Full width when sidebar collapses */
+    margin: 1em auto;
+  }
+  
+  .slides-embed {
+    width: 100%;
+    max-width: 100%; /* Full width when sidebar collapses */
+    margin: 1em auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .youtube-embed,
+  .slides-embed {
+    width: 100%;
+    margin: 1em auto;
+  }
+} 
