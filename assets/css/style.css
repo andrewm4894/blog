@@ -185,8 +185,8 @@ img {
   padding-bottom: 56.25%; /* 16:9 aspect ratio */
   height: 0;
   overflow: hidden;
-  width: 95%; /* Even wider */
-  max-width: 580px; /* Larger for better rectangle proportions */
+  width: 90%; /* Better balance - wider but safe */
+  max-width: 520px; /* Compromise size for good proportions */
   margin: 1.5em auto;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -257,17 +257,51 @@ img {
   border-top: 1px solid #e1e4e8 !important;
 }
 
+/* Text overflow prevention */
+p, li, td {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+/* Long URLs should break properly */
+a {
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Code blocks should have horizontal scroll */
+pre, code {
+  word-wrap: normal;
+  overflow-x: auto;
+}
+
+/* Dynamic sizing when sidebar is collapsed */
+section[style*="max-width: 900px"] .youtube-embed {
+  width: 95%;
+  max-width: 750px; /* Much larger when sidebar is hidden */
+}
+
+section[style*="max-width: 900px"] .slides-embed {
+  width: 95%;
+  max-width: 850px; /* Even larger for slides when sidebar is hidden */
+}
+
+section[style*="max-width: 900px"] .gist-embed {
+  max-width: 850px; /* Larger gists when sidebar is hidden */
+}
+
 /* Responsive adjustments for smaller screens */
 @media (max-width: 1000px) {
   .youtube-embed {
     width: 100%;
-    max-width: 100%; /* Full width when sidebar collapses */
+    max-width: 100%; /* Full width when sidebar naturally collapses */
     margin: 1em auto;
   }
   
   .slides-embed {
     width: 100%;
-    max-width: 100%; /* Full width when sidebar collapses */
+    max-width: 100%; /* Full width when sidebar naturally collapses */
     margin: 1em auto;
   }
 }

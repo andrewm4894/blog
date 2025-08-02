@@ -17,6 +17,6 @@ I have been working a bit lately with some text classification stuff using Huggi
 
 So here is a minimal text classification example, using huggingface and either pytorch or tensorflow (you decide).
 
-Will try to update and maintain the colab here: https://github.com/andrewm4894/colabs/blob/master/huggingface\_text\_classification\_quickstart.ipynb
+Will try to update and maintain the [colab here](https://github.com/andrewm4894/colabs/blob/master/huggingface_text_classification_quickstart.ipynb).
 
 {% include gist.html user="andrewm4894" id="ce57c09848580c9deb46eb244bb16cea" %}
