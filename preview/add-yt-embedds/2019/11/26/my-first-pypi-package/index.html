@@ -16,7 +16,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Sans+Pro:ital,wght@0,400;0,600;1,400;1,600&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
 
     <title>My First PyPI Package | andrewm4894.com</title>
-    <link rel="stylesheet" href="/preview/add-yt-embedds/assets/css/style.css?v=20250802161342">
+    <link rel="stylesheet" href="/preview/add-yt-embedds/assets/css/style.css?v=20250802161743">
     
     <!-- PostHog Analytics -->
     <script>
@@ -51,7 +51,7 @@
 
 <p><img src="/assets/images/2019-11-26-my-first-pypi-package/package.png" alt="" /></p>
 
-<h2 id="confession---i-dont-know-matplotlib">Confession - I don’t know matplotlib</h2>
+<h2 id="id-confession---i-dont-know-matplotlib">Confession - I don’t know matplotlib</h2>
 
 <p>I have a confession to make that’s been eating away at me and i need to get off my chest - i’m pretty useless at plotting anything in Python. I never really had the time/need to sit down and ‘learn’ matplotlib from first principles (does anyone?). I’ve usually had tools like Tableau or Looker to sit on top of whatever database i am using and make visualizations pretty painlessly.</p>
 
@@ -61,13 +61,13 @@
 
 <p>Eventually i settle on some Frankenstein solution that gets me over the line until the next time. After living this cycle many times i decided to some day build my own plotting library that would short circuit this shitshow and over time become the answer to all my plotting needs. And i was hoping it would also be a nice excuse to learn about Python packaging and deploying to PyPI.</p>
 
-<h2 id="cookiecutter-to-the-rescue">Cookiecutter to the rescue</h2>
+<h2 id="id-cookiecutter-to-the-rescue">Cookiecutter to the rescue</h2>
 
 <p><img src="/assets/images/2019-11-26-my-first-pypi-package/cookiecutter_medium.png" alt="" /></p>
 
 <p>Turns out, like most other things, there are already great tools out there to make this much easier then i expected it would be - the main one being <a href="https://cookiecutter.readthedocs.io/en/latest/">cookiecutter</a> and in particular this <a href="https://github.com/audreyr/cookiecutter-pypackage">cookiecutter template for pypi packages</a> (i also found <a href="https://training.talkpython.fm/courses/details/using-and-mastering-cookiecutter-templates-for-project-creation">this</a> TalkPython course and <a href="https://www.youtube.com/watch?v=qOH-h-EKKac&amp;list=PL6Zhl9mK2r0IDU0Yv7HsBb5AsmBCuIsK_">these talks</a> really useful starting points).</p>
 
-<h2 id="am4894plots">am4894plots</h2>
+<h2 id="id-am4894plots">am4894plots</h2>
 
 <p>So after a bit of dicking around with cookiecutter i had the basis for my plotting package (see my minimal example ‘hello world’ type package on PyPI <a href="https://pypi.org/project/am4894dev2/">here</a>) and just needed to build out my functionality (<a href="https://pypi.org/project/am4894plots/">am4894plots</a> on PyPI).</p>
 
@@ -79,7 +79,7 @@
   <li>This package is just for me to use, you are not allowed to use it :)</li>
 </ul>
 
-<h2 id="moving-parts">Moving parts</h2>
+<h2 id="id-moving-parts">Moving parts</h2>
 
 <p>The great thing about leveraging something like cookiecutter is you can plug into as many best practice tools as possible with as little sweat as possible on your end. Below are some notable examples of tools or components you get pretty much out of the box that i expected to have to work much harder for.</p>
 
@@ -94,27 +94,27 @@
   <li>Cool badges in the <a href="https://github.com/andrewm4894/am4894plots/blob/master/README.rst">readme</a>!</li>
 </ul>
 
-<h2 id="examples">Examples</h2>
+<h2 id="id-examples">Examples</h2>
 
 <p>I’ll finish with some quick examples to illustrate what the package actually does and some ways i’m planing to use it.</p>
 
-<h3 id="plot_lines">plot_lines()</h3>
+<h3 id="id-plot_lines">plot_lines()</h3>
 
 <p>[iframe src=”https://nbviewer.jupyter.org/github/andrewm4894/am4894plots/blob/master/examples/lines.ipynb?flush_cache=false” width=”100%” height=”1300” scrolling=”no” class=”iframe-class” frameborder=”0”]</p>
 
-<h3 id="plot_scatters">plot_scatters()</h3>
+<h3 id="id-plot_scatters">plot_scatters()</h3>
 
 <p>[iframe src=”https://nbviewer.jupyter.org/github/andrewm4894/am4894plots/blob/master/examples/scatters.ipynb?flush_cache=false” width=”100%” height=”875” scrolling=”no” class=”iframe-class” frameborder=”0”]</p>
 
-<h3 id="plot_hists-plot_boxes">plot_hists(), plot_boxes()</h3>
+<h3 id="id-plot_hists-plot_boxes">plot_hists(), plot_boxes()</h3>
 
 <p>[iframe src=”https://nbviewer.jupyter.org/github/andrewm4894/am4894plots/blob/master/examples/dists.ipynb?flush_cache=false” width=”100%” height=”1400” scrolling=”no” class=”iframe-class” frameborder=”0”]</p>
 
-<h3 id="plot_heatmap">plot_heatmap()</h3>
+<h3 id="id-plot_heatmap">plot_heatmap()</h3>
 
 <p>[iframe src=”https://nbviewer.jupyter.org/github/andrewm4894/am4894plots/blob/master/examples/heatmap.ipynb?flush_cache=false” width=”100%” height=”1150” scrolling=”no” class=”iframe-class” frameborder=”0”]</p>
 
-<h2 id="thats-it">Thats it</h2>
+<h2 id="id-thats-it">Thats it</h2>
 
 <p>That’s it, now that i (technically) have a package on PyPI i feel just a little bit less of an impostor :)</p>
 

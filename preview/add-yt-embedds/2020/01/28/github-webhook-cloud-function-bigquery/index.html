@@ -16,7 +16,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Sans+Pro:ital,wght@0,400;0,600;1,400;1,600&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
 
     <title>Github Webhook -> Cloud Function -> BigQuery | andrewm4894.com</title>
-    <link rel="stylesheet" href="/preview/add-yt-embedds/assets/css/style.css?v=20250802161342">
+    <link rel="stylesheet" href="/preview/add-yt-embedds/assets/css/style.css?v=20250802161743">
     
     <!-- PostHog Analytics -->
     <script>
@@ -65,7 +65,7 @@
 
 <p>p.p.s all the code is in <a href="https://github.com/andrewm4894/cloud-functions/tree/master/handle-github-events">this repo</a>.</p>
 
-<h2 id="step-1---serverless">Step 1 - Serverless</h2>
+<h2 id="id-step-1---serverless">Step 1 - Serverless</h2>
 
 <p>We start by leveraging <a href="https://serverless.com/examples/google-python-simple-http-endpoint/">this Serverless example</a> to create the bare bones structure for our cloud function.</p>
 
@@ -77,7 +77,7 @@
 
 <p>https://gist.github.com/andrewm4894/ba719ffb96218c18337f9b0d41487c18</p>
 
-<h2 id="step-2---cloud-function">Step 2 - Cloud Function</h2>
+<h2 id="id-step-2---cloud-function">Step 2 - Cloud Function</h2>
 
 <p>Once we have the bare bones serverless template in place we can build on it to create the function we want for handling incoming requests from the Github webhook. All the code is in <a href="https://github.com/andrewm4894/cloud-functions/tree/master/handle-github-events">this repository</a> and i’ll walk through the main points below.</p>
 
@@ -96,7 +96,7 @@
 
 <p>https://gist.github.com/andrewm4894/b465ec54dc1aa09f5a32132f5ad8528a</p>
 
-<h2 id="step-3---deploy">Step 3 - Deploy</h2>
+<h2 id="id-step-3---deploy">Step 3 - Deploy</h2>
 
 <p>Once we are ready we run `serverless deploy` and if all goes well see output like below:</p>
 
@@ -133,7 +133,7 @@ Serverless: Removing old artifacts...
 
 <p>Now you should have a cloud function alive at some url like <a href="https://-.cloudfunctions.net/github_event">https://your-region-your-project-name.cloudfunctions.net/github_event</a>.</p>
 
-<h2 id="step-4---github-webhook">Step 4 - Github Webhook</h2>
+<h2 id="id-step-4---github-webhook">Step 4 - Github Webhook</h2>
 
 <p>Once your function is deployed (or in reality you might make the Gtibhub webhook first and then iterate on the function to get it doing what you want) you can create and test Github Webhook you want to send events from.</p>
 
@@ -145,7 +145,7 @@ Serverless: Removing old artifacts...
 
 <p><img src="/assets/images/2020-01-28-github-webhook-cloud-function-bigquery/webhook2.jpg" alt="" /></p>
 
-<h2 id="fingers-crossed">Fingers Crossed</h2>
+<h2 id="id-fingers-crossed">Fingers Crossed</h2>
 
 <p>Now we can try see if it works by triggering some events. In this example i logged on as a second username i have and pressed some star, watch, and fork buttons to see what happened.</p>
 

@@ -16,7 +16,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Sans+Pro:ital,wght@0,400;0,600;1,400;1,600&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
 
     <title>Premature Optimization | andrewm4894.com</title>
-    <link rel="stylesheet" href="/preview/add-yt-embedds/assets/css/style.css?v=20250802161342">
+    <link rel="stylesheet" href="/preview/add-yt-embedds/assets/css/style.css?v=20250802161743">
     
     <!-- PostHog Analytics -->
     <script>
@@ -60,7 +60,7 @@
 
 <p>I’ve been doing some work that necessitated using the same statistical test from spicy lots of times on a fairly wide pandas dataframe with lots of columns. I spent a bit too much time googling around for the most efficient ways to do this, and even more time re-writing things various way before realizing i should have <a href="https://en.wikipedia.org/wiki/RTFM#:~:text=RTFM%20is%20an%20initialism%20for,the%20product%20manual%20or%20documentation.">RTFM</a> a bit more in the first place, yep i’ve gone about a week down a path of premature optimization - but hey, *blog post* :)</p>
 
-<h2 id="the-set-up">The Set Up</h2>
+<h2 id="id-the-set-up">The Set Up</h2>
 
 <p>I have a wide pandas dataframe of lots of time series metrics - one for each column, and i have a ‘focus’ window of time during which i am interested to know what metrics look like the may have changed in some way in reference to a ‘baseline’ window just before the focus window.</p>
 
@@ -70,7 +70,7 @@
 
 <p>So a pretty simple set up and application. The tricky part was doing this as quickly as possible on a dataframe with around 500-1000 columns and anywhere between 1000-10000 rows of data as a rough typical usage scenario.</p>
 
-<h2 id="dumb-approach">Dumb Approach</h2>
+<h2 id="id-dumb-approach">Dumb Approach</h2>
 
 <p>So my first approach, as usual, is to do the dumbest thing i can and just get something that works and go from there. So here is my <code class="language-plaintext highlighter-rouge">ks_df_dumb()</code> function.</p>
 
@@ -105,7 +105,7 @@
 
 <p>So about 3-4 seconds which is not great for what i need (it may end up being something a user clicks to trigger and so want to have them wait as little as possible for the results).</p>
 
-<h2 id="vectorize-it">Vectorize it?</h2>
+<h2 id="id-vectorize-it">Vectorize it?</h2>
 
 <p>So now i start messing around with super cool tricks to try and be a hero. I know better than to be looping over stuff in python and pandas, i know i’ll try vectorize it!</p>
 
@@ -145,7 +145,7 @@
 
 <p>So a bit better at just over 2 seconds but still not great given this is still only 1000 rows of data.</p>
 
-<h2 id="numpy">Numpy?</h2>
+<h2 id="id-numpy">Numpy?</h2>
 
 <p>Time to break out numpy! (confession: i never really learned numpy properly and find it very painful to work with and reason about the data and shapes etc as i do stuff to them - it all just feels so unnatural to me in some way - and i find it hard to keep track of things without and indexes or keys, i just don’t trust myself with it - i know i’m not supposed to speak this out loud but hey).</p>
 
@@ -202,7 +202,7 @@
 
 <p>And makes sense the the numpy dumb and numpy vectorize are not that different as the docs for it state that its really <a href="https://numpy.org/doc/stable/reference/generated/numpy.vectorize.html">just still a loop</a> (so to properly really vectorize it that means i’d probably have to do much more work to figure it out).</p>
 
-<h2 id="feck-this-time-for-cython">Feck this time for Cython!!!</h2>
+<h2 id="id-feck-this-time-for-cython">Feck this time for Cython!!!</h2>
 
 <p>Hell yeah i’m going to cythonize the shit out of this! Let be honest this is what i’ve wanted to do the whole time, do something with cython so i can boast about it to all my friends and how i got this awesome speedup, even just by adding some typing information.</p>
 
@@ -256,7 +256,7 @@
 
 <p>So i did what was the logical next step - made a reproducible example and <a href="https://stackoverflow.com/questions/62195718/looping-over-a-scipy-function-lots-of-times-in-cython-not-seeing-much-improvem">asked StackOverflow</a> to do it for me :)</p>
 
-<h2 id="bro-do-you-even-profile">Bro, do you even Profile!</h2>
+<h2 id="id-bro-do-you-even-profile">Bro, do you even Profile!</h2>
 
 <p>So while i waited on SO to do its thing i asked a few real engineers in my company what they thought. And their first response was - did you profile your code?</p>
 

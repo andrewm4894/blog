@@ -16,7 +16,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Sans+Pro:ital,wght@0,400;0,600;1,400;1,600&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
 
     <title>Parallel Jupyter Notebooks | andrewm4894.com</title>
-    <link rel="stylesheet" href="/preview/add-yt-embedds/assets/css/style.css?v=20250802161342">
+    <link rel="stylesheet" href="/preview/add-yt-embedds/assets/css/style.css?v=20250802161743">
     
     <!-- PostHog Analytics -->
     <script>
@@ -55,7 +55,7 @@
 
 <p><em>Note: All the code for this post is</em> <a href="https://github.com/andrewm4894/papermill_dev"><em>here</em></a><em>.</em></p>
 
-<h3 id="one-problem-with-notebooks">One problem with notebooks</h3>
+<h3 id="id-one-problem-with-notebooks">One problem with notebooks</h3>
 
 <p>I’m generally (have swayed back and forth) a fan of notebooks but am wary of some of the downsides or costs they can impose. When doing experimental type work, if your not careful, you can end up with lots of duplicated code or what i think of as “notebook instances”, where you have ran your notebook many times on different (but similar) datasets and with different (but similar) parameters.</p>
 
@@ -67,7 +67,7 @@
 
 <p>I’ll try make this clearer with an example.</p>
 
-<h3 id="data_explorer-notebook"><a href="https://github.com/andrewm4894/papermill_dev/blob/master/notebooks/data_explorer.ipynb">data_explorer</a> Notebook</h3>
+<h3 id="id-data_explorer-notebook"><a href="https://github.com/andrewm4894/papermill_dev/blob/master/notebooks/data_explorer.ipynb">data_explorer</a> Notebook</h3>
 
 <p>Lets suppose you have a notebook that you often use on new datasets (in reality it’s more likely to be some more complicated ml pipeline type notebook for quickly experimenting on updated datasets with while maintaining some common structure in how you go about things).</p>
 
@@ -80,7 +80,7 @@
 
 <p>In this case, the <a href="https://nbviewer.jupyter.org/github/andrewm4894/papermill_dev/blob/master/notebooks/data_explorer.ipynb?cache=false">data_explorer</a> notebook just takes in one parameter called “data_url”. It then downloads from this url into a pandas dataframe and does some basic plotting. In reality this “config” dict can contain all the input parameters you need to define and execute you notebook. For example it could be defining the type of models to build against your data, what data to use, model parameters, where to store outputs etc. anything and everything really.</p>
 
-<h3 id="enter-papermill">Enter Papermill</h3>
+<h3 id="id-enter-papermill">Enter Papermill</h3>
 
 <p>So lets say you now have a number of different datasets that you want to run through your data_explorer notebook. You could manually update the config and then just rerun the notebook 3 times (making sure to restart the kernel and clear all each time), maybe saving outputs into specific locations. Or worse you could make 3 copies of your notebook and just run them each individually (don’t do this, future you will hate it).</p>
 

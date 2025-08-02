@@ -16,7 +16,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Sans+Pro:ital,wght@0,400;0,600;1,400;1,600&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
 
     <title>Terraform is Magic + r/MachineLearning Links | andrewm4894.com</title>
-    <link rel="stylesheet" href="/preview/add-yt-embedds/assets/css/style.css?v=20250802161342">
+    <link rel="stylesheet" href="/preview/add-yt-embedds/assets/css/style.css?v=20250802161743">
     
     <!-- PostHog Analytics -->
     <script>
@@ -65,7 +65,7 @@
 
 <p>(<strong>Note</strong>: All code is available in my <a href="https://github.com/andrewm4894/reddit-links">reddit-links Github repo</a>.)</p>
 
-<h2 id="the-set-up">The Set Up</h2>
+<h2 id="id-the-set-up">The Set Up</h2>
 
 <p>The idea is to have a cloud function that runs each day, looks at top posts on <a href="https://www.reddit.com/r/machinelearning">r/MachineLearning</a>, pulls out all links, and some metadata, and then saves those links somewhere useful.</p>
 
@@ -81,7 +81,7 @@
   <li><strong>Airtable</strong>: This is where the data will be stored and published from. I had considered a GCP bucket but Airtable is much easier to share and a bit more user friendly for anyone who might want to use the links pulled from reddit.</li>
 </ul>
 
-<h2 id="terraform">Terraform</h2>
+<h2 id="id-terraform">Terraform</h2>
 
 <p>Once you work with and set up a Terraform project once then its pretty straight forward. I have used <a href="https://www.serverless.com/">Serverless</a> for some cloud functions before but i like the way terraform gives you everything GCP or AWS or Azure etc have to offer at your fingertips once you invest that little bit of learning up front.</p>
 
@@ -97,23 +97,23 @@
   <li><a href="https://github.com/andrewm4894/reddit-links/blob/master/terraform/gcp-pubsub-topics.tf"><strong>gcp-pubsub-topics.tf</strong></a> - used to define the <a href="https://cloud.google.com/pubsub">PubSub</a> topics that will trigger the cloud function.</li>
 </ul>
 
-<h2 id="gcp-function---redditlinks">GCP Function - redditlinks</h2>
+<h2 id="id-gcp-function---redditlinks">GCP Function - redditlinks</h2>
 
 <p>The function used to pull from reddit is below. It might be a little verbose and could probably be refactored a little but hey - it works. Mainly using the <a href="https://praw.readthedocs.io/en/latest/">PRAW</a> library to pull from reddit, some usual data wrangling libraries, and then the <a href="https://github.com/gtalarico/airtable-python-wrapper">airtable-python-wrapper</a> library to insert/update records in Airtable.</p>
 
 <p>https://gist.github.com/andrewm4894/dbea54c122d8f3dd4e2695887e337567</p>
 
-<h2 id="end-results---airtable">End Results - Airtable</h2>
+<h2 id="id-end-results---airtable">End Results - Airtable</h2>
 
 <p>The end results of all this being a cloud function that runs once a day to update or insert records into <a href="https://airtable.com/shrCe8ZWuLJpHNiG8">this Airtable</a>. Then from that i have made some views for links from specific domains.</p>
 
 <p>(<strong>Note</strong>: If you wanted to do this but for a different subreddit then you should need to make minimal changes once you have your terraform variables all set up - primarily changing or adding another cloud scheduler job to <a href="https://github.com/andrewm4894/reddit-links/blob/master/terraform/gcp-cloud-scheduler.tf">here</a> with the relevant params, as well as making sure all keys etc you need are available in the right places).</p>
 
-<h2 id="rmachinelearning---youtube-links">r/MachineLearning - YouTube Links</h2>
+<h2 id="id-rmachinelearning---youtube-links">r/MachineLearning - YouTube Links</h2>
 
 <iframe class="airtable-embed" src="https://airtable.com/embed/shrfM8xpQlzEchVWB?backgroundColor=orange&amp;viewControls=on" frameborder="0" onmousewheel="" width="800" height="500" style="background: transparent; border: 1px solid #ccc;"></iframe>
 
-<h2 id="rmachinelearning---arxiv-links">r/MachineLearning - Arxiv Links</h2>
+<h2 id="id-rmachinelearning---arxiv-links">r/MachineLearning - Arxiv Links</h2>
 
 <iframe class="airtable-embed" src="https://airtable.com/embed/shrNMyw1d6BKS3R89?backgroundColor=orange&amp;viewControls=on" frameborder="0" onmousewheel="" width="100%" height="533" style="background: transparent; border: 1px solid #ccc;"></iframe>
 

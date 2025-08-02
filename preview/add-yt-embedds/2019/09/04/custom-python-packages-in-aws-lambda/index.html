@@ -16,7 +16,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Sans+Pro:ital,wght@0,400;0,600;1,400;1,600&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
 
     <title>Custom Python Packages in AWS Lambda | andrewm4894.com</title>
-    <link rel="stylesheet" href="/preview/add-yt-embedds/assets/css/style.css?v=20250802161342">
+    <link rel="stylesheet" href="/preview/add-yt-embedds/assets/css/style.css?v=20250802161743">
     
     <!-- PostHog Analytics -->
     <script>
@@ -75,7 +75,7 @@
 
 <p>The result involves a Docker container to build your packages in (i have to use this as using windows based python package local install does not work in Lambda as the install contains some windows stuff Lambda won’t like), and a jupyter notebook (of course there is some jupyter :) ) to take some inputs (what packages you want, what to call the AWS Layer, etc), build local installs of the packages, add them to a zip file, load zip file to S3 and then finally use awscli to make a new layer from said S3 zip file.</p>
 
-<h2 id="dockerfile">Dockerfile</h2>
+<h2 id="id-dockerfile">Dockerfile</h2>
 
 <p>The first place to start is with the below <a href="https://github.com/andrewm4894/my-aws-python-packages/blob/master/Dockerfile">Dockerfile</a> that creates a basic conda ready docker container with jupyter installed. Note it also includes <a href="https://github.com/conda/conda-build">conda-build</a> and copies over the <strong>packages/</strong> folder into the container (required as i wanted to install my “my_utils” package and have it available to the jupyter notebook).</p>
 
@@ -99,7 +99,7 @@
 
 <p>The above runs the container, port forwards 8888 (for jupyter), mounts both the <strong>/packages</strong> and <strong>/work</strong> folders (as for these files we want changes from outside docker or inside to be reflected and vice versa), and passes in my AWS credentials as environment variables to the container (needed for the asw cli commands we will run inside the container). Its last step is to then launch jupyter lab which you then should be able to get to at http://localhost:8888/lab using the token provided by jupyter.</p>
 
-<h2 id="notebook-time---make_layeripynb">Notebook time - make_layer.ipynb</h2>
+<h2 id="id-notebook-time---make_layeripynb">Notebook time - make_layer.ipynb</h2>
 
 <p>Once the docker container is running and you are in jupyter the <a href="https://github.com/andrewm4894/my-aws-python-packages/blob/master/work/make_layer.ipynb">make_layer</a> notebook automates the local installation of a list of python packages, zipping them to /work/python.zip folder as expected by <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-layers.html">AWS Layers</a> (when unzipped your root folder needs to be /python/…), loading it to an S3 location, and then using awscli to add a new layer or version (if the layer already exists).</p>
 
@@ -109,7 +109,7 @@
 
 <p>For this example i’ve included two custom packages along with <a href="https://pandas.pydata.org/">pandas</a> into my AWS Layer. The custom packages are just two little basic <a href="https://github.com/andrewm4894/my-aws-python-packages/blob/master/packages/my_dev/my_dev/dev.py#L3">hello_world()</a> type packages (one actually creates the <a href="https://github.com/andrewm4894/my-aws-python-packages/blob/master/packages/my_utils/my_utils/os_utils.py#L6">subprocess_execute()</a> function used in the make_layer notebook). I’ve included pandas then as well to illustrate how to include a pypi package.</p>
 
-<h2 id="serverless-deploy">Serverless Deploy!</h2>
+<h2 id="id-serverless-deploy">Serverless Deploy!</h2>
 
 <p>To round off the example we then also need to create a little AWS Lambda function to validate that the packages installed in our layer can actually be used by Lambda.</p>
 

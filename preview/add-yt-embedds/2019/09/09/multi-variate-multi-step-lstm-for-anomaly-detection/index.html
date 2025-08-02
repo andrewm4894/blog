@@ -16,7 +16,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Sans+Pro:ital,wght@0,400;0,600;1,400;1,600&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
 
     <title>Multi-Variate, Multi-Step, LSTM for Anomaly Detection | andrewm4894.com</title>
-    <link rel="stylesheet" href="/preview/add-yt-embedds/assets/css/style.css?v=20250802161342">
+    <link rel="stylesheet" href="/preview/add-yt-embedds/assets/css/style.css?v=20250802161743">
     
     <!-- PostHog Analytics -->
     <script>
@@ -75,7 +75,7 @@
 
 <p><em>Note: This example is adapted and built off of</em> <a href="https://developer.ibm.com/tutorials/iot-deep-learning-anomaly-detection-5/"><em>this tutorial</em></a> <em>which i found a very useful starting point. All the code for this post is in</em> <a href="https://github.com/andrewm4894/keras_learn/blob/master/lstm_multi.ipynb"><em>this notebook</em></a><em>. The rest of this post will essentially walk though the code.</em></p>
 
-<h2 id="imports--paramaters">Imports &amp; Paramaters</h2>
+<h2 id="id-imports--paramaters">Imports &amp; Paramaters</h2>
 
 <p>Below shows the imports and all the parameters for this example, you should be able to play with them and see what different results you get.</p>
 
@@ -83,7 +83,7 @@
 
 <p>https://gist.github.com/andrewm4894/4540e23d86fa02859191a38998661849#file-keras_lstm_multi_imports_and_params-py</p>
 
-<h2 id="fake-data">Fake Data!</h2>
+<h2 id="id-fake-data">Fake Data!</h2>
 
 <p>We will generate some random data, and then smooth it out to look realistic. This will be our <strong>‘normal’ data</strong> that we will use to train the model.</p>
 
@@ -139,7 +139,7 @@
 
 </figure>
 
-<h2 id="some-helper-functions">Some Helper Functions</h2>
+<h2 id="id-some-helper-functions">Some Helper Functions</h2>
 
 <p>I’ve built some helper functions to make life easier in the example notebook. I’ll share the code below and talk a little about each.</p>
 
@@ -155,7 +155,7 @@
 
 <p>https://gist.github.com/andrewm4894/58179c6e240163a45dc2acff1843f7f2#file-keras_lstm_multi_helper_functions-py</p>
 
-<h2 id="build--train-the-model">Build &amp; Train The Model</h2>
+<h2 id="id-build--train-the-model">Build &amp; Train The Model</h2>
 
 <p>Below code builds the model, trains it and also calls predict on all the training data be able to get errors on the original ‘normal’ training data.</p>
 
@@ -177,7 +177,7 @@
 
 <p><img src="/assets/images/2019-09-09-multi-variate-multi-step-lstm-for-anomaly-detection/1_PuMxLqfI3xQkoTzNo44v1g.jpeg" alt="" /></p>
 
-<h2 id="lets-break-it">Lets Break It</h2>
+<h2 id="id-lets-break-it">Lets Break It</h2>
 
 <p>So now that we have our model trained on our ‘normal’ data we can use it to see how well it does at predicting our new ‘broken’ data.</p>
 

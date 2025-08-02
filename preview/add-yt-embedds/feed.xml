@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.3">Jekyll</generator><link href="https://andrewm4894.com/preview/add-yt-embedds/feed.xml" rel="self" type="application/atom+xml" /><link href="https://andrewm4894.com/preview/add-yt-embedds/" rel="alternate" type="text/html" /><updated>2025-08-02T16:13:42+00:00</updated><id>https://andrewm4894.com/preview/add-yt-embedds/feed.xml</id><title type="html">andrewm4894.com</title><subtitle>Personal blog blah blah, migrated from WordPress.
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.3">Jekyll</generator><link href="https://andrewm4894.com/preview/add-yt-embedds/feed.xml" rel="self" type="application/atom+xml" /><link href="https://andrewm4894.com/preview/add-yt-embedds/" rel="alternate" type="text/html" /><updated>2025-08-02T16:17:43+00:00</updated><id>https://andrewm4894.com/preview/add-yt-embedds/feed.xml</id><title type="html">andrewm4894.com</title><subtitle>Personal blog blah blah, migrated from WordPress.
 </subtitle><entry><title type="html">bolt.new vs o1 - some thoughts</title><link href="https://andrewm4894.com/preview/add-yt-embedds/2024/12/19/bolt-new-vs-o1-some-thoughts/" rel="alternate" type="text/html" title="bolt.new vs o1 - some thoughts" /><published>2024-12-19T00:00:00+00:00</published><updated>2024-12-19T00:00:00+00:00</updated><id>https://andrewm4894.com/preview/add-yt-embedds/2024/12/19/bolt-new-vs-o1-some-thoughts</id><content type="html" xml:base="https://andrewm4894.com/preview/add-yt-embedds/2024/12/19/bolt-new-vs-o1-some-thoughts/">&lt;p&gt;this is funny - i tried to make a little app to share daily factoids from chatgpt on a site - just as excuse to learn javascript really.&lt;/p&gt;
 
 &lt;p&gt;bolt.new is great and i felt like a wizard at first just freestyling away on the keys but man what a mess i ended up creating - ended up down various dead ends with firebase and deployment to netlify and lots of infra related mess that ended up waaay too complex for me at that stage down the rabbirt hole to know where to start to try untangle anything.&lt;/p&gt;
@@ -59,7 +59,7 @@
   &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h2 id=&quot;moving-parts&quot;&gt;Moving parts&lt;/h2&gt;
+&lt;h2 id=&quot;id-moving-parts&quot;&gt;Moving parts&lt;/h2&gt;
 
 &lt;ul&gt;
   &lt;li&gt;
@@ -76,7 +76,7 @@
   &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h2 id=&quot;initial-thoughts&quot;&gt;Initial thoughts&lt;/h2&gt;
+&lt;h2 id=&quot;id-initial-thoughts&quot;&gt;Initial thoughts&lt;/h2&gt;
 
 &lt;ul&gt;
   &lt;li&gt;
@@ -111,7 +111,7 @@
 
 &lt;p&gt;(I really do - metrics are everywhere so we need decent anomaly detection to avoid overload, anomaly detection is a great mix of art and science as can be quite subjective, and decent anomaly detection should some-day kill all dashboards!!!)&lt;/p&gt;
 
-&lt;h2 id=&quot;anomaly-detection-airflow-provider&quot;&gt;Anomaly detection Airflow provider&lt;/h2&gt;
+&lt;h2 id=&quot;id-anomaly-detection-airflow-provider&quot;&gt;Anomaly detection Airflow provider&lt;/h2&gt;
 
 &lt;p&gt;So here is the &lt;strong&gt;TL;DR;&lt;/strong&gt; (if curious for more detail check out the project &lt;a href=&quot;https://github.com/andrewm4894/airflow-provider-anomaly-detection&quot;&gt;README&lt;/a&gt; on GitHub).&lt;/p&gt;
 
@@ -129,7 +129,7 @@
   &lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;h2 id=&quot;how-it-works&quot;&gt;How it works&lt;/h2&gt;
+&lt;h2 id=&quot;id-how-it-works&quot;&gt;How it works&lt;/h2&gt;
 
 &lt;p&gt;Really all this provider and example dag are doing is creating a set of 4 dags within airflow, one set for each “metric batch” you define (different “metric batches” can be for different frequency or subject areas - you can use them however you want as each metric batch is basically just templated jinja sql files and a corresponding yaml config file):&lt;/p&gt;
 
@@ -148,7 +148,7 @@
   &lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;h2 id=&quot;pros-vs-cons&quot;&gt;Pros vs. Cons&lt;/h2&gt;
+&lt;h2 id=&quot;id-pros-vs-cons&quot;&gt;Pros vs. Cons&lt;/h2&gt;
 
 &lt;p&gt;Here are some pro’s and con’s to help you decide if using and getting involved in this project makes sense to you.&lt;/p&gt;
 
@@ -189,7 +189,7 @@
   &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h2 id=&quot;get-involved&quot;&gt;Get involved!&lt;/h2&gt;
+&lt;h2 id=&quot;id-get-involved&quot;&gt;Get involved!&lt;/h2&gt;
 
 &lt;p&gt;This project is very very easy to get involved in and I hope could end up being quite useful for the wider Airflow community - it’s crazy that we don’t really have easy ways to just get some decent anomaly detection on all our business metrics within the same context of the ETL’s and dags we create all the time in Airflow.&lt;/p&gt;
 
@@ -197,7 +197,7 @@
 
 &lt;p&gt;Feel free to make issues and PR’s in the Github repo: &lt;a href=&quot;https://github.com/andrewm4894/airflow-provider-anomaly-detection&quot;&gt;https://github.com/andrewm4894/airflow-provider-anomaly-detection&lt;/a&gt;&lt;/p&gt;
 
-&lt;h2 id=&quot;useful-links&quot;&gt;Useful links&lt;/h2&gt;
+&lt;h2 id=&quot;id-useful-links&quot;&gt;Useful links&lt;/h2&gt;
 
 &lt;ul&gt;
   &lt;li&gt;
@@ -223,7 +223,7 @@
 
 &lt;p&gt;Most of what might be useful is in the &lt;a href=&quot;https://github.com/andrewm4894/stripe-webhook-gcp-function#readme&quot;&gt;repo readme&lt;/a&gt;, but below i’ll quickly walk through the structure and moving parts.&lt;/p&gt;
 
-&lt;h2 id=&quot;repo-structure&quot;&gt;Repo structure&lt;/h2&gt;
+&lt;h2 id=&quot;id-repo-structure&quot;&gt;Repo structure&lt;/h2&gt;
 
 &lt;p&gt;Here are the main folders and files involved. Greyed out files are those that might have sensitive info and so are part of the &lt;a href=&quot;https://github.com/andrewm4894/stripe-webhook-gcp-function/blob/main/.gitignore&quot;&gt;`.gitignore`&lt;/a&gt; and so not to be committed to source control. I’ll quickly walkthrough each folder and important files below.&lt;/p&gt;
 
@@ -276,7 +276,7 @@
   &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;requirements.txt&lt;/code&gt; - Python libraries we want to install into our `venv` for local execution and debugging of the function.&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h2 id=&quot;run-function-locally&quot;&gt;Run function locally&lt;/h2&gt;
+&lt;h2 id=&quot;id-run-function-locally&quot;&gt;Run function locally&lt;/h2&gt;
 
 &lt;p&gt;To run the function locally we can use the &lt;a href=&quot;https://github.com/GoogleCloudPlatform/functions-framework-python#quickstart-http-function-hello-world&quot;&gt;functions framework cli&lt;/a&gt; like below:&lt;/p&gt;
 
@@ -304,9 +304,9 @@ functions-framework &lt;span class=&quot;nt&quot;&gt;--source&lt;/span&gt;&lt;sp
  &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Debugger&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;PIN:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;XXX-XXX&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;h2 id=&quot;stripe-cli&quot;&gt;Stripe CLI&lt;/h2&gt;
+&lt;h2 id=&quot;id-stripe-cli&quot;&gt;Stripe CLI&lt;/h2&gt;
 
-&lt;h3 id=&quot;set-up-local-forwarding&quot;&gt;Set up local forwarding&lt;/h3&gt;
+&lt;h3 id=&quot;id-set-up-local-forwarding&quot;&gt;Set up local forwarding&lt;/h3&gt;
 
 &lt;p&gt;Once the function is running locally you can use the &lt;a href=&quot;https://stripe.com/docs/stripe-cli&quot;&gt;stripe cli&lt;/a&gt; to (1) forward events to a local endpoint and then (2) trigger some test events to see the response.&lt;/p&gt;
 
@@ -320,7 +320,7 @@ functions-framework &lt;span class=&quot;nt&quot;&gt;--source&lt;/span&gt;&lt;sp
 &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Ready&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;You&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;are&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;using&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Stripe&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;API&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Version&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2022&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;-11-15&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Your&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;webhook&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;signing&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;secret&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;is&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;xxx_xxxxxx&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;^&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;C&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;to&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;quit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;h3 id=&quot;create-some-test-events&quot;&gt;Create some test events&lt;/h3&gt;
+&lt;h3 id=&quot;id-create-some-test-events&quot;&gt;Create some test events&lt;/h3&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# create a test event&lt;/span&gt;
 stripe trigger payment_intent.succeeded
@@ -365,7 +365,7 @@ stripe trigger payment_intent.succeeded
 &lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;127.0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;22&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;/Dec/2022&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;12:31:11&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;POST / HTTP/1.1&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;200&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;h2 id=&quot;thats-it&quot;&gt;Thats it&lt;/h2&gt;
+&lt;h2 id=&quot;id-thats-it&quot;&gt;Thats it&lt;/h2&gt;
 
 &lt;p&gt;That’s it, you can then add whatever additional logic you want to handle specific stripe webhook events and control what events make it to this webhook from within the stripe ui itself as needed.&lt;/p&gt;
 

@@ -16,7 +16,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Sans+Pro:ital,wght@0,400;0,600;1,400;1,600&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
 
     <title>Painless Anomaly Detection with Apache Airflow | andrewm4894.com</title>
-    <link rel="stylesheet" href="/preview/add-yt-embedds/assets/css/style.css?v=20250802161342">
+    <link rel="stylesheet" href="/preview/add-yt-embedds/assets/css/style.css?v=20250802161743">
     
     <!-- PostHog Analytics -->
     <script>
@@ -71,7 +71,7 @@
 
 <p>(I really do - metrics are everywhere so we need decent anomaly detection to avoid overload, anomaly detection is a great mix of art and science as can be quite subjective, and decent anomaly detection should some-day kill all dashboards!!!)</p>
 
-<h2 id="anomaly-detection-airflow-provider">Anomaly detection Airflow provider</h2>
+<h2 id="id-anomaly-detection-airflow-provider">Anomaly detection Airflow provider</h2>
 
 <p>So here is the <strong>TL;DR;</strong> (if curious for more detail check out the project <a href="https://github.com/andrewm4894/airflow-provider-anomaly-detection">README</a> on GitHub).</p>
 
@@ -89,7 +89,7 @@
   </li>
 </ol>
 
-<h2 id="how-it-works">How it works</h2>
+<h2 id="id-how-it-works">How it works</h2>
 
 <p>Really all this provider and example dag are doing is creating a set of 4 dags within airflow, one set for each “metric batch” you define (different “metric batches” can be for different frequency or subject areas - you can use them however you want as each metric batch is basically just templated jinja sql files and a corresponding yaml config file):</p>
 
@@ -108,7 +108,7 @@
   </li>
 </ol>
 
-<h2 id="pros-vs-cons">Pros vs. Cons</h2>
+<h2 id="id-pros-vs-cons">Pros vs. Cons</h2>
 
 <p>Here are some pro’s and con’s to help you decide if using and getting involved in this project makes sense to you.</p>
 
@@ -149,7 +149,7 @@
   </li>
 </ul>
 
-<h2 id="get-involved">Get involved!</h2>
+<h2 id="id-get-involved">Get involved!</h2>
 
 <p>This project is very very easy to get involved in and I hope could end up being quite useful for the wider Airflow community - it’s crazy that we don’t really have easy ways to just get some decent anomaly detection on all our business metrics within the same context of the ETL’s and dags we create all the time in Airflow.</p>
 
@@ -157,7 +157,7 @@
 
 <p>Feel free to make issues and PR’s in the Github repo: <a href="https://github.com/andrewm4894/airflow-provider-anomaly-detection">https://github.com/andrewm4894/airflow-provider-anomaly-detection</a></p>
 
-<h2 id="useful-links">Useful links</h2>
+<h2 id="id-useful-links">Useful links</h2>
 
 <ul>
   <li>

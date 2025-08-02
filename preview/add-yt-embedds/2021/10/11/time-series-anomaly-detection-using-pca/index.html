@@ -16,7 +16,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Sans+Pro:ital,wght@0,400;0,600;1,400;1,600&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
 
     <title>Time series anomaly detection using PCA | andrewm4894.com</title>
-    <link rel="stylesheet" href="/preview/add-yt-embedds/assets/css/style.css?v=20250802161342">
+    <link rel="stylesheet" href="/preview/add-yt-embedds/assets/css/style.css?v=20250802161743">
     
     <!-- PostHog Analytics -->
     <script>
@@ -84,7 +84,7 @@
 
 <p><strong>Note</strong>: You can run and play with <a href="https://github.com/andrewm4894/colabs/blob/master/time_series_anomaly_detection_with_pca.ipynb">this colab notebook</a> if you’d rather just look at the code (<a href="https://github.com/andrewm4894/colabs/blob/master/time_series_anomaly_detection_with_pca.ipynb">github</a>, <a href="https://colab.research.google.com/drive/1kp7a-FANlwHrAwT2F7IIt7Af-gnDYJ3b?usp=sharing">colab</a>).</p>
 
-<h2 id="raw-data">Raw Data</h2>
+<h2 id="id-raw-data">Raw Data</h2>
 
 <p>Let’s begin by getting some raw data to work with. Here i will use public data from a demo server at <a href="https://www.netdata.cloud/">Netdata Cloud</a> where i work. You can see this data on the <a href="http://london.my-netdata.io/">Netdata dashboard</a> here or via its api <a href="https://london.my-netdata.io/api/v1/data?chart=system.cpu&amp;after=-3600&amp;before=0">here</a> (which is what we will be using - albeit via our <a href="https://github.com/netdata/netdata-pandas">netdata_pandas</a> package that manages all that).</p>
 
@@ -129,7 +129,7 @@
 
 </figure>
 
-<h2 id="add-some-anomalies">Add some anomalies</h2>
+<h2 id="id-add-some-anomalies">Add some anomalies</h2>
 
 <p>To make things easy on ourselves we will take a little snippet of time towards the end of our raw data and mess it up by first shuffling it and then smoothing it so that it’s clearly anomalous.</p>
 
@@ -159,7 +159,7 @@
 
 </figure>
 
-<h2 id="preprocessing">Preprocessing</h2>
+<h2 id="id-preprocessing">Preprocessing</h2>
 
 <p>I have not mentioned it much but a key part of this “recipe” is in how we preprocess or featurize our raw time series data. We are keeping it simple here by ‘fattening’ our time series data at each timestep into a <em>differenced</em>, <em>smoothed</em> and <em>lagged</em> feature vector (which we also take absolute values of). This is typical basic feature preprocessing you might to when you want to convert your time series data into a more traditional ML formulation of observations of X’s and y’s.</p>
 
@@ -201,7 +201,7 @@
 </span><span class="n">contaminated_data</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">preprocess_df</span><span class="p">(</span><span class="n">df_contaminated</span><span class="p">,</span><span class="err"> </span><span class="n">lags_n</span><span class="p">,</span><span class="err"> </span><span class="n">diffs_n</span><span class="p">,</span><span class="err"> </span><span class="n">smooth_n</span><span class="p">)</span>
 </code></pre></div></div>
 
-<h2 id="pca-ftw">PCA FTW!</h2>
+<h2 id="id-pca-ftw">PCA FTW!</h2>
 
 <p>Now lets fit our PCA model on our training data and then use it to derive some anomaly scores for our anomalous data.</p>
 
