@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/preview/pr-6/assets/images/favicon.png">
+    <link rel="shortcut icon" type="image/png" href="/preview/pr-6/assets/images/favicon.png">
+    <link rel="apple-touch-icon" href="/preview/pr-6/assets/images/favicon.png">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Sans+Pro:ital,wght@0,400;0,600;1,400;1,600&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+
+    <title>Anomaly Detection using the Matrix Profile | andrewm4894.com</title>
+    <link rel="stylesheet" href="/preview/pr-6/assets/css/style.css?v=20250802152033">
+    
+    <!-- PostHog Analytics -->
+    <script>
+        !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init Re Cs Fs Pe Rs Ms capture Ve calculateEventProperties Ds register register_once register_for_session unregister unregister_for_session zs getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSurveysLoaded onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey canRenderSurveyAsync identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty js As createPersonProfile Ns Is Us opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing Os debug I Ls getPageViewId captureTraceFeedback captureTraceMetric".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+        posthog.init('zR4pStMtxgP3wJ27vIjQJvZNXwMWqZlzP0x4dKbHOHg', {
+            api_host: 'https://us.i.posthog.com',
+            defaults: '2025-05-24',
+            person_profiles: 'identified_only', // or 'always' to create profiles for anonymous users as well
+        })
+    </script>
+    
+  </head>
+  <body>
+    <div class="wrapper" style="display: flex; max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+      <!-- Main content -->
+      <section style="flex: 1; max-width: 800px; margin-right: 40px;">
+        <div style="margin-bottom: 2em;">
+          <a href="/preview/pr-6/" style="display: inline-block; padding: 0.5em 1em; background: #f5f5f5; border-radius: 4px; text-decoration: none; color: #333;">
+            ← Back to Home
+          </a>
+        </div>
+
+        
+
+        <h1>Anomaly Detection using the Matrix Profile</h1>
+
+        <p class="post-meta">
+          <time datetime="2021-02-16T00:00:00+00:00">Feb 16, 2021
+          </time><span class="categories">
+            • Categories: 
+            
+            <span class="category">anomaly-detection</span>
+            , 
+            
+            <span class="category">machine-learning</span>
+            , 
+            
+            <span class="category">time-series</span>
+            
+            
+          </span></p>
+
+        <p><img src="/assets/images/2021-02-16-anomaly-detection-using-matrix-profile/distance_matrix.gif" alt="" /></p>
+
+<p>I like an excuse to play with fancy things, so when i first learned about the <a href="https://matrixprofile.org/#:~:text=The%20matrix%20profile%20is%20a,scalable%20and%20largely%20parameter%2Dfree.">Matrix Profile</a> for time series analysis, particularly around anomaly detection, i was intrigued. When i learned there was a nice python package (<a href="https://stumpy.readthedocs.io/en/latest/index.html">STUMPY</a>) i could just pip install i was outright excited, as one thing i like more than something fancy, is something fancy where someone has already done most of the work for me :)</p>
+
+<p><strong>Note</strong>: <a href="https://colab.research.google.com/drive/1Pkzk0PVWThNePdjVOTZrxERCXPB2b_Sw?usp=sharing">here is a colab notebook</a> you can just run and play with for yourself.</p>
+
+<p>My use case is time series anomaly detection on monitoring data from <a href="http://github.com/netdata/netdata">Netdata</a> (where i work). <a href="http://london.my-netdata.io/">Here</a> is an example demo dashboard i will use for illustration. Basically what i want to do is pull an hour of data from my server, compute the matrix profile for each metric in that data (about 1500 metrics) and then use the matrix profile for each metric to in some way rank metrics and surface the most anomalous looking via some sort of scoring and ranking.</p>
+
+<p><strong>tl; dr</strong>: the Matrix Profile computes subsequence distances within your time series and so subsequences with a larger distance to any other observed subsequences in your time series are more unique in some sense of being the most distant/different and so, possibly, anomalous. There are lots of other ways to use the Matrix Profile and the <a href="https://stumpy.readthedocs.io/en/latest/Tutorial_The_Matrix_Profile.html">STUMPY tutorials</a> do a great job explaining them. Or if you are more of a YouTube video type of person (as i am) check <a href="https://youtu.be/WvaBPSeA_JA">this one</a> out.</p>
+
+<p>So i need to compute all the matrix profiles, and then also score and rank them in some way to find what are the most interesting ones in terms of my anomaly detection use case.</p>
+
+<p>First let’s define some inputs and pull some data.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># install required libraries as needed
+#!pip install netdata-pandas scipy==1.5.4 stumpy==1.8.0 plotly am4894plots
+</span>
+<span class="c1"># imports
+</span><span class="k">from</span><span class="err"> </span><span class="n">datetime</span><span class="err"> </span><span class="k">import</span><span class="err"> </span><span class="n">timedelta</span>
+<span class="k">import</span><span class="err"> </span><span class="n">numpy</span><span class="err"> </span><span class="k">as</span><span class="err"> </span><span class="n">np</span>
+<span class="k">import</span><span class="err"> </span><span class="n">pandas</span><span class="err"> </span><span class="k">as</span><span class="err"> </span><span class="n">pd</span>
+<span class="k">import</span><span class="err"> </span><span class="n">time</span>
+<span class="k">import</span><span class="err"> </span><span class="n">stumpy</span>
+<span class="k">from</span><span class="err"> </span><span class="n">netdata_pandas</span><span class="p">.</span><span class="n">data</span><span class="err"> </span><span class="k">import</span><span class="err"> </span><span class="n">get_data</span>
+<span class="k">from</span><span class="err"> </span><span class="n">am4894plots</span><span class="p">.</span><span class="n">plots</span><span class="err"> </span><span class="k">import</span><span class="err"> </span><span class="n">plot_lines</span><span class="p">,</span><span class="err"> </span><span class="n">plot_lines_grid</span>
+
+<span class="c1"># inputs
+</span><span class="n">hosts</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="p">[</span><span class="s">'london.my-netdata.io'</span><span class="p">]</span>
+<span class="n">charts_regex</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="s">'.*'</span>
+<span class="n">before</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="mi">0</span>
+<span class="n">after</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="o">-</span><span class="mi">60</span><span class="o">*</span><span class="mi">60</span><span class="o">*</span><span class="mi">1</span>
+<span class="n">smooth_n</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="mi">30</span>
+
+<span class="c1"># get the data
+</span><span class="n">df</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">get_data</span><span class="p">(</span><span class="n">hosts</span><span class="o">=</span><span class="n">hosts</span><span class="p">,</span><span class="err"> </span><span class="n">charts_regex</span><span class="o">=</span><span class="n">charts_regex</span><span class="p">,</span><span class="err"> </span><span class="n">after</span><span class="o">=</span><span class="n">after</span><span class="p">,</span><span class="err"> </span><span class="n">before</span><span class="o">=</span><span class="n">before</span><span class="p">,</span><span class="err"> </span><span class="n">index_as_datetime</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">df</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">df</span><span class="p">[[</span><span class="n">col</span><span class="err"> </span><span class="k">for</span><span class="err"> </span><span class="n">col</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="n">df</span><span class="p">.</span><span class="n">columns</span><span class="err"> </span><span class="k">if</span><span class="err"> </span><span class="s">'uptime'</span><span class="err"> </span><span class="ow">not</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="n">col</span><span class="p">]]</span>
+<span class="n">df</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">df</span><span class="p">.</span><span class="n">rolling</span><span class="p">(</span><span class="n">smooth_n</span><span class="p">).</span><span class="n">mean</span><span class="p">().</span><span class="n">dropna</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="n">df</span><span class="p">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">df</span><span class="p">.</span><span class="n">head</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>Now we are in our happy place, we have all the data we need in a nice clean pandas dataframe. About ~3500 rows (one per second) and ~1500 columns each of which is a time series metric we are monitoring.</p>
+
+<p><img src="/assets/images/2021-02-16-anomaly-detection-using-matrix-profile/image-1024x312.png" alt="" /></p>
+
+<p>The next step is to use STUMPY to generate the matrix profile for each metric (or a large sample of them which is what i have done in the notebook for convenience while exploring the idea). Then we also need to decide what matrix profiles are ‘good’ ones for anomaly detection. It’s not much use just returning ~1500 matrix profiles to a user - we need to try surface the most interesting ones to the top of the pile.</p>
+
+<p>One of the main things to remember about the matrix profile is that the higher values represent sequences in the time series that are the furthest away from any other sub sequences and as such these are where the anomalies are most likely to be.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># define some objects to store results in
+</span><span class="n">scores</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="p">{}</span>
+<span class="n">mp_dists</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="p">{}</span>
+
+<span class="c1"># sample n_cols just to be quicker
+</span><span class="n">n_cols</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="mi">500</span>
+
+<span class="c1"># sample some metrics
+</span><span class="n">df_samp</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">df</span><span class="p">[</span><span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">choice</span><span class="p">(</span><span class="n">df</span><span class="p">.</span><span class="n">columns</span><span class="p">,</span><span class="err"> </span><span class="n">n_cols</span><span class="p">,</span><span class="err"> </span><span class="n">replace</span><span class="o">=</span><span class="bp">False</span><span class="p">)]</span>
+
+<span class="c1"># normalize the data prior to computing the mp so that the scores we use are all somewhat comparable across metrics on different scales
+</span><span class="n">df_samp</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="p">((</span><span class="n">df_samp</span><span class="o">-</span><span class="n">df_samp</span><span class="p">.</span><span class="nb">min</span><span class="p">())</span><span class="o">/</span><span class="p">(</span><span class="n">df_samp</span><span class="p">.</span><span class="nb">max</span><span class="p">()</span><span class="o">-</span><span class="n">df_samp</span><span class="p">.</span><span class="nb">min</span><span class="p">()))</span>
+<span class="n">df_samp</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">df_samp</span><span class="p">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">how</span><span class="o">=</span><span class="s">'all'</span><span class="p">,</span><span class="err"> </span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">df_samp</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">df_samp</span><span class="p">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">how</span><span class="o">=</span><span class="s">'all'</span><span class="p">,</span><span class="err"> </span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># loop over each metric
+</span><span class="k">for</span><span class="err"> </span><span class="n">col</span><span class="err"> </span><span class="ow">in</span><span class="err"> </span><span class="n">df_samp</span><span class="p">.</span><span class="n">columns</span><span class="p">:</span>
+
+<span class="err">    </span><span class="c1"># get the mp
+</span><span class="err">    </span><span class="n">m</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="mi">60</span>
+<span class="err">    </span><span class="n">x</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">df_samp</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="c1">#.diff().dropna()
+</span><span class="err">    </span><span class="n">mp</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">stumpy</span><span class="p">.</span><span class="n">stump</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="err"> </span><span class="n">m</span><span class="o">=</span><span class="n">m</span><span class="p">,</span><span class="err"> </span><span class="n">ignore_trivial</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="err">    </span><span class="n">mp_dist</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">mp</span><span class="p">[:,</span><span class="err"> </span><span class="mi">0</span><span class="p">]</span>
+
+<span class="err">    </span><span class="c1"># score the mp based on distance between the 99.5th percentile and 80th percentile
+</span><span class="err">    </span><span class="n">df_mp_dist</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">mp_dist</span><span class="p">).</span><span class="n">rolling</span><span class="p">(</span><span class="n">smooth_n</span><span class="p">).</span><span class="n">mean</span><span class="p">()</span>
+<span class="err">    </span><span class="n">score</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">df_mp_dist</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">quantile</span><span class="p">(</span><span class="mf">0.995</span><span class="p">)</span><span class="err"> </span><span class="o">-</span><span class="err"> </span><span class="n">df_mp_dist</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">quantile</span><span class="p">(</span><span class="mf">0.8</span><span class="p">)</span>
+<span class="err">    </span><span class="n">scores</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">score</span>
+
+<span class="err">    </span><span class="c1"># pad out the start of the mp_dist with nan's
+</span><span class="err">    </span><span class="n">n_fill</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="nb">len</span><span class="p">(</span><span class="n">df_samp</span><span class="p">[</span><span class="n">col</span><span class="p">])</span><span class="err"> </span><span class="o">-</span><span class="err"> </span><span class="nb">len</span><span class="p">(</span><span class="n">mp_dist</span><span class="p">)</span>
+<span class="err">    </span><span class="n">filler</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">np</span><span class="p">.</span><span class="n">empty</span><span class="p">(</span><span class="n">n_fill</span><span class="p">)</span>
+<span class="err">    </span><span class="n">filler</span><span class="p">.</span><span class="n">fill</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">nan</span><span class="p">)</span>
+<span class="err">    </span><span class="n">mp_dist</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">np</span><span class="p">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">filler</span><span class="p">,</span><span class="err"> </span><span class="n">mp_dist</span><span class="p">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)))</span>
+<span class="err">    </span>
+<span class="err">    </span><span class="c1"># save the mp
+</span><span class="err">    </span><span class="n">mp_dists</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="err"> </span><span class="o">=</span><span class="err"> </span><span class="n">mp_dist</span>
+</code></pre></div></div>
+
+<p>So my, admittedly simplistic (i like to do the dumbest thing i can get to work), approach to ranking each matrix profile was to score them based on the distance between the 99.5th percentile (e.g. very largest values) and the 80th percentile. The idea here is that a good looking matrix profile is one with clear spikes where the highest matrix profile values as as far away as possible from all the other matrix profile values. In this setting, a higher score (distance between 99.5th and 80th percentile) should tend to be a more “interesting” matrix profile for the purpose of anomaly detection.</p>
+
+<p>Below is a nice clear example of what i mean. The line on the top is the raw time series while the orange line below is the computed matrix profile of subsequence distances (my sequence length in this case was 60 for 1 minute). We can see that the matrix profile distances clearly jump and ‘stand out’ from all the other matrix profile values just as the ‘step’ occurs in the raw data. So this is a nice example where its worked pretty good on this somewhat simplistic example of a level shift type anomaly.</p>
+
+<p><img src="/assets/images/2021-02-16-anomaly-detection-using-matrix-profile/image-1-1024x335.png" alt="" /></p>
+
+<p>This approach generally does a good job at finding anomalies like that above. Sometimes it’s actually even maybe too fancy for me and picks out cases like the next one, where it seems to really focus on the appearance of one on/off step in between a more regular cycle of on/off traffic. This is actually the hardest part about anomaly detection, for sure it has found a novel or interesting unusual pattern below but it’s most likely not an anomaly in the sense that a user in my domain might care about.</p>
+
+<p><img src="/assets/images/2021-02-16-anomaly-detection-using-matrix-profile/image-2-1024x331.png" alt="" /></p>
+
+<p>Here is an example that might make this point a bit more obvious, it seems for certain types of messy jumpy and somewhat random data the matrix profile based anomaly detection might be a little too sensitive for what i need.</p>
+
+<p><img src="/assets/images/2021-02-16-anomaly-detection-using-matrix-profile/image-3-1024x332.png" alt="" /></p>
+
+<p>This gets us into the even more difficult aspect of anomaly detection - the subjective nature of it all, different types of time series and different domains you are working in - it all matters.</p>
+
+<p>Here is probably one of the worst way’s this approach did not quite work for me. It seems to have really gotten excited about a particularly flat part of the time series and fully ignored the huge spike over to the right which is the more obvious (to a human eye) anomaly.</p>
+
+<p><img src="/assets/images/2021-02-16-anomaly-detection-using-matrix-profile/image-4-1024x331.png" alt="" /></p>
+
+<p>So its a case of needing to go back to the drawing board on this one after some initial prototyping. I think i might need to think a bit more about various preprocessing steps i might want to do like smoothing, differencing etc. and think about more about my scoring metric to maybe get something a little be more nuannced perhaps. Or more realisticly, but less sexy, additional post processing heuristics and rules to filter out “false positives” (in some sense) based on domain specific knowledge for my use case.</p>
+
+<p>Anyway, just wanted to share this quick little example of finding something fancy, implementing a quick prototype, finding mixed results and then iterating on this cycle of dispair as is what 80% of DS/ML is like in reality :)</p>
+
+<p>Onto the next fancy thing in the hope of glory!</p>
+
+<p><strong>Update</strong>: Sean Law (<a href="https://twitter.com/seanmylaw">@seanmylaw</a>), one of the maintainers of STUMPY, <a href="https://twitter.com/seanmylaw/status/1368405672585424898">tweeted to me</a> about trying out `normalize=False` parameter as it might help with my use case. Pleased to say that it seems to have helped a lot from some initial results so i am going to continue to explore this as another potentially different but complementary approach to some anomaly detection work i am doing.</p>
+
+
+<style>
+.cover-image {
+  margin-bottom: 2em;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.cover-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.post-meta {
+  color: #666;
+  margin-bottom: 2em;
+}
+
+.category {
+  font-style: italic;
+}
+
+figure {
+  margin: 1.5em 0;
+  text-align: center;
+}
+
+figure img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+figcaption {
+  color: #666;
+  font-style: italic;
+  margin-top: 0.5em;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1em auto;
+}
+
+code {
+  padding: 0.2em 0.4em;
+  background-color: #f6f8fa;
+  border-radius: 3px;
+  font-size: 85%;
+}
+
+pre code {
+  padding: 0;
+  background-color: transparent;
+}
+
+.language-plaintext {
+  color: #24292e;
+}
+
+.language-python {
+  color: #24292e;
+}
+</style> 
+
+        <!-- Comments section -->
+        <div id="comments" style="margin-top: 3em; margin-bottom: 2em;">
+          <script src="https://giscus.app/client.js"
+                  data-repo="andrewm4894/blog"
+                  data-repo-id=""
+                  data-category="General"
+                  data-category-id=""
+                  data-mapping="pathname"
+                  data-strict="0"
+                  data-reactions-enabled="1"
+                  data-emit-metadata="0"
+                  data-input-position="bottom"
+                  data-theme="preferred_color_scheme"
+                  data-lang="en"
+                  crossorigin="anonymous"
+                  async>
+          </script>
+        </div>
+
+        <div style="margin-top: 2em; text-align: center;">
+          <a href="/preview/pr-6/" style="display: inline-block; margin: 1em;">← Back to Home</a>
+        </div>
+      </section>
+
+      <!-- Right sidebar -->
+      <aside style="width: 300px; margin-top: 6em;">
+        <div style="position: sticky; top: 20px;">
+          <h3 style="margin-top: 0;">Recent Posts</h3>
+          <div class="posts-list">
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2024/12/19/bolt-new-vs-o1-some-thoughts/" >
+                    bolt.new vs o1 - some thoughts
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  December 19, 2024
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2024/12/03/anomstack-data-engineering-podcast/" >
+                    Anomstack - Data Engineering Podcast
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  December 03, 2024
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2024/03/04/weights-biases-log-keras-model-summary-architecture/" >
+                    Weights &amp; Biases - log Keras model summary &amp; architecture
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  March 04, 2024
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2023/12/20/mlops-community-podcast/" >
+                    MLOps Community Podcast!!!
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  December 20, 2023
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2023/11/06/the-future-of-machine-learning-and-ai-panel-discussion-civo-navigate-europe-23/" >
+                    The Future of Machine Learning and AI Panel Discussion - Civo Navigate Europe 23
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  November 06, 2023
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2023/10/25/10-practical-ml-use-cases-in-observability/" >
+                    10 Practical ML Use Cases in Observability
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  October 25, 2023
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2023/07/01/malloy-seems-petty-cool/" >
+                    Malloy seems petty cool...
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  July 01, 2023
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2023/05/18/painless-anomaly-detection-with-apache-airflow/" >
+                    Painless Anomaly Detection with Apache Airflow
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  May 18, 2023
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2022/12/22/stripe-webhook-gcp-functions-framework-python/" >
+                    Stripe Webhook + GCP Functions Framework (Python)
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  December 22, 2022
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2022/10/20/colab-to-just-run-some-curl/" >
+                    Colab to just run some curl
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  October 20, 2022
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2022/10/15/some-sort-of-livecoding/" >
+                    Some sort-of livecoding
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  October 15, 2022
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2022/09/02/explaining-kmeans-clustering-for-unsupervised-anomaly-detection/" >
+                    Explaining kmeans clustering for unsupervised anomaly detection
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  September 02, 2022
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2022/08/18/hugging-face-text-classification-quickstart/" >
+                    Hugging Face Text Classification Quickstart
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  August 18, 2022
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2022/07/01/airflow-trigger-dags-python-script/" >
+                    Airflow "Trigger Dags" Python Script
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  July 01, 2022
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2022/03/25/some-ml-hot-takes/" >
+                    Some ML hot takes
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  March 25, 2022
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2021/10/11/time-series-anomaly-detection-using-pca/" >
+                    Time series anomaly detection using PCA
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  October 11, 2021
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2021/05/27/streamlit-multi-page-app-minimal-example/" >
+                    streamlit multi-page app minimal example
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  May 27, 2021
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2021/03/25/some-asyncio-fun-pain/" >
+                    Some asyncio fun/pain
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  March 25, 2021
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2021/02/16/anomaly-detection-using-matrix-profile/" class="current-post">
+                    Anomaly Detection using the Matrix Profile
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  February 16, 2021
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2021/01/29/machine-learning-ireland-slack-community/" >
+                    "Machine Learning Ireland" slack community
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  January 29, 2021
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2021/01/14/time-series-anomaly-detection-in-go-using-golearn/" >
+                    Time series anomaly detection in Go using GoLearn
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  January 14, 2021
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2021/01/03/anomaly-detection-resources/" >
+                    Anomaly Detection Resources
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  January 03, 2021
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2020/12/28/first-stab-at-some-go-so-hot-right-now/" >
+                    First stab at some Go (so hot right now)
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  December 28, 2020
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2020/12/02/anomaly-detection-tutorial/" >
+                    Anomaly Detection Tutorial
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  December 02, 2020
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2020/11/10/good-places-for-datasets/" >
+                    Good Places For Datasets
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  November 10, 2020
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2020/10/19/different-types-of-time-series-anomalies/" >
+                    Different types of time series anomalies
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  October 19, 2020
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2020/10/15/numpy-feature-engineering-2x-speed-up-over-pandas/" >
+                    Numpy Feature Engineering - 2x Speed Up Over Pandas!
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  October 15, 2020
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2020/09/29/market-basket-analysis-in-python/" >
+                    Market basket analysis in Python
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  September 29, 2020
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2020/09/18/i-helped-build-a-thing/" >
+                    I helped build a thing!
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  September 18, 2020
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2020/09/03/time-series-clustering-with-tslearn/" >
+                    Time series clustering with tslearn
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  September 03, 2020
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2020/06/05/premature-optimization/" >
+                    Premature Optimization
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  June 05, 2020
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2020/04/29/terraform-is-magic-r-machinelearning-links/" >
+                    Terraform is Magic + r/MachineLearning Links
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  April 29, 2020
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2020/03/23/ireland-covid19-data/" >
+                    Ireland Covid19 Data
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  March 23, 2020
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2020/02/27/a-little-brainteaser-or-im-an-idiot/" >
+                    A little brainteaser (or i'm an idiot)
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  February 27, 2020
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2020/02/20/papers-im-reading-2/" >
+                    Papers i'm reading #2
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  February 20, 2020
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2020/01/28/github-webhook-cloud-function-bigquery/" >
+                    Github Webhook -> Cloud Function -> BigQuery
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  January 28, 2020
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2019/12/30/papers-im-reading-1/" >
+                    Papers i'm reading #1
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  December 30, 2019
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2019/11/26/my-first-pypi-package/" >
+                    My First PyPI Package
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  November 26, 2019
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2019/10/20/kubeflow-custom-jupyter-image-github-for-notebook-source-control/" >
+                    KubeFlow Custom Jupyter Image (+ github for notebook source control)
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  October 20, 2019
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2019/09/09/multi-variate-multi-step-lstm-for-anomaly-detection/" >
+                    Multi-Variate, Multi-Step, LSTM for Anomaly Detection
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  September 09, 2019
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2019/09/04/custom-python-packages-in-aws-lambda/" >
+                    Custom Python Packages in AWS Lambda
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  September 04, 2019
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2019/07/20/clustering-cell-tower-usage-data/" >
+                    Clustering Cell Tower Usage Data
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  July 20, 2019
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2019/07/04/parallelize-a-wide-df-in-pandas/" >
+                    Parallelize a wide df in Pandas
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  July 04, 2019
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2019/06/11/0-0-0-0/" >
+                    ( 0 - 0 ) / 0 != 0
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  June 11, 2019
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2019/05/01/java-hello-world-cli-using-args4j/" >
+                    Java Hello World cli using args4j
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  May 01, 2019
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2019/04/30/weka-adding-list-to-instances-object/" >
+                    Java Weka API: Adding List To Instances Object
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  April 30, 2019
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2019/04/27/parallel-jupyter-notebooks/" >
+                    Parallel Jupyter Notebooks
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  April 27, 2019
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2019/04/25/the-journey-begins/" >
+                    My Site...
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  April 25, 2019
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2019/04/25/previous-blog-posts/" >
+                    Previous blog posts
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  April 25, 2019
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2019/04/25/java-for-machine-learning/" >
+                    Java for Machine Learning
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  April 25, 2019
+                </time>
+              </article>
+            
+            
+          </div>
+        </div>
+      </aside>
+
+      <style>
+        /* Typography */
+        body {
+          font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+          font-size: 16px;
+          line-height: 1.6;
+          color: #333;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+          font-weight: 600;
+          color: #1a1a1a;
+          line-height: 1.3;
+          margin-top: 2rem;
+          margin-bottom: 1rem;
+        }
+        
+        h1 { 
+          font-size: 2.5rem; 
+          font-weight: 700; 
+          margin-top: 0; 
+          margin-bottom: 1.5rem;
+        }
+        h2 { font-size: 2rem; }
+        h3 { font-size: 1.5rem; }
+        h4 { font-size: 1.25rem; }
+        h5 { font-size: 1.125rem; }
+        h6 { font-size: 1rem; }
+        
+        p {
+          margin-bottom: 1.5rem;
+          line-height: 1.7;
+        }
+        
+        code, pre {
+          font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+        }
+        
+        code {
+          font-size: 0.9em;
+          font-weight: 500;
+        }
+        
+        pre {
+          font-size: 0.85em;
+          line-height: 1.5;
+          overflow-x: auto;
+          padding: 1rem;
+          border-radius: 6px;
+          background-color: #f8f9fa !important;
+        }
+
+        .cover-image {
+          margin-bottom: 2em;
+          max-width: 100%;
+          overflow: hidden;
+        }
+
+        .cover-image img {
+          width: 100%;
+          height: auto;
+          display: block;
+        }
+
+        .post-meta {
+          color: #666;
+          margin-bottom: 2em;
+          font-size: 0.95rem;
+        }
+
+        .category {
+          font-style: italic;
+          font-weight: 500;
+        }
+
+        figure {
+          margin: 1.5em 0;
+          text-align: center;
+        }
+
+        figure img {
+          max-width: 100%;
+          height: auto;
+          display: block;
+          margin: 0 auto;
+        }
+
+        figcaption {
+          color: #666;
+          font-style: italic;
+          margin-top: 0.5em;
+          font-size: 0.9rem;
+        }
+
+        img {
+          max-width: 100%;
+          height: auto;
+          display: block;
+          margin: 1em auto;
+        }
+
+        code {
+          padding: 0.2em 0.4em;
+          background-color: #f6f8fa;
+          border-radius: 3px;
+          font-size: 85%;
+        }
+
+        pre code {
+          padding: 0;
+          background-color: transparent;
+        }
+
+        .language-plaintext {
+          color: #24292e;
+        }
+
+        .language-python {
+          color: #24292e;
+        }
+
+        .posts-list h4 a {
+          color: #333;
+          text-decoration: none;
+          font-weight: 500;
+        }
+
+        .posts-list h4 a:hover {
+          color: #267CB9;
+        }
+
+        .posts-list .current-post {
+          color: #267CB9;
+          font-weight: 600;
+        }
+        
+        /* Improve link styling */
+        a {
+          color: #267CB9;
+          text-decoration: none;
+          transition: color 0.2s ease;
+        }
+        
+        a:hover {
+          color: #1e5a8a;
+          text-decoration: underline;
+        }
+
+        @media screen and (max-width: 1000px) {
+          .wrapper {
+            flex-direction: column;
+          }
+          
+          section {
+            margin-right: 0;
+          }
+
+          aside {
+            width: 100%;
+            margin-top: 3em;
+          }
+          
+          h1 { font-size: 2rem; }
+          h2 { font-size: 1.75rem; }
+          h3 { font-size: 1.5rem; }
+        }
+      </style>
+    </div>
+  </body>
+</html> 
