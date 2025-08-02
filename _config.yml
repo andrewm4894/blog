@@ -21,6 +21,12 @@ kramdown:
   syntax_highlighter: rouge
   parse_block_html: true
   parse_span_html: true
+  auto_ids: true
+  auto_id_prefix: 'id-'
+  transliterated_header_ids: true
+  enable_coderay: false
+  # Enable auto-linking of URLs
+  auto_links: true
 permalink: /:year/:month/:day/:title/
 
 # Defaults

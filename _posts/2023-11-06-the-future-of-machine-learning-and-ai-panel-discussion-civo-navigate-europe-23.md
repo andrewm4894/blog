@@ -8,4 +8,4 @@ tags:
 layout: post
 ---
 
-https://www.youtube.com/watch?v=nzrOzqz8B3U
+{% include youtube.html id="nzrOzqz8B3U" %}

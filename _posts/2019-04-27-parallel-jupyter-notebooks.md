@@ -53,11 +53,11 @@ Two things let us do this, a python script ([run\_nb\_batch.py](https://github.c
 
 **[run\_nb\_batch.py:](https://github.com/andrewm4894/papermill_dev/blob/master/run_nb_batch.py)**
 
-https://gist.github.com/andrewm4894/ceeac7a4984ba636ebfadfb120972e48
+{% include gist.html user="andrewm4894" id="ceeac7a4984ba636ebfadfb120972e48" %}
 
 **[configs.json](https://github.com/andrewm4894/papermill_dev/blob/master/configs.json)**
 
-https://gist.github.com/andrewm4894/5e4d57d1d89bd663e6ede5a1a6aca1f9
+{% include gist.html user="andrewm4894" id="5e4d57d1d89bd663e6ede5a1a6aca1f9" %}
 
 The idea is to loop through each config in the [configs.json](https://github.com/andrewm4894/papermill_dev/blob/master/configs.json) file and execute the specified notebook with the specified configuration. Executed notebooks then go to a predefined output file such as [papermill\_outputs/data\_explorer/adult/data\_explorer\_adult.ipynb](https://github.com/andrewm4894/papermill_dev/blob/master/papermill_outputs/data_explorer/adult/data_explorer_adult.ipynb).
 
@@ -69,4 +69,4 @@ I've been finding that this sort of approach to template-ing up core notebooks y
 
 **Update**: I decided to make a quick video as sometimes easier to just see what we are doing. (Sorry audio quality a bit bad (and poor resolution), first time :))
 
-https://www.youtube.com/watch?v=nwuQ2fpBltY
+{% include youtube.html id="nwuQ2fpBltY" %}

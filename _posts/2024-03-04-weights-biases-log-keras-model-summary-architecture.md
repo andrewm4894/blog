@@ -17,4 +17,4 @@ Maybe i missed something but i could not find any easy and simple out of the box
 
 So below is one little recipie to do this, feel free to use and adapt however suits your needs.
 
-https://gist.github.com/andrewm4894/7c22a7944b791959bbf662b87cb0139d
+{% include gist.html user="andrewm4894" id="7c22a7944b791959bbf662b87cb0139d" %}

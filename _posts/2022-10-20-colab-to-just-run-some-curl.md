@@ -14,7 +14,7 @@ This can be handy when working with backend and frontend engineers who might be 
 
 No command line messing around - just pop into a colab!
 
-https://gist.github.com/andrewm4894/cf28b69850200bdfceaf32185340ee59
+{% include gist.html user="andrewm4894" id="cf28b69850200bdfceaf32185340ee59" %}
 
 https://colab.research.google.com/drive/1Lsi6rdsYDd-c3rlhflIleiWCadh1cPod?usp=sharing
 

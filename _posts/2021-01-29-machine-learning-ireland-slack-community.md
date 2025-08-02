@@ -31,7 +31,7 @@ So, being the genius that i am, i decided to just make a slack and share it arou
 
 http://irishtechcommunity.com/ is the best i've found so far of something already out there but the ML and DS channels in there are a bit barron and i feel like what would be really cool would be something like the the twimlai community (https://twimlai.com/community/ - which is great and 100% worth joining) but with a sort of focus or interest in ireland in some vague way.
 
-anyway **tl dr**; join the slack maaan! https://join.slack.com/t/machine-learning-ire/shared\_invite/zt-lf2z50mt-rcaQ6nQdKsEtjjkY7jZUbg
+anyway **tl dr**; join the slack maaan! https://join.slack.com/t/machine-learning-ire/shared_invite/zt-lf2z50mt-rcaQ6nQdKsEtjjkY7jZUbg
 
 update: i also made a meetup page, mainly as a sort of place to direct people and seo.
 
