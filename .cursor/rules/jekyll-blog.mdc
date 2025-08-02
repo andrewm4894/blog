@@ -1,0 +1,35 @@
+---
+description: Jekyll blog development guidelines and workflow
+globs: ["_posts/*", "_layouts/*", "_config.yml", "*.md"]
+alwaysApply: false
+---
+
+# Jekyll Blog Development
+
+This is a Jekyll blog using GitHub Pages with the minimal theme.
+
+## Development Workflow
+- Use `make serve` to start local development server with live reload
+- Use `make build` for production builds
+- Use `make install` to install/update dependencies
+- Use `make clean` to clean build artifacts
+
+## Blog Structure
+- `_posts/`: Blog post markdown files with YYYY-MM-DD-title.md format
+- `_layouts/`: HTML template files (home.html, post.html, post_no_sidebar.html)
+- `_config.yml`: Jekyll configuration
+- `assets/`: Static files (CSS, images)
+- `index.html`: Homepage template
+
+## Content Guidelines
+- Blog posts should have proper front matter with title, date, and layout
+- Images should be stored in `assets/images/` with organized subdirectories
+- Use kramdown markdown with GFM syntax
+- Posts automatically get permalink format: /:year/:month/:day/:title/
+
+## Theme & Styling
+- Using remote theme: pages-themes/minimal@v0.2.0
+- Custom styles in `assets/css/style.css`  
+- Responsive design with modern, clean layout
+
+@Makefile

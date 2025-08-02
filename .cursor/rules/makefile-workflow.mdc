@@ -1,0 +1,32 @@
+---
+description: Always check for Makefiles before suggesting manual commands
+globs: ["*"]
+alwaysApply: true
+---
+
+# Makefile-First Development Workflow
+
+When helping with development tasks, ALWAYS check for a Makefile before suggesting manual commands or complex workflows:
+
+## Priority Order
+1. **Look for Makefile first**: Use `file_search` to find Makefile, makefile, or similar build files
+2. **Read the Makefile**: Check what targets are available (serve, build, test, install, clean, etc.)
+3. **Prefer Makefile commands**: Use `make <target>` instead of manual command sequences
+4. **Document available targets**: Let the user know what Makefile targets are available
+
+## Common Makefile Patterns
+- `make serve` or `make dev` - Start development server
+- `make build` - Build the project  
+- `make test` - Run tests
+- `make install` - Install dependencies
+- `make clean` - Clean build artifacts
+- `make deploy` - Deploy the project
+- `make setup` - Initial project setup
+
+## Fallback Workflow
+If no Makefile exists, then check:
+1. package.json scripts (npm/yarn projects)
+2. Other build tools (gradle, maven, cargo, etc.)  
+3. Only then suggest manual commands
+
+This approach saves time and follows the project's intended workflow.
