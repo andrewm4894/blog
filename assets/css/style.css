@@ -177,4 +177,76 @@ img {
   .wrapper {
     padding: 0 15px;
   }
+}
+
+/* YouTube Embeds */
+.youtube-embed {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  height: 0;
+  overflow: hidden;
+  width: 95%; /* Even wider */
+  max-width: 580px; /* Larger for better rectangle proportions */
+  margin: 1.5em auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+}
+
+.youtube-embed iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+/* Google Slides Embeds */
+.slides-embed {
+  position: relative;
+  padding-bottom: 59.38%; /* Google Slides aspect ratio */
+  height: 0;
+  overflow: hidden;
+  width: 95%; /* Larger for readability */
+  max-width: 650px; /* Much larger so text is readable */
+  margin: 1.5em auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+}
+
+.slides-embed iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  box-sizing: border-box;
+  border: none;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 1000px) {
+  .youtube-embed {
+    width: 100%;
+    max-width: 100%; /* Full width when sidebar collapses */
+    margin: 1em auto;
+  }
+  
+  .slides-embed {
+    width: 100%;
+    max-width: 100%; /* Full width when sidebar collapses */
+    margin: 1em auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .youtube-embed,
+  .slides-embed {
+    width: 100%;
+    margin: 1em auto;
+  }
 } 

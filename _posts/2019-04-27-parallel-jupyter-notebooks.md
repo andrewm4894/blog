@@ -69,4 +69,4 @@ I've been finding that this sort of approach to template-ing up core notebooks y
 
 **Update**: I decided to make a quick video as sometimes easier to just see what we are doing. (Sorry audio quality a bit bad (and poor resolution), first time :))
 
-https://www.youtube.com/watch?v=nwuQ2fpBltY
+{% include youtube.html id="nwuQ2fpBltY" %}
