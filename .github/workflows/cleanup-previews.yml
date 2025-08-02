@@ -172,14 +172,13 @@ jobs:
           </html>
           EOF
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Deploy to GitHub Pages (Cleanup)
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          path: _site
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./_site
+          publish_branch: gh-pages
+          keep_files: true
 
       - name: Add cleanup summary
         run: |
