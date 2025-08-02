@@ -19,4 +19,4 @@ So here is a minimal text classification example, using huggingface and either p
 
 Will try to update and maintain the colab here: https://github.com/andrewm4894/colabs/blob/master/huggingface\_text\_classification\_quickstart.ipynb
 
-https://gist.github.com/andrewm4894/ce57c09848580c9deb46eb244bb16cea
+{% include gist.html user="andrewm4894" id="ce57c09848580c9deb46eb244bb16cea" %}

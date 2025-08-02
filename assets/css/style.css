@@ -228,6 +228,35 @@ img {
   border: none;
 }
 
+/* GitHub Gist Embeds */
+.gist-embed {
+  margin: 1.5em auto;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.gist-embed .gist {
+  margin: 0 !important;
+}
+
+.gist-embed .gist .gist-file {
+  border-radius: 8px !important;
+  border: none !important;
+}
+
+.gist-embed .gist .gist-data {
+  border-radius: 0 0 8px 8px !important;
+}
+
+.gist-embed .gist .gist-meta {
+  border-radius: 0 0 8px 8px !important;
+  background: #f6f8fa !important;
+  border-top: 1px solid #e1e4e8 !important;
+}
+
 /* Responsive adjustments for smaller screens */
 @media (max-width: 1000px) {
   .youtube-embed {
