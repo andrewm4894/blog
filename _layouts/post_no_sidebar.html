@@ -46,6 +46,25 @@
         {% assign processed_content = processed_content | replace: '.png)', '.png' | replace: '.jpg)', '.jpg' | replace: '.jpeg)', '.jpeg' | replace: '.gif)', '.gif' %}
         {{ processed_content }}
 
+        <!-- Comments section -->
+        <div id="comments" style="margin-top: 3em; margin-bottom: 2em;">
+          <script src="https://giscus.app/client.js"
+                  data-repo="andrewm4894/blog"
+                  data-repo-id=""
+                  data-category="General"
+                  data-category-id=""
+                  data-mapping="pathname"
+                  data-strict="0"
+                  data-reactions-enabled="1"
+                  data-emit-metadata="0"
+                  data-input-position="bottom"
+                  data-theme="preferred_color_scheme"
+                  data-lang="en"
+                  crossorigin="anonymous"
+                  async>
+          </script>
+        </div>
+
         <div style="margin-top: 2em; text-align: center;">
           <a href="{{ site.baseurl }}/" style="display: inline-block; margin: 1em;">← Back to Home</a>
         </div>
