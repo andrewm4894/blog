@@ -1,72 +1,77 @@
-name: pages-preview
+name: Deploy Main Site
 
 on:
-  pull_request:
+  push:
     branches:
       - main
+  workflow_dispatch:
 
 permissions:
-  contents: read       # for checkout
-  pages: write         # to deploy Pages
-  id-token: write      # needed by configure-pages
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages-main"
+  cancel-in-progress: false
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Ruby
+      - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.2'
           bundler-cache: true
 
-      - name: Build with Jekyll
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Checkout current pages to preserve previews
+        run: |
+          # Try to download current site to preserve preview directory
+          mkdir -p _current_site
+          
+          # This will fail on first deployment, which is fine
+          curl -s -f https://andrewm4894.com/preview/ > /dev/null && \
+          wget -r -np -nH -nd -P _current_site/preview https://andrewm4894.com/preview/ || \
+          echo "No existing previews to preserve (this is normal for first deployment)"
+
+      - name: Build Jekyll site
         env:
           JEKYLL_ENV: production
-          PR_NUMBER: ${{ github.event.number }}
         run: |
           bundle install --jobs 4 --retry 3
-          # For PRs, build to a preview subdirectory
-          if [ -n "$PR_NUMBER" ]; then
-            bundle exec jekyll build -d _site/pr-preview/pr-$PR_NUMBER --baseurl "/blog/pr-preview/pr-$PR_NUMBER"
+          
+          # Build the main site
+          bundle exec jekyll build
+          
+          # Preserve any existing preview directory
+          if [ -d "_current_site/preview" ] && [ "$(ls -A _current_site/preview)" ]; then
+            echo "Preserving existing preview directory..."
+            cp -r _current_site/preview _site/ || echo "Could not preserve previews"
           else
-            bundle exec jekyll build -d _site
+            echo "No previews to preserve"
           fi
 
-      - name: Upload site artifact
+      - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: _site
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Configure Pages
-        uses: actions/configure-pages@v4
 
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
 
-      - name: Comment PR with preview URL
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const prNumber = context.issue.number;
-            const previewUrl = `https://${context.repo.owner}.github.io/${context.repo.repo}/pr-preview/pr-${prNumber}/`;
-            const comment = `🚀 Preview deployment is ready!\n\nYou can view your changes at: ${previewUrl}`;
-            
-            github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: prNumber,
-              body: comment
-            });
+      - name: Add deployment summary
+        run: |
+          echo "## 🚀 Main Site Deployed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Main site:** https://andrewm4894.com" >> $GITHUB_STEP_SUMMARY
+          echo "**Preview index:** https://andrewm4894.com/preview/" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Deployment includes preservation of any existing branch previews." >> $GITHUB_STEP_SUMMARY

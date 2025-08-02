@@ -1,4 +1,4 @@
-.PHONY: install serve build clean
+.PHONY: install serve build clean preview
 
 # Install dependencies
 install:
@@ -27,6 +27,14 @@ clean:
 	rm -rf .jekyll-cache
 	rm -rf _site
 	rm -rf vendor
+
+# Preview current branch locally as it would appear in production
+preview:
+	./preview-local.sh
+
+# Preview a specific branch locally
+preview-branch:
+	@read -p "Enter branch name: " branch; ./preview-local.sh $$branch
 
 # Default target
 all: install serve 

@@ -1,0 +1,192 @@
+name: Cleanup Old Previews
+
+on:
+  schedule:
+    # Run weekly on Sundays at 2 AM UTC
+    - cron: '0 2 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Need full history to check branch status
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Build main site
+        env:
+          JEKYLL_ENV: production
+        run: |
+          bundle install --jobs 4 --retry 3
+          bundle exec jekyll build
+
+      - name: Get active branches and PRs
+        id: active-refs
+        run: |
+          # Get all remote branch names (excluding main)
+          ACTIVE_BRANCHES=$(git branch -r --format='%(refname:short)' | grep -v 'origin/main' | sed 's/origin\///' | tr '\n' ' ')
+          echo "branches=$ACTIVE_BRANCHES" >> $GITHUB_OUTPUT
+          
+          # Get active PR numbers using GitHub API
+          ACTIVE_PRS=$(gh pr list --state open --json number --jq '.[].number' | tr '\n' ' ')
+          echo "prs=$ACTIVE_PRS" >> $GITHUB_OUTPUT
+          
+          echo "Active branches: $ACTIVE_BRANCHES"
+          echo "Active PRs: $ACTIVE_PRS"
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Download current site structure
+        run: |
+          # Try to get the current preview structure
+          mkdir -p _current_site
+          
+          # Download the preview index to see what exists
+          curl -s -f https://andrewm4894.com/preview/ > _current_site/preview_index.html || echo "No preview index found"
+          
+          # Try to list preview directories (this is a basic approach)
+          wget -r -np -nH -l1 --spider https://andrewm4894.com/preview/ 2>&1 | grep -oE 'https://andrewm4894.com/preview/[^/]+/' | sed 's|https://andrewm4894.com/preview/||g' | sed 's|/$||g' > _current_site/existing_previews.txt || echo "Could not get existing previews"
+          
+          echo "Existing previews:"
+          cat _current_site/existing_previews.txt || echo "No existing previews found"
+
+      - name: Determine previews to keep
+        id: previews-to-keep
+        run: |
+          # Create arrays
+          declare -a keep_previews=()
+          
+          # Keep active branch previews
+          for branch in ${{ steps.active-refs.outputs.branches }}; do
+            sanitized_branch=$(echo "$branch" | sed 's/[^a-zA-Z0-9-]/-/g' | tr '[:upper:]' '[:lower:]')
+            keep_previews+=("$sanitized_branch")
+          done
+          
+          # Keep active PR previews
+          for pr in ${{ steps.active-refs.outputs.prs }}; do
+            keep_previews+=("pr-$pr")
+          done
+          
+          # Convert to string
+          KEEP_LIST=$(IFS=' '; echo "${keep_previews[*]}")
+          echo "keep=$KEEP_LIST" >> $GITHUB_OUTPUT
+          echo "Previews to keep: $KEEP_LIST"
+
+      - name: Build updated preview index
+        run: |
+          mkdir -p _site/preview
+          
+          # Create a comprehensive preview index
+          cat > _site/preview/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <title>Branch Previews - Andrew M Blog</title>
+            <style>
+              body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; }
+              h1 { color: #333; }
+              .preview-section { margin: 30px 0; }
+              .preview-item { 
+                background: #f5f5f5; 
+                padding: 15px; 
+                margin: 10px 0; 
+                border-radius: 5px; 
+                border-left: 4px solid #007cba;
+              }
+              .preview-item a { 
+                text-decoration: none; 
+                color: #007cba; 
+                font-weight: bold; 
+                font-size: 18px;
+              }
+              .preview-item a:hover { text-decoration: underline; }
+              .preview-meta { color: #666; font-size: 14px; margin-top: 5px; }
+              .back-link { 
+                display: inline-block; 
+                margin-top: 20px; 
+                color: #007cba; 
+                text-decoration: none; 
+              }
+              .cleanup-info {
+                background: #fff3cd;
+                border: 1px solid #ffeaa7;
+                border-radius: 5px;
+                padding: 15px;
+                margin: 20px 0;
+              }
+            </style>
+          </head>
+          <body>
+            <h1>🚀 Branch Previews</h1>
+            
+            <div class="cleanup-info">
+              <strong>🧹 Cleanup Status:</strong> Old previews are automatically cleaned up weekly.
+              <br><strong>Last cleanup:</strong> $(date -u +"%Y-%m-%d %H:%M UTC")
+            </div>
+            
+            <div class="preview-section">
+              <h2>Available Previews</h2>
+              <div id="active-previews">
+          EOF
+          
+          # Add active previews
+          for preview in ${{ steps.previews-to-keep.outputs.keep }}; do
+            if [[ "$preview" == pr-* ]]; then
+              type="Pull Request"
+            else
+              type="Branch"
+            fi
+            
+            cat >> _site/preview/index.html << EOF
+                <div class="preview-item">
+                  <a href="/preview/$preview/">$preview</a>
+                  <div class="preview-meta">
+                    Type: $type | Status: Active
+                  </div>
+                </div>
+          EOF
+          done
+          
+          cat >> _site/preview/index.html << 'EOF'
+              </div>
+            </div>
+            
+            <a href="/" class="back-link">← Back to main site</a>
+          </body>
+          </html>
+          EOF
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Add cleanup summary
+        run: |
+          echo "## 🧹 Preview Cleanup Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Previews kept:** ${{ steps.previews-to-keep.outputs.keep }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Active branches:** ${{ steps.active-refs.outputs.branches }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Active PRs:** ${{ steps.active-refs.outputs.prs }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Updated preview index: https://andrewm4894.com/preview/" >> $GITHUB_STEP_SUMMARY 
