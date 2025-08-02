@@ -16,7 +16,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Sans+Pro:ital,wght@0,400;0,600;1,400;1,600&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
 
     <title>Colab to just run some curl | andrewm4894.com</title>
-    <link rel="stylesheet" href="/preview/add-yt-embedds/assets/css/style.css?v=20250802160007">
+    <link rel="stylesheet" href="/preview/add-yt-embedds/assets/css/style.css?v=20250802161342">
     
     <!-- PostHog Analytics -->
     <script>
@@ -162,9 +162,14 @@ pre code {
       </section>
 
       <!-- Right sidebar -->
-      <aside style="width: 300px; margin-top: 6em;">
+      <aside id="sidebar" style="width: 300px; margin-top: 6em; transition: all 0.3s ease;">
         <div style="position: sticky; top: 20px;">
-          <h3 style="margin-top: 0;">Recent Posts</h3>
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1em;">
+            <h3 style="margin: 0;">Recent Posts</h3>
+            <button id="sidebar-toggle" style="background: #267CB9; color: white; border: none; border-radius: 4px; width: 32px; height: 32px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center;" title="Hide sidebar">
+              ✕
+            </button>
+          </div>
           <div class="posts-list">
             
               <article style="margin-bottom: 1.5em;">
@@ -721,6 +726,57 @@ pre code {
           </div>
         </div>
       </aside>
+
+      <!-- Show sidebar button (appears when sidebar is hidden) -->
+      <button id="show-sidebar" style="position: fixed; top: 20px; right: 20px; z-index: 1000; background: #267CB9; color: white; border: none; border-radius: 4px; padding: 8px 12px; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.2); font-size: 14px; display: none;" title="Show sidebar">
+        Recent Posts ▶
+      </button>
+
+      <script>
+        // Sidebar toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+          const hideToggle = document.getElementById('sidebar-toggle');
+          const showToggle = document.getElementById('show-sidebar');
+          const sidebar = document.getElementById('sidebar');
+          const mainSection = document.querySelector('section');
+          
+          // Check for saved preference
+          const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+          if (isCollapsed) {
+            toggleSidebar(true);
+          }
+          
+          // Hide sidebar button click
+          hideToggle.addEventListener('click', function() {
+            toggleSidebar(true);
+            localStorage.setItem('sidebar-collapsed', 'true');
+          });
+          
+          // Show sidebar button click
+          showToggle.addEventListener('click', function() {
+            toggleSidebar(false);
+            localStorage.setItem('sidebar-collapsed', 'false');
+          });
+          
+          function toggleSidebar(collapse) {
+            if (collapse) {
+              sidebar.style.transform = 'translateX(100%)';
+              sidebar.style.opacity = '0';
+              mainSection.style.maxWidth = '900px';
+              mainSection.style.marginRight = 'auto';
+              mainSection.style.marginLeft = 'auto';
+              showToggle.style.display = 'block';
+            } else {
+              sidebar.style.transform = 'translateX(0)';
+              sidebar.style.opacity = '1';
+              mainSection.style.maxWidth = '800px';
+              mainSection.style.marginRight = '40px';
+              mainSection.style.marginLeft = '0';
+              showToggle.style.display = 'none';
+            }
+          }
+        });
+      </script>
 
       <style>
         /* Typography */
