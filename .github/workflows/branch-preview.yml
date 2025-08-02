@@ -61,11 +61,15 @@ jobs:
           PREVIEW_PATH="${{ steps.preview-path.outputs.path }}"
           bundle exec jekyll build --baseurl "/preview/$PREVIEW_PATH"
           
+          # Create the preview directory structure manually
+          mkdir -p "_site_with_preview/preview/$PREVIEW_PATH"
+          cp -r "_site/"* "_site_with_preview/preview/$PREVIEW_PATH/"
+          
           # Create or update the preview index
-          mkdir -p _site/preview
+          mkdir -p _site_with_preview/preview
           
           # Generate a simple preview index page
-          cat > _site/preview/index.html << 'EOF'
+          cat > _site_with_preview/preview/index.html << 'EOF'
           <!DOCTYPE html>
           <html>
           <head>
@@ -118,9 +122,8 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./_site
+          publish_dir: ./_site_with_preview
           publish_branch: gh-pages
-          destination_dir: preview/${{ steps.preview-path.outputs.path }}
           keep_files: true
           cname: andrewm4894.com
 
