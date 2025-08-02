@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/preview/pr-6/assets/images/favicon.png">
+    <link rel="shortcut icon" type="image/png" href="/preview/pr-6/assets/images/favicon.png">
+    <link rel="apple-touch-icon" href="/preview/pr-6/assets/images/favicon.png">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Sans+Pro:ital,wght@0,400;0,600;1,400;1,600&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+
+    <title>Premature Optimization | andrewm4894.com</title>
+    <link rel="stylesheet" href="/preview/pr-6/assets/css/style.css?v=20250802151223">
+    
+    <!-- PostHog Analytics -->
+    <script>
+        !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init Re Cs Fs Pe Rs Ms capture Ve calculateEventProperties Ds register register_once register_for_session unregister unregister_for_session zs getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSurveysLoaded onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey canRenderSurveyAsync identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty js As createPersonProfile Ns Is Us opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing Os debug I Ls getPageViewId captureTraceFeedback captureTraceMetric".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+        posthog.init('zR4pStMtxgP3wJ27vIjQJvZNXwMWqZlzP0x4dKbHOHg', {
+            api_host: 'https://us.i.posthog.com',
+            defaults: '2025-05-24',
+            person_profiles: 'identified_only', // or 'always' to create profiles for anonymous users as well
+        })
+    </script>
+    
+  </head>
+  <body>
+    <div class="wrapper" style="display: flex; max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+      <!-- Main content -->
+      <section style="flex: 1; max-width: 800px; margin-right: 40px;">
+        <div style="margin-bottom: 2em;">
+          <a href="/preview/pr-6/" style="display: inline-block; padding: 0.5em 1em; background: #f5f5f5; border-radius: 4px; text-decoration: none; color: #333;">
+            ← Back to Home
+          </a>
+        </div>
+
+        
+
+        <h1>Premature Optimization</h1>
+
+        <p class="post-meta">
+          <time datetime="2020-06-05T00:00:00+00:00">Jun 5, 2020
+          </time><span class="categories">
+            • Categories: 
+            
+            <span class="category">anomaly-detection</span>
+            , 
+            
+            <span class="category">failure</span>
+            
+            
+          </span></p>
+
+        <p><img src="/assets/images/2020-06-05-premature-optimization/optimization.png" alt="" /></p>
+
+<p>I’ve been doing some work that necessitated using the same statistical test from spicy lots of times on a fairly wide pandas dataframe with lots of columns. I spent a bit too much time googling around for the most efficient ways to do this, and even more time re-writing things various way before realizing i should have <a href="https://en.wikipedia.org/wiki/RTFM#:~:text=RTFM%20is%20an%20initialism%20for,the%20product%20manual%20or%20documentation.">RTFM</a> a bit more in the first place, yep i’ve gone about a week down a path of premature optimization - but hey, *blog post* :)</p>
+
+<h2 id="the-set-up">The Set Up</h2>
+
+<p>I have a wide pandas dataframe of lots of time series metrics - one for each column, and i have a ‘focus’ window of time during which i am interested to know what metrics look like the may have changed in some way in reference to a ‘baseline’ window just before the focus window.</p>
+
+<p><img src="/assets/images/2020-06-05-premature-optimization/image-2.png" alt="" /></p>
+
+<p>A rough first idea (before getting too fancy and building models - not there yet for various reasons) is to break out our old friend the <a href="https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test#:~:text=In%20statistics%2C%20the%20Kolmogorov%E2%80%93Smirnov,test\">KS Test</a>%2C%20or%20to%20compare%20two) to basically do a statistical test to see if the each metric the ‘focus’ distribution looks statistically significantly different then the ‘baseline’ distribution. The idea being that those metrics that do look to have ‘changed’ in this sense between the two windows might be worth looking at first.</p>
+
+<p>So a pretty simple set up and application. The tricky part was doing this as quickly as possible on a dataframe with around 500-1000 columns and anywhere between 1000-10000 rows of data as a rough typical usage scenario.</p>
+
+<h2 id="dumb-approach">Dumb Approach</h2>
+
+<p>So my first approach, as usual, is to do the dumbest thing i can and just get something that works and go from there. So here is my <code class="language-plaintext highlighter-rouge">ks_df_dumb()</code> function.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">ks_df_dumb</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">ks_mode</span><span class="p">):</span>
+    <span class="s">"""
+    Take in a df, loop over each column, split into base and focus, and apply test.
+    """</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="p">.</span><span class="n">_get_numeric_data</span><span class="p">():</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s">'window'</span><span class="p">]</span> <span class="o">==</span> <span class="s">'base'</span><span class="p">][</span><span class="n">col</span><span class="p">].</span><span class="n">values</span>
+        <span class="n">focus</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s">'window'</span><span class="p">]</span> <span class="o">==</span> <span class="s">'focus'</span><span class="p">][</span><span class="n">col</span><span class="p">].</span><span class="n">values</span>
+        <span class="n">ks_stat</span><span class="p">,</span> <span class="n">p_value</span> <span class="o">=</span> <span class="n">ks_2samp</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">focus</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">ks_mode</span><span class="p">)</span>
+        <span class="n">results</span><span class="p">.</span><span class="n">append</span><span class="p">((</span><span class="n">ks_stat</span><span class="p">,</span> <span class="n">p_value</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">results</span>
+</code></pre></div></div>
+
+<p>If i run this on my test dataframe of 500 columns * 1000 rows i see the below timings.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">%%</span><span class="n">timeit</span> <span class="o">-</span><span class="n">n</span> <span class="mi">5</span> <span class="o">-</span><span class="n">r</span> <span class="mi">5</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">ks_df_dumb</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">ks_mode</span><span class="p">)</span>
+<span class="c1"># 3.77 s ± 57.4 ms per loop (mean ± std. dev. of 5 runs, 5 loops each)
+</span></code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">print</span><span class="p">(</span><span class="s">'ks_df_dumb'</span><span class="p">)</span>
+<span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="p">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">ks_df_dumb</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">ks_mode</span><span class="p">)</span>
+<span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="p">.</span><span class="n">time</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">'</span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">end_time</span><span class="o">-</span><span class="n">start_time</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s"> seconds'</span><span class="p">)</span>
+<span class="c1"># ks_df_dumb
+# 3.55 seconds
+</span></code></pre></div></div>
+
+<p>So about 3-4 seconds which is not great for what i need (it may end up being something a user clicks to trigger and so want to have them wait as little as possible for the results).</p>
+
+<h2 id="vectorize-it">Vectorize it?</h2>
+
+<p>So now i start messing around with super cool tricks to try and be a hero. I know better than to be looping over stuff in python and pandas, i know i’ll try vectorize it!</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">ks_df_vec</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">ks_mode</span><span class="p">):</span>
+    <span class="s">"""Take in a df, and use np.vectorize to avoid pandas loop.
+    """</span>
+    
+    <span class="k">def</span> <span class="nf">my_ks_2samp</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
+        <span class="s">"""Wrapper function to pass args to vectorized function. 
+        """</span>
+        <span class="k">return</span> <span class="n">ks_2samp</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s">'asymp'</span><span class="p">)</span>
+    
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">base</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s">'window'</span><span class="p">]</span> <span class="o">==</span> <span class="s">'base'</span><span class="p">].</span><span class="n">_get_numeric_data</span><span class="p">().</span><span class="n">transpose</span><span class="p">().</span><span class="n">values</span>
+    <span class="n">focus</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s">'window'</span><span class="p">]</span> <span class="o">==</span> <span class="s">'focus'</span><span class="p">].</span><span class="n">_get_numeric_data</span><span class="p">().</span><span class="n">transpose</span><span class="p">().</span><span class="n">values</span>
+    <span class="n">ks_2samp_vec</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">ks_2samp</span><span class="p">,</span> <span class="n">signature</span><span class="o">=</span><span class="s">'(n),(m)-&gt;(),()'</span><span class="p">)</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">ks_2samp_vec</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">focus</span><span class="p">)</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">results</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">results</span>
+</code></pre></div></div>
+
+<p>Now i see:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">%%</span><span class="n">timeit</span> <span class="o">-</span><span class="n">n</span> <span class="mi">5</span> <span class="o">-</span><span class="n">r</span> <span class="mi">5</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">ks_df_vec</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">ks_mode</span><span class="p">)</span>
+<span class="c1"># 2.22 s ± 35.5 ms per loop (mean ± std. dev. of 5 runs, 5 loops each)
+</span></code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">print</span><span class="p">(</span><span class="s">'ks_df_vec'</span><span class="p">)</span>
+<span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="p">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">ks_df_vec</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">ks_mode</span><span class="p">)</span>
+<span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="p">.</span><span class="n">time</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">'</span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">end_time</span><span class="o">-</span><span class="n">start_time</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s"> seconds'</span><span class="p">)</span>
+<span class="c1"># ks_df_vec
+# 2.16 seconds
+</span></code></pre></div></div>
+
+<p>So a bit better at just over 2 seconds but still not great given this is still only 1000 rows of data.</p>
+
+<h2 id="numpy">Numpy?</h2>
+
+<p>Time to break out numpy! (confession: i never really learned numpy properly and find it very painful to work with and reason about the data and shapes etc as i do stuff to them - it all just feels so unnatural to me in some way - and i find it hard to keep track of things without and indexes or keys, i just don’t trust myself with it - i know i’m not supposed to speak this out loud but hey).</p>
+
+<p>So my approach now will be to just get the data into two separate numpy arrays and work solely with them.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">ks_np_dumb</span><span class="p">(</span><span class="n">arr_a</span><span class="p">,</span> <span class="n">arr_b</span><span class="p">,</span> <span class="n">ks_mode</span><span class="p">):</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">arr_a</span><span class="p">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>        
+        <span class="n">ks_stat</span><span class="p">,</span> <span class="n">p_value</span> <span class="o">=</span> <span class="n">ks_2samp</span><span class="p">(</span><span class="n">arr_a</span><span class="p">[:,</span><span class="n">n</span><span class="p">],</span><span class="n">arr_b</span><span class="p">[:,</span><span class="n">n</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="n">ks_mode</span><span class="p">)</span>
+        <span class="n">results</span><span class="p">.</span><span class="n">append</span><span class="p">((</span><span class="n">ks_stat</span><span class="p">,</span> <span class="n">p_value</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">results</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">%%</span><span class="n">timeit</span> <span class="o">-</span><span class="n">n</span> <span class="mi">5</span> <span class="o">-</span><span class="n">r</span> <span class="mi">5</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">ks_np_dumb</span><span class="p">(</span><span class="n">arr_base</span><span class="p">,</span> <span class="n">arr_focus</span><span class="p">,</span> <span class="n">ks_mode</span><span class="p">)</span>
+<span class="c1"># 2.43 s ± 200 ms per loop (mean ± std. dev. of 5 runs, 5 loops each)
+</span></code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">print</span><span class="p">(</span><span class="s">'ks_np_dumb'</span><span class="p">)</span>
+<span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="p">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">ks_np_dumb</span><span class="p">(</span><span class="n">arr_base</span><span class="p">,</span> <span class="n">arr_focus</span><span class="p">,</span> <span class="n">ks_mode</span><span class="p">)</span>
+<span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="p">.</span><span class="n">time</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">'</span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">end_time</span><span class="o">-</span><span class="n">start_time</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s"> seconds'</span><span class="p">)</span>
+<span class="c1"># ks_np_dumb
+# 2.22 seconds
+</span></code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">ks_np_vec</span><span class="p">(</span><span class="n">arr_a</span><span class="p">,</span> <span class="n">arr_b</span><span class="p">,</span> <span class="n">ks_mode</span><span class="p">):</span>
+    
+    <span class="k">def</span> <span class="nf">my_ks_2samp</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ks_2samp</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="n">ks_mode</span><span class="p">)</span>
+    
+    <span class="n">ks_2samp_vec</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">my_ks_2samp</span><span class="p">,</span> <span class="n">signature</span><span class="o">=</span><span class="s">'(n),(m)-&gt;(),()'</span><span class="p">)</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">ks_2samp_vec</span><span class="p">(</span><span class="n">arr_a</span><span class="p">.</span><span class="n">T</span><span class="p">,</span> <span class="n">arr_b</span><span class="p">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">results</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">results</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">%%</span><span class="n">timeit</span> <span class="o">-</span><span class="n">n</span> <span class="mi">5</span> <span class="o">-</span><span class="n">r</span> <span class="mi">5</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">ks_np_vec</span><span class="p">(</span><span class="n">arr_base</span><span class="p">,</span> <span class="n">arr_focus</span><span class="p">,</span> <span class="n">ks_mode</span><span class="p">)</span>
+<span class="c1"># 2.2 s ± 38.7 ms per loop (mean ± std. dev. of 5 runs, 5 loops each)
+</span></code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">print</span><span class="p">(</span><span class="s">'ks_np_vec'</span><span class="p">)</span>
+<span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="p">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">ks_np_vec</span><span class="p">(</span><span class="n">arr_base</span><span class="p">,</span> <span class="n">arr_focus</span><span class="p">,</span> <span class="n">ks_mode</span><span class="p">)</span>
+<span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="p">.</span><span class="n">time</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">'</span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">end_time</span><span class="o">-</span><span class="n">start_time</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s"> seconds'</span><span class="p">)</span>
+<span class="c1"># ks_np_vec
+# 2.29 seconds
+</span></code></pre></div></div>
+
+<p>Hmm - that did not seem to add too much, which i guess is kinda reassuring, it makes sense that the dumb numpy approach be a little bit faster then the dumb pandas one, but is comforting in that its not order of magnitudes different.</p>
+
+<p>And makes sense the the numpy dumb and numpy vectorize are not that different as the docs for it state that its really <a href="https://numpy.org/doc/stable/reference/generated/numpy.vectorize.html">just still a loop</a> (so to properly really vectorize it that means i’d probably have to do much more work to figure it out).</p>
+
+<h2 id="feck-this-time-for-cython">Feck this time for Cython!!!</h2>
+
+<p>Hell yeah i’m going to cythonize the shit out of this! Let be honest this is what i’ve wanted to do the whole time, do something with cython so i can boast about it to all my friends and how i got this awesome speedup, even just by adding some typing information.</p>
+
+<p>Lets go.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">%%</span><span class="n">cython</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="n">cimport</span> <span class="n">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="n">cimport</span> <span class="n">cython</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">ks_2samp</span>
+
+<span class="n">DTYPE</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">double</span>
+
+<span class="n">cpdef</span> <span class="n">cy_ks_np</span><span class="p">(</span><span class="n">double</span><span class="p">[:,</span> <span class="p">:]</span> <span class="n">arr_a</span><span class="p">,</span> <span class="n">double</span><span class="p">[:,</span> <span class="p">:]</span> <span class="n">arr_b</span><span class="p">,</span> <span class="nb">str</span> <span class="n">ks_mode</span><span class="p">):</span>
+
+    <span class="n">cdef</span> <span class="n">double</span> <span class="n">k</span><span class="p">,</span> <span class="n">p</span>
+    <span class="n">cdef</span> <span class="n">Py_ssize_t</span> <span class="n">i</span>
+    <span class="n">cdef</span> <span class="n">Py_ssize_t</span> <span class="n">m</span> <span class="o">=</span> <span class="n">arr_a</span><span class="p">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    
+    <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">m</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">DTYPE</span><span class="p">)</span>
+    <span class="n">cdef</span> <span class="n">double</span><span class="p">[:,</span> <span class="p">:]</span> <span class="n">result_view</span> <span class="o">=</span> <span class="n">result</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+        <span class="n">k</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">ks_2samp</span><span class="p">(</span><span class="n">arr_a</span><span class="p">[:,</span><span class="n">i</span><span class="p">],</span> <span class="n">arr_b</span><span class="p">[:,</span><span class="n">i</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="n">ks_mode</span><span class="p">)</span>
+        <span class="n">result_view</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">k</span>
+        <span class="n">result_view</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span>
+
+    <span class="k">return</span> <span class="n">result</span>
+</code></pre></div></div>
+
+<p>Ahhh look at it, very pleased with it if i do say so myself. I manged to wrangle <a href="https://cython.readthedocs.io/en/latest/src/userguide/numpy_tutorial.html">this tutorial</a> to fit my needs. Went to bed that night very pleased with myself.</p>
+
+<p>But…whats this…</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">%%</span><span class="n">timeit</span> <span class="o">-</span><span class="n">n</span> <span class="mi">5</span> <span class="o">-</span><span class="n">r</span> <span class="mi">5</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">cy_ks_np</span><span class="p">(</span><span class="n">arr_base</span><span class="p">,</span> <span class="n">arr_focus</span><span class="p">,</span> <span class="n">ks_mode</span><span class="p">)</span>
+<span class="c1"># 2.28 s ± 54 ms per loop (mean ± std. dev. of 5 runs, 5 loops each)
+</span></code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">print</span><span class="p">(</span><span class="s">'cy_ks_np'</span><span class="p">)</span>
+<span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="p">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">cy_ks_np</span><span class="p">(</span><span class="n">arr_base</span><span class="p">,</span> <span class="n">arr_focus</span><span class="p">,</span> <span class="n">ks_mode</span><span class="p">)</span>
+<span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="p">.</span><span class="n">time</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">'</span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">end_time</span><span class="o">-</span><span class="n">start_time</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s"> seconds'</span><span class="p">)</span>
+<span class="c1"># cy_ks_np
+# 2.1 seconds
+</span></code></pre></div></div>
+
+<p>2.2 Seconds!!! What the heck i was expecting some magical voodoo that would at least 10x speed me up, come on cython don’t do this to me, i was going to be a hero, they were going to chant my name in the office.</p>
+
+<p>So i did what was the logical next step - made a reproducible example and <a href="https://stackoverflow.com/questions/62195718/looping-over-a-scipy-function-lots-of-times-in-cython-not-seeing-much-improvem">asked StackOverflow</a> to do it for me :)</p>
+
+<h2 id="bro-do-you-even-profile">Bro, do you even Profile!</h2>
+
+<p>So while i waited on SO to do its thing i asked a few real engineers in my company what they thought. And their first response was - did you profile your code?</p>
+
+<p>I began to panic, i’ve been found out, oh no its happening so i quickly looked the jupyter cell magic to profile my functions.</p>
+
+<p><img src="/assets/images/2020-06-05-premature-optimization/image.png" alt="" /></p>
+
+<p>Well would ya look at that - 500 calls to <code class="language-plaintext highlighter-rouge">stats.py:5187(_compute_prob_inside_method)</code> taking up ~1.8 of my ~2 seconds.</p>
+
+<p>Turns out this whole exercise has been a bit of a waste of time so far. So i went back and dug into the <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.ks_2samp.html">ks_2samp()</a> docs and the <a href="https://github.com/scipy/scipy/blob/v1.4.1/scipy/stats/stats.py#L6087-L6282">code on github</a> to see if anything could be done.</p>
+
+<p>Wait whats this <code class="language-plaintext highlighter-rouge">mode</code> parameter - maybe i can play with that a bit, oh one option is “<em>‘asymp’ : use asymptotic distribution of test statistic</em>” that sounds like it could be faster than “<em>exact</em>”.</p>
+
+<p>So with <code class="language-plaintext highlighter-rouge">ks_mode='asymp'</code> i ran things again and held my breath.</p>
+
+<p><img src="/assets/images/2020-06-05-premature-optimization/image-1.png" alt="" /></p>
+
+<p>Lo and behold the solution was staring me in the face all along, obviously someone has already provided some sort of knobs and parameters to get a faster implementation under the hood.</p>
+
+<p>As per usual i should have stuck to my number 1 rule of writing as little code as possible and trying to use other peoples good work to make myself look better :)</p>
+
+<p>p.s. all the code is in a notebook <a href="https://github.com/andrewm4894/random/blob/master/scipy_cython_ks_2samp_performance_benchmark.ipynb">here</a>.</p>
+
+
+<style>
+.cover-image {
+  margin-bottom: 2em;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.cover-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.post-meta {
+  color: #666;
+  margin-bottom: 2em;
+}
+
+.category {
+  font-style: italic;
+}
+
+figure {
+  margin: 1.5em 0;
+  text-align: center;
+}
+
+figure img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+figcaption {
+  color: #666;
+  font-style: italic;
+  margin-top: 0.5em;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1em auto;
+}
+
+code {
+  padding: 0.2em 0.4em;
+  background-color: #f6f8fa;
+  border-radius: 3px;
+  font-size: 85%;
+}
+
+pre code {
+  padding: 0;
+  background-color: transparent;
+}
+
+.language-plaintext {
+  color: #24292e;
+}
+
+.language-python {
+  color: #24292e;
+}
+</style> 
+
+        <!-- Comments section -->
+        <div id="comments" style="margin-top: 3em; margin-bottom: 2em;">
+          <script src="https://giscus.app/client.js"
+                  data-repo="andrewm4894/blog"
+                  data-repo-id=""
+                  data-category="General"
+                  data-category-id=""
+                  data-mapping="pathname"
+                  data-strict="0"
+                  data-reactions-enabled="1"
+                  data-emit-metadata="0"
+                  data-input-position="bottom"
+                  data-theme="preferred_color_scheme"
+                  data-lang="en"
+                  crossorigin="anonymous"
+                  async>
+          </script>
+        </div>
+
+        <div style="margin-top: 2em; text-align: center;">
+          <a href="/preview/pr-6/" style="display: inline-block; margin: 1em;">← Back to Home</a>
+        </div>
+      </section>
+
+      <!-- Right sidebar -->
+      <aside style="width: 300px; margin-top: 6em;">
+        <div style="position: sticky; top: 20px;">
+          <h3 style="margin-top: 0;">Recent Posts</h3>
+          <div class="posts-list">
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2024/12/19/bolt-new-vs-o1-some-thoughts/" >
+                    bolt.new vs o1 - some thoughts
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  December 19, 2024
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2024/12/03/anomstack-data-engineering-podcast/" >
+                    Anomstack - Data Engineering Podcast
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  December 03, 2024
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2024/03/04/weights-biases-log-keras-model-summary-architecture/" >
+                    Weights &amp; Biases - log Keras model summary &amp; architecture
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  March 04, 2024
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2023/12/20/mlops-community-podcast/" >
+                    MLOps Community Podcast!!!
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  December 20, 2023
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2023/11/06/the-future-of-machine-learning-and-ai-panel-discussion-civo-navigate-europe-23/" >
+                    The Future of Machine Learning and AI Panel Discussion - Civo Navigate Europe 23
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  November 06, 2023
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2023/10/25/10-practical-ml-use-cases-in-observability/" >
+                    10 Practical ML Use Cases in Observability
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  October 25, 2023
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2023/07/01/malloy-seems-petty-cool/" >
+                    Malloy seems petty cool...
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  July 01, 2023
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2023/05/18/painless-anomaly-detection-with-apache-airflow/" >
+                    Painless Anomaly Detection with Apache Airflow
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  May 18, 2023
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2022/12/22/stripe-webhook-gcp-functions-framework-python/" >
+                    Stripe Webhook + GCP Functions Framework (Python)
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  December 22, 2022
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2022/10/20/colab-to-just-run-some-curl/" >
+                    Colab to just run some curl
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  October 20, 2022
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2022/10/15/some-sort-of-livecoding/" >
+                    Some sort-of livecoding
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  October 15, 2022
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2022/09/02/explaining-kmeans-clustering-for-unsupervised-anomaly-detection/" >
+                    Explaining kmeans clustering for unsupervised anomaly detection
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  September 02, 2022
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2022/08/18/hugging-face-text-classification-quickstart/" >
+                    Hugging Face Text Classification Quickstart
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  August 18, 2022
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2022/07/01/airflow-trigger-dags-python-script/" >
+                    Airflow "Trigger Dags" Python Script
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  July 01, 2022
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2022/03/25/some-ml-hot-takes/" >
+                    Some ML hot takes
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  March 25, 2022
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2021/10/11/time-series-anomaly-detection-using-pca/" >
+                    Time series anomaly detection using PCA
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  October 11, 2021
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2021/05/27/streamlit-multi-page-app-minimal-example/" >
+                    streamlit multi-page app minimal example
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  May 27, 2021
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2021/03/25/some-asyncio-fun-pain/" >
+                    Some asyncio fun/pain
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  March 25, 2021
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2021/02/16/anomaly-detection-using-matrix-profile/" >
+                    Anomaly Detection using the Matrix Profile
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  February 16, 2021
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2021/01/29/machine-learning-ireland-slack-community/" >
+                    "Machine Learning Ireland" slack community
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  January 29, 2021
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2021/01/14/time-series-anomaly-detection-in-go-using-golearn/" >
+                    Time series anomaly detection in Go using GoLearn
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  January 14, 2021
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2021/01/03/anomaly-detection-resources/" >
+                    Anomaly Detection Resources
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  January 03, 2021
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2020/12/28/first-stab-at-some-go-so-hot-right-now/" >
+                    First stab at some Go (so hot right now)
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  December 28, 2020
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2020/12/02/anomaly-detection-tutorial/" >
+                    Anomaly Detection Tutorial
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  December 02, 2020
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2020/11/10/good-places-for-datasets/" >
+                    Good Places For Datasets
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  November 10, 2020
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2020/10/19/different-types-of-time-series-anomalies/" >
+                    Different types of time series anomalies
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  October 19, 2020
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2020/10/15/numpy-feature-engineering-2x-speed-up-over-pandas/" >
+                    Numpy Feature Engineering - 2x Speed Up Over Pandas!
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  October 15, 2020
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2020/09/29/market-basket-analysis-in-python/" >
+                    Market basket analysis in Python
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  September 29, 2020
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2020/09/18/i-helped-build-a-thing/" >
+                    I helped build a thing!
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  September 18, 2020
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2020/09/03/time-series-clustering-with-tslearn/" >
+                    Time series clustering with tslearn
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  September 03, 2020
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2020/06/05/premature-optimization/" class="current-post">
+                    Premature Optimization
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  June 05, 2020
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2020/04/29/terraform-is-magic-r-machinelearning-links/" >
+                    Terraform is Magic + r/MachineLearning Links
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  April 29, 2020
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2020/03/23/ireland-covid19-data/" >
+                    Ireland Covid19 Data
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  March 23, 2020
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2020/02/27/a-little-brainteaser-or-im-an-idiot/" >
+                    A little brainteaser (or i'm an idiot)
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  February 27, 2020
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2020/02/20/papers-im-reading-2/" >
+                    Papers i'm reading #2
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  February 20, 2020
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2020/01/28/github-webhook-cloud-function-bigquery/" >
+                    Github Webhook -> Cloud Function -> BigQuery
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  January 28, 2020
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2019/12/30/papers-im-reading-1/" >
+                    Papers i'm reading #1
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  December 30, 2019
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2019/11/26/my-first-pypi-package/" >
+                    My First PyPI Package
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  November 26, 2019
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2019/10/20/kubeflow-custom-jupyter-image-github-for-notebook-source-control/" >
+                    KubeFlow Custom Jupyter Image (+ github for notebook source control)
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  October 20, 2019
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2019/09/09/multi-variate-multi-step-lstm-for-anomaly-detection/" >
+                    Multi-Variate, Multi-Step, LSTM for Anomaly Detection
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  September 09, 2019
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2019/09/04/custom-python-packages-in-aws-lambda/" >
+                    Custom Python Packages in AWS Lambda
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  September 04, 2019
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2019/07/20/clustering-cell-tower-usage-data/" >
+                    Clustering Cell Tower Usage Data
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  July 20, 2019
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2019/07/04/parallelize-a-wide-df-in-pandas/" >
+                    Parallelize a wide df in Pandas
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  July 04, 2019
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2019/06/11/0-0-0-0/" >
+                    ( 0 - 0 ) / 0 != 0
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  June 11, 2019
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2019/05/01/java-hello-world-cli-using-args4j/" >
+                    Java Hello World cli using args4j
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  May 01, 2019
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2019/04/30/weka-adding-list-to-instances-object/" >
+                    Java Weka API: Adding List To Instances Object
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  April 30, 2019
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2019/04/27/parallel-jupyter-notebooks/" >
+                    Parallel Jupyter Notebooks
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  April 27, 2019
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2019/04/25/the-journey-begins/" >
+                    My Site...
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  April 25, 2019
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2019/04/25/previous-blog-posts/" >
+                    Previous blog posts
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  April 25, 2019
+                </time>
+              </article>
+            
+              <article style="margin-bottom: 1.5em;">
+                <h4 style="margin: 0;">
+                  <a href="/preview/pr-6/2019/04/25/java-for-machine-learning/" >
+                    Java for Machine Learning
+                  </a>
+                </h4>
+                <time style="font-size: 0.9em; color: #666;">
+                  April 25, 2019
+                </time>
+              </article>
+            
+            
+          </div>
+        </div>
+      </aside>
+
+      <style>
+        /* Typography */
+        body {
+          font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+          font-size: 16px;
+          line-height: 1.6;
+          color: #333;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+          font-weight: 600;
+          color: #1a1a1a;
+          line-height: 1.3;
+          margin-top: 2rem;
+          margin-bottom: 1rem;
+        }
+        
+        h1 { 
+          font-size: 2.5rem; 
+          font-weight: 700; 
+          margin-top: 0; 
+          margin-bottom: 1.5rem;
+        }
+        h2 { font-size: 2rem; }
+        h3 { font-size: 1.5rem; }
+        h4 { font-size: 1.25rem; }
+        h5 { font-size: 1.125rem; }
+        h6 { font-size: 1rem; }
+        
+        p {
+          margin-bottom: 1.5rem;
+          line-height: 1.7;
+        }
+        
+        code, pre {
+          font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+        }
+        
+        code {
+          font-size: 0.9em;
+          font-weight: 500;
+        }
+        
+        pre {
+          font-size: 0.85em;
+          line-height: 1.5;
+          overflow-x: auto;
+          padding: 1rem;
+          border-radius: 6px;
+          background-color: #f8f9fa !important;
+        }
+
+        .cover-image {
+          margin-bottom: 2em;
+          max-width: 100%;
+          overflow: hidden;
+        }
+
+        .cover-image img {
+          width: 100%;
+          height: auto;
+          display: block;
+        }
+
+        .post-meta {
+          color: #666;
+          margin-bottom: 2em;
+          font-size: 0.95rem;
+        }
+
+        .category {
+          font-style: italic;
+          font-weight: 500;
+        }
+
+        figure {
+          margin: 1.5em 0;
+          text-align: center;
+        }
+
+        figure img {
+          max-width: 100%;
+          height: auto;
+          display: block;
+          margin: 0 auto;
+        }
+
+        figcaption {
+          color: #666;
+          font-style: italic;
+          margin-top: 0.5em;
+          font-size: 0.9rem;
+        }
+
+        img {
+          max-width: 100%;
+          height: auto;
+          display: block;
+          margin: 1em auto;
+        }
+
+        code {
+          padding: 0.2em 0.4em;
+          background-color: #f6f8fa;
+          border-radius: 3px;
+          font-size: 85%;
+        }
+
+        pre code {
+          padding: 0;
+          background-color: transparent;
+        }
+
+        .language-plaintext {
+          color: #24292e;
+        }
+
+        .language-python {
+          color: #24292e;
+        }
+
+        .posts-list h4 a {
+          color: #333;
+          text-decoration: none;
+          font-weight: 500;
+        }
+
+        .posts-list h4 a:hover {
+          color: #267CB9;
+        }
+
+        .posts-list .current-post {
+          color: #267CB9;
+          font-weight: 600;
+        }
+        
+        /* Improve link styling */
+        a {
+          color: #267CB9;
+          text-decoration: none;
+          transition: color 0.2s ease;
+        }
+        
+        a:hover {
+          color: #1e5a8a;
+          text-decoration: underline;
+        }
+
+        @media screen and (max-width: 1000px) {
+          .wrapper {
+            flex-direction: column;
+          }
+          
+          section {
+            margin-right: 0;
+          }
+
+          aside {
+            width: 100%;
+            margin-top: 3em;
+          }
+          
+          h1 { font-size: 2rem; }
+          h2 { font-size: 1.75rem; }
+          h3 { font-size: 1.5rem; }
+        }
+      </style>
+    </div>
+  </body>
+</html> 
