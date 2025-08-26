@@ -1,0 +1,23 @@
+{
+  "name": "Blog",
+  "image": "mcr.microsoft.com/devcontainers/jekyll:2",
+  "features": {
+    "ghcr.io/devcontainers/features/python:1": {}
+  },
+  "postCreateCommand": "bundle install",
+  "forwardPorts": [4000],
+  "portsAttributes": {
+    "4000": {
+      "label": "Jekyll server",
+      "onAutoForward": "openBrowser"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "rebornix.Ruby",
+        "esbenp.prettier-vscode"
+      ]
+    }
+  }
+}
