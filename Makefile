@@ -1,4 +1,4 @@
-.PHONY: install serve build clean preview check-images
+.PHONY: install serve build clean preview check-images test
 
 # Install dependencies
 install:
@@ -56,5 +56,8 @@ fix-image-links:
 fix-image-links-apply:
 	python3 scripts/fix_markdown_image_links.py --apply
 
+# Run all checks
+test: build check-images
+
 # Default target
-all: install serve 
+all: install serve
