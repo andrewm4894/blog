@@ -36,26 +36,168 @@ code, pre {
   font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
 }
 
+/* Inline code */
 code {
   font-size: 0.9em;
   font-weight: 500;
   padding: 0.2em 0.4em;
   background-color: #f6f8fa;
-  border-radius: 3px;
+  border-radius: 4px;
+  color: #e36209;
+  border: 1px solid #e1e4e8;
 }
 
+/* Code blocks */
 pre {
-  font-size: 0.85em;
-  line-height: 1.5;
+  font-size: 0.9em;
+  line-height: 1.6;
   overflow-x: auto;
-  padding: 1rem;
-  border-radius: 6px;
-  background-color: #f8f9fa !important;
+  padding: 1.5rem;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #f1f3f4 100%);
+  border: 1px solid #e1e4e8;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin: 1.5rem 0;
+  position: relative;
 }
 
+/* Code inside pre blocks */
 pre code {
   padding: 0;
   background-color: transparent;
+  color: #24292e;
+  border: none;
+  font-size: inherit;
+  font-weight: 400;
+}
+
+/* Rouge Syntax Highlighting - GitHub Theme */
+.highlight { background: #f8f8f8; }
+.highlight .c { color: #999988; font-style: italic } /* Comment */
+.highlight .err { color: #a61717; background-color: #e3d2d2 } /* Error */
+.highlight .k { color: #000000; font-weight: bold } /* Keyword */
+.highlight .o { color: #000000; font-weight: bold } /* Operator */
+.highlight .cm { color: #999988; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #999999; font-weight: bold; font-style: italic } /* Comment.Preproc */
+.highlight .c1 { color: #999988; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #999999; font-weight: bold; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #000000; background-color: #ffdddd } /* Generic.Deleted */
+.highlight .ge { color: #000000; font-style: italic } /* Generic.Emph */
+.highlight .gr { color: #aa0000 } /* Generic.Error */
+.highlight .gh { color: #999999 } /* Generic.Heading */
+.highlight .gi { color: #000000; background-color: #ddffdd } /* Generic.Inserted */
+.highlight .go { color: #888888 } /* Generic.Output */
+.highlight .gp { color: #555555 } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #aaaaaa } /* Generic.Subheading */
+.highlight .gt { color: #aa0000 } /* Generic.Traceback */
+.highlight .kc { color: #000000; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #000000; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #000000; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #000000; font-weight: bold } /* Keyword.Pseudo */
+.highlight .kr { color: #000000; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #445588; font-weight: bold } /* Keyword.Type */
+.highlight .m { color: #009999 } /* Literal.Number */
+.highlight .s { color: #d01040 } /* Literal.String */
+.highlight .na { color: #008080 } /* Name.Attribute */
+.highlight .nb { color: #0086B3 } /* Name.Builtin */
+.highlight .nc { color: #445588; font-weight: bold } /* Name.Class */
+.highlight .no { color: #008080 } /* Name.Constant */
+.highlight .nd { color: #3c5d5d; font-weight: bold } /* Name.Decorator */
+.highlight .ni { color: #800080 } /* Name.Entity */
+.highlight .ne { color: #990000; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #990000; font-weight: bold } /* Name.Function */
+.highlight .nl { color: #990000; font-weight: bold } /* Name.Label */
+.highlight .nn { color: #555555 } /* Name.Namespace */
+.highlight .nt { color: #000080 } /* Name.Tag */
+.highlight .nv { color: #008080 } /* Name.Variable */
+.highlight .ow { color: #000000; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #bbbbbb } /* Text.Whitespace */
+.highlight .mf { color: #009999 } /* Literal.Number.Float */
+.highlight .mh { color: #009999 } /* Literal.Number.Hex */
+.highlight .mi { color: #009999 } /* Literal.Number.Integer */
+.highlight .mo { color: #009999 } /* Literal.Number.Oct */
+.highlight .sb { color: #d01040 } /* Literal.String.Backtick */
+.highlight .sc { color: #d01040 } /* Literal.String.Char */
+.highlight .sd { color: #d01040 } /* Literal.String.Doc */
+.highlight .s2 { color: #d01040 } /* Literal.String.Double */
+.highlight .se { color: #d01040 } /* Literal.String.Escape */
+.highlight .sh { color: #d01040 } /* Literal.String.Heredoc */
+.highlight .si { color: #d01040 } /* Literal.String.Interpol */
+.highlight .sx { color: #d01040 } /* Literal.String.Other */
+.highlight .sr { color: #009926 } /* Literal.String.Regex */
+.highlight .s1 { color: #d01040 } /* Literal.String.Single */
+.highlight .ss { color: #990073 } /* Literal.String.Symbol */
+.highlight .bp { color: #999999 } /* Name.Builtin.Pseudo */
+.highlight .vc { color: #008080 } /* Name.Variable.Class */
+.highlight .vg { color: #008080 } /* Name.Variable.Global */
+.highlight .vi { color: #008080 } /* Name.Variable.Instance */
+.highlight .il { color: #009999 } /* Literal.Number.Integer.Long */
+
+/* Language labels for code blocks */
+.language-python .highlight::before {
+  content: "Python";
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: #267CB9;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  border-radius: 0 8px 0 4px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.language-javascript .highlight::before {
+  content: "JavaScript";
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: #f7df1e;
+  color: #000;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  border-radius: 0 8px 0 4px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.language-bash .highlight::before,
+.language-shell .highlight::before {
+  content: "Shell";
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: #4a4a4a;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  border-radius: 0 8px 0 4px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Better scrollbars for code blocks */
+pre::-webkit-scrollbar {
+  height: 8px;
+}
+
+pre::-webkit-scrollbar-track {
+  background: #f1f3f4;
+  border-radius: 4px;
+}
+
+pre::-webkit-scrollbar-thumb {
+  background: #c1c7cd;
+  border-radius: 4px;
+}
+
+pre::-webkit-scrollbar-thumb:hover {
+  background: #a8b2ba;
 }
 
 /* Improve link styling */
@@ -176,5 +318,167 @@ img {
   
   .wrapper {
     padding: 0 15px;
+  }
+}
+
+/* YouTube Embeds */
+.youtube-embed {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  height: 0;
+  overflow: hidden;
+  width: 95%; /* Wider for better viewing */
+  max-width: 600px; /* Larger for better proportions */
+  margin: 1.5em auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+}
+
+.youtube-embed iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+/* Google Slides Embeds */
+.slides-embed {
+  position: relative;
+  padding-bottom: 59.38%; /* Google Slides aspect ratio */
+  height: 0;
+  overflow: hidden;
+  width: 95%; /* Larger for readability */
+  max-width: 650px; /* Much larger so text is readable */
+  margin: 1.5em auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+}
+
+.slides-embed iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  box-sizing: border-box;
+  border: none;
+}
+
+/* GitHub Gist Embeds */
+.gist-embed {
+  margin: 1.5em auto;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.gist-embed .gist {
+  margin: 0 !important;
+}
+
+.gist-embed .gist .gist-file {
+  border-radius: 8px !important;
+  border: none !important;
+}
+
+.gist-embed .gist .gist-data {
+  border-radius: 0 0 8px 8px !important;
+}
+
+.gist-embed .gist .gist-meta {
+  border-radius: 0 0 8px 8px !important;
+  background: #f6f8fa !important;
+  border-top: 1px solid #e1e4e8 !important;
+}
+
+/* Text overflow prevention */
+p, li, td {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+/* Long URLs should break properly */
+a {
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Code blocks should have horizontal scroll */
+pre, code {
+  word-wrap: normal;
+  overflow-x: auto;
+}
+
+/* Code block responsive improvements */
+@media (max-width: 768px) {
+  pre {
+    padding: 1rem;
+    font-size: 0.85em;
+    margin: 1rem -15px; /* Extend to screen edges on mobile */
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+  
+  .language-python::before,
+  .language-javascript::before,
+  .language-bash::before,
+  .language-shell::before {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+  }
+}
+
+/* Enhanced code blocks when sidebar is collapsed */
+section[style*="max-width: 900px"] pre {
+  max-width: 100%;
+  margin: 1.5rem auto;
+  font-size: 0.95em;
+}
+
+/* Dynamic sizing when sidebar is collapsed */
+section[style*="max-width: 900px"] .youtube-embed {
+  width: 95%;
+  max-width: 800px; /* Much larger when sidebar is hidden */
+}
+
+section[style*="max-width: 900px"] .slides-embed {
+  width: 95%;
+  max-width: 850px; /* Even larger for slides when sidebar is hidden */
+}
+
+section[style*="max-width: 900px"] .gist-embed {
+  max-width: 850px; /* Larger gists when sidebar is hidden */
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 1000px) {
+  .youtube-embed {
+    width: 100%;
+    max-width: 100%; /* Full width when sidebar naturally collapses */
+    margin: 1em auto;
+  }
+  
+  .slides-embed {
+    width: 100%;
+    max-width: 100%; /* Full width when sidebar naturally collapses */
+    margin: 1em auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .youtube-embed,
+  .slides-embed {
+    width: 100%;
+    margin: 1em auto;
   }
 } 

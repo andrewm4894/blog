@@ -16,7 +16,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Sans+Pro:ital,wght@0,400;0,600;1,400;1,600&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
 
     <title>Stripe Webhook + GCP Functions Framework (Python) | andrewm4894.com</title>
-    <link rel="stylesheet" href="/assets/css/style.css?v=20250802152556">
+    <link rel="stylesheet" href="/assets/css/style.css?v=20250826220526">
     
     <!-- PostHog Analytics -->
     <script>
@@ -68,7 +68,7 @@
 
 <p>Most of what might be useful is in the <a href="https://github.com/andrewm4894/stripe-webhook-gcp-function#readme">repo readme</a>, but below i’ll quickly walk through the structure and moving parts.</p>
 
-<h2 id="repo-structure">Repo structure</h2>
+<h2 id="id-repo-structure">Repo structure</h2>
 
 <p>Here are the main folders and files involved. Greyed out files are those that might have sensitive info and so are part of the <a href="https://github.com/andrewm4894/stripe-webhook-gcp-function/blob/main/.gitignore">`.gitignore`</a> and so not to be committed to source control. I’ll quickly walkthrough each folder and important files below.</p>
 
@@ -121,7 +121,7 @@
   <li><code class="language-plaintext highlighter-rouge">requirements.txt</code> - Python libraries we want to install into our `venv` for local execution and debugging of the function.</li>
 </ul>
 
-<h2 id="run-function-locally">Run function locally</h2>
+<h2 id="id-run-function-locally">Run function locally</h2>
 
 <p>To run the function locally we can use the <a href="https://github.com/GoogleCloudPlatform/functions-framework-python#quickstart-http-function-hello-world">functions framework cli</a> like below:</p>
 
@@ -149,9 +149,9 @@ functions-framework <span class="nt">--source</span><span class="o">=</span>./py
  </span><span class="o">*</span><span class="w"> </span><span class="n">Debugger</span><span class="w"> </span><span class="nx">PIN:</span><span class="w"> </span><span class="nx">XXX-XXX</span><span class="w">
 </span></code></pre></div></div>
 
-<h2 id="stripe-cli">Stripe CLI</h2>
+<h2 id="id-stripe-cli">Stripe CLI</h2>
 
-<h3 id="set-up-local-forwarding">Set up local forwarding</h3>
+<h3 id="id-set-up-local-forwarding">Set up local forwarding</h3>
 
 <p>Once the function is running locally you can use the <a href="https://stripe.com/docs/stripe-cli">stripe cli</a> to (1) forward events to a local endpoint and then (2) trigger some test events to see the response.</p>
 
@@ -165,7 +165,7 @@ functions-framework <span class="nt">--source</span><span class="o">=</span>./py
 </span><span class="err">&gt;</span><span class="w"> </span><span class="n">Ready</span><span class="o">!</span><span class="w"> </span><span class="nx">You</span><span class="w"> </span><span class="nx">are</span><span class="w"> </span><span class="nx">using</span><span class="w"> </span><span class="nx">Stripe</span><span class="w"> </span><span class="nx">API</span><span class="w"> </span><span class="nx">Version</span><span class="w"> </span><span class="p">[</span><span class="mi">2022</span><span class="nt">-11-15</span><span class="p">]</span><span class="o">.</span><span class="w"> </span><span class="nx">Your</span><span class="w"> </span><span class="nx">webhook</span><span class="w"> </span><span class="nx">signing</span><span class="w"> </span><span class="nx">secret</span><span class="w"> </span><span class="nx">is</span><span class="w"> </span><span class="nx">xxx_xxxxxx</span><span class="w"> </span><span class="p">(</span><span class="err">^</span><span class="n">C</span><span class="w"> </span><span class="nx">to</span><span class="w"> </span><span class="nx">quit</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
 
-<h3 id="create-some-test-events">Create some test events</h3>
+<h3 id="id-create-some-test-events">Create some test events</h3>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># create a test event</span>
 stripe trigger payment_intent.succeeded
@@ -210,7 +210,7 @@ stripe trigger payment_intent.succeeded
 </span><span class="mf">127.0</span><span class="o">.</span><span class="nf">0</span><span class="o">.</span><span class="nf">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">[</span><span class="mi">22</span><span class="n">/Dec/2022</span><span class="w"> </span><span class="nx">12:31:11</span><span class="p">]</span><span class="w"> </span><span class="s2">"POST / HTTP/1.1"</span><span class="w"> </span><span class="mi">200</span><span class="w"> </span><span class="o">-</span><span class="w">
 </span></code></pre></div></div>
 
-<h2 id="thats-it">Thats it</h2>
+<h2 id="id-thats-it">Thats it</h2>
 
 <p>That’s it, you can then add whatever additional logic you want to handle specific stripe webhook events and control what events make it to this webhook from within the stripe ui itself as needed.</p>
 
@@ -310,9 +310,14 @@ pre code {
       </section>
 
       <!-- Right sidebar -->
-      <aside style="width: 300px; margin-top: 6em;">
+      <aside id="sidebar" style="width: 300px; margin-top: 6em; transition: all 0.3s ease;">
         <div style="position: sticky; top: 20px;">
-          <h3 style="margin-top: 0;">Recent Posts</h3>
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1em;">
+            <h3 style="margin: 0;">Recent Posts</h3>
+            <button id="sidebar-toggle" style="background: #267CB9; color: white; border: none; border-radius: 4px; width: 32px; height: 32px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center;" title="Hide sidebar">
+              ✕
+            </button>
+          </div>
           <div class="posts-list">
             
               <article style="margin-bottom: 1.5em;">
@@ -869,6 +874,57 @@ pre code {
           </div>
         </div>
       </aside>
+
+      <!-- Show sidebar button (appears when sidebar is hidden) -->
+      <button id="show-sidebar" style="position: fixed; top: 20px; right: 20px; z-index: 1000; background: #267CB9; color: white; border: none; border-radius: 4px; padding: 8px 12px; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.2); font-size: 14px; display: none;" title="Show sidebar">
+        Recent Posts ▶
+      </button>
+
+      <script>
+        // Sidebar toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+          const hideToggle = document.getElementById('sidebar-toggle');
+          const showToggle = document.getElementById('show-sidebar');
+          const sidebar = document.getElementById('sidebar');
+          const mainSection = document.querySelector('section');
+          
+          // Check for saved preference
+          const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+          if (isCollapsed) {
+            toggleSidebar(true);
+          }
+          
+          // Hide sidebar button click
+          hideToggle.addEventListener('click', function() {
+            toggleSidebar(true);
+            localStorage.setItem('sidebar-collapsed', 'true');
+          });
+          
+          // Show sidebar button click
+          showToggle.addEventListener('click', function() {
+            toggleSidebar(false);
+            localStorage.setItem('sidebar-collapsed', 'false');
+          });
+          
+          function toggleSidebar(collapse) {
+            if (collapse) {
+              sidebar.style.transform = 'translateX(100%)';
+              sidebar.style.opacity = '0';
+              mainSection.style.maxWidth = '900px';
+              mainSection.style.marginRight = 'auto';
+              mainSection.style.marginLeft = 'auto';
+              showToggle.style.display = 'block';
+            } else {
+              sidebar.style.transform = 'translateX(0)';
+              sidebar.style.opacity = '1';
+              mainSection.style.maxWidth = '800px';
+              mainSection.style.marginRight = '40px';
+              mainSection.style.marginLeft = '0';
+              showToggle.style.display = 'none';
+            }
+          }
+        });
+      </script>
 
       <style>
         /* Typography */

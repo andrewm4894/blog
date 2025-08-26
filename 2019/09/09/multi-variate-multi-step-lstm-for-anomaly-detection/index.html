@@ -16,7 +16,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Sans+Pro:ital,wght@0,400;0,600;1,400;1,600&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
 
     <title>Multi-Variate, Multi-Step, LSTM for Anomaly Detection | andrewm4894.com</title>
-    <link rel="stylesheet" href="/assets/css/style.css?v=20250802152556">
+    <link rel="stylesheet" href="/assets/css/style.css?v=20250826220526">
     
     <!-- PostHog Analytics -->
     <script>
@@ -75,7 +75,7 @@
 
 <p><em>Note: This example is adapted and built off of</em> <a href="https://developer.ibm.com/tutorials/iot-deep-learning-anomaly-detection-5/"><em>this tutorial</em></a> <em>which i found a very useful starting point. All the code for this post is in</em> <a href="https://github.com/andrewm4894/keras_learn/blob/master/lstm_multi.ipynb"><em>this notebook</em></a><em>. The rest of this post will essentially walk though the code.</em></p>
 
-<h2 id="imports--paramaters">Imports &amp; Paramaters</h2>
+<h2 id="id-imports--paramaters">Imports &amp; Paramaters</h2>
 
 <p>Below shows the imports and all the parameters for this example, you should be able to play with them and see what different results you get.</p>
 
@@ -83,7 +83,7 @@
 
 <p>https://gist.github.com/andrewm4894/4540e23d86fa02859191a38998661849#file-keras_lstm_multi_imports_and_params-py</p>
 
-<h2 id="fake-data">Fake Data!</h2>
+<h2 id="id-fake-data">Fake Data!</h2>
 
 <p>We will generate some random data, and then smooth it out to look realistic. This will be our <strong>‘normal’ data</strong> that we will use to train the model.</p>
 
@@ -139,7 +139,7 @@
 
 </figure>
 
-<h2 id="some-helper-functions">Some Helper Functions</h2>
+<h2 id="id-some-helper-functions">Some Helper Functions</h2>
 
 <p>I’ve built some helper functions to make life easier in the example notebook. I’ll share the code below and talk a little about each.</p>
 
@@ -155,7 +155,7 @@
 
 <p>https://gist.github.com/andrewm4894/58179c6e240163a45dc2acff1843f7f2#file-keras_lstm_multi_helper_functions-py</p>
 
-<h2 id="build--train-the-model">Build &amp; Train The Model</h2>
+<h2 id="id-build--train-the-model">Build &amp; Train The Model</h2>
 
 <p>Below code builds the model, trains it and also calls predict on all the training data be able to get errors on the original ‘normal’ training data.</p>
 
@@ -177,7 +177,7 @@
 
 <p><img src="/assets/images/2019-09-09-multi-variate-multi-step-lstm-for-anomaly-detection/1_PuMxLqfI3xQkoTzNo44v1g.jpeg" alt="" /></p>
 
-<h2 id="lets-break-it">Lets Break It</h2>
+<h2 id="id-lets-break-it">Lets Break It</h2>
 
 <p>So now that we have our model trained on our ‘normal’ data we can use it to see how well it does at predicting our new ‘broken’ data.</p>
 
@@ -297,9 +297,14 @@ pre code {
       </section>
 
       <!-- Right sidebar -->
-      <aside style="width: 300px; margin-top: 6em;">
+      <aside id="sidebar" style="width: 300px; margin-top: 6em; transition: all 0.3s ease;">
         <div style="position: sticky; top: 20px;">
-          <h3 style="margin-top: 0;">Recent Posts</h3>
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1em;">
+            <h3 style="margin: 0;">Recent Posts</h3>
+            <button id="sidebar-toggle" style="background: #267CB9; color: white; border: none; border-radius: 4px; width: 32px; height: 32px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center;" title="Hide sidebar">
+              ✕
+            </button>
+          </div>
           <div class="posts-list">
             
               <article style="margin-bottom: 1.5em;">
@@ -856,6 +861,57 @@ pre code {
           </div>
         </div>
       </aside>
+
+      <!-- Show sidebar button (appears when sidebar is hidden) -->
+      <button id="show-sidebar" style="position: fixed; top: 20px; right: 20px; z-index: 1000; background: #267CB9; color: white; border: none; border-radius: 4px; padding: 8px 12px; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.2); font-size: 14px; display: none;" title="Show sidebar">
+        Recent Posts ▶
+      </button>
+
+      <script>
+        // Sidebar toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+          const hideToggle = document.getElementById('sidebar-toggle');
+          const showToggle = document.getElementById('show-sidebar');
+          const sidebar = document.getElementById('sidebar');
+          const mainSection = document.querySelector('section');
+          
+          // Check for saved preference
+          const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+          if (isCollapsed) {
+            toggleSidebar(true);
+          }
+          
+          // Hide sidebar button click
+          hideToggle.addEventListener('click', function() {
+            toggleSidebar(true);
+            localStorage.setItem('sidebar-collapsed', 'true');
+          });
+          
+          // Show sidebar button click
+          showToggle.addEventListener('click', function() {
+            toggleSidebar(false);
+            localStorage.setItem('sidebar-collapsed', 'false');
+          });
+          
+          function toggleSidebar(collapse) {
+            if (collapse) {
+              sidebar.style.transform = 'translateX(100%)';
+              sidebar.style.opacity = '0';
+              mainSection.style.maxWidth = '900px';
+              mainSection.style.marginRight = 'auto';
+              mainSection.style.marginLeft = 'auto';
+              showToggle.style.display = 'block';
+            } else {
+              sidebar.style.transform = 'translateX(0)';
+              sidebar.style.opacity = '1';
+              mainSection.style.maxWidth = '800px';
+              mainSection.style.marginRight = '40px';
+              mainSection.style.marginLeft = '0';
+              showToggle.style.display = 'none';
+            }
+          }
+        });
+      </script>
 
       <style>
         /* Typography */

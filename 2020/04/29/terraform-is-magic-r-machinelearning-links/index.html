@@ -16,7 +16,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Sans+Pro:ital,wght@0,400;0,600;1,400;1,600&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
 
     <title>Terraform is Magic + r/MachineLearning Links | andrewm4894.com</title>
-    <link rel="stylesheet" href="/assets/css/style.css?v=20250802152556">
+    <link rel="stylesheet" href="/assets/css/style.css?v=20250826220526">
     
     <!-- PostHog Analytics -->
     <script>
@@ -65,7 +65,7 @@
 
 <p>(<strong>Note</strong>: All code is available in my <a href="https://github.com/andrewm4894/reddit-links">reddit-links Github repo</a>.)</p>
 
-<h2 id="the-set-up">The Set Up</h2>
+<h2 id="id-the-set-up">The Set Up</h2>
 
 <p>The idea is to have a cloud function that runs each day, looks at top posts on <a href="https://www.reddit.com/r/machinelearning">r/MachineLearning</a>, pulls out all links, and some metadata, and then saves those links somewhere useful.</p>
 
@@ -81,7 +81,7 @@
   <li><strong>Airtable</strong>: This is where the data will be stored and published from. I had considered a GCP bucket but Airtable is much easier to share and a bit more user friendly for anyone who might want to use the links pulled from reddit.</li>
 </ul>
 
-<h2 id="terraform">Terraform</h2>
+<h2 id="id-terraform">Terraform</h2>
 
 <p>Once you work with and set up a Terraform project once then its pretty straight forward. I have used <a href="https://www.serverless.com/">Serverless</a> for some cloud functions before but i like the way terraform gives you everything GCP or AWS or Azure etc have to offer at your fingertips once you invest that little bit of learning up front.</p>
 
@@ -97,23 +97,23 @@
   <li><a href="https://github.com/andrewm4894/reddit-links/blob/master/terraform/gcp-pubsub-topics.tf"><strong>gcp-pubsub-topics.tf</strong></a> - used to define the <a href="https://cloud.google.com/pubsub">PubSub</a> topics that will trigger the cloud function.</li>
 </ul>
 
-<h2 id="gcp-function---redditlinks">GCP Function - redditlinks</h2>
+<h2 id="id-gcp-function---redditlinks">GCP Function - redditlinks</h2>
 
 <p>The function used to pull from reddit is below. It might be a little verbose and could probably be refactored a little but hey - it works. Mainly using the <a href="https://praw.readthedocs.io/en/latest/">PRAW</a> library to pull from reddit, some usual data wrangling libraries, and then the <a href="https://github.com/gtalarico/airtable-python-wrapper">airtable-python-wrapper</a> library to insert/update records in Airtable.</p>
 
 <p>https://gist.github.com/andrewm4894/dbea54c122d8f3dd4e2695887e337567</p>
 
-<h2 id="end-results---airtable">End Results - Airtable</h2>
+<h2 id="id-end-results---airtable">End Results - Airtable</h2>
 
 <p>The end results of all this being a cloud function that runs once a day to update or insert records into <a href="https://airtable.com/shrCe8ZWuLJpHNiG8">this Airtable</a>. Then from that i have made some views for links from specific domains.</p>
 
 <p>(<strong>Note</strong>: If you wanted to do this but for a different subreddit then you should need to make minimal changes once you have your terraform variables all set up - primarily changing or adding another cloud scheduler job to <a href="https://github.com/andrewm4894/reddit-links/blob/master/terraform/gcp-cloud-scheduler.tf">here</a> with the relevant params, as well as making sure all keys etc you need are available in the right places).</p>
 
-<h2 id="rmachinelearning---youtube-links">r/MachineLearning - YouTube Links</h2>
+<h2 id="id-rmachinelearning---youtube-links">r/MachineLearning - YouTube Links</h2>
 
 <iframe class="airtable-embed" src="https://airtable.com/embed/shrfM8xpQlzEchVWB?backgroundColor=orange&amp;viewControls=on" frameborder="0" onmousewheel="" width="800" height="500" style="background: transparent; border: 1px solid #ccc;"></iframe>
 
-<h2 id="rmachinelearning---arxiv-links">r/MachineLearning - Arxiv Links</h2>
+<h2 id="id-rmachinelearning---arxiv-links">r/MachineLearning - Arxiv Links</h2>
 
 <iframe class="airtable-embed" src="https://airtable.com/embed/shrNMyw1d6BKS3R89?backgroundColor=orange&amp;viewControls=on" frameborder="0" onmousewheel="" width="100%" height="533" style="background: transparent; border: 1px solid #ccc;"></iframe>
 
@@ -211,9 +211,14 @@ pre code {
       </section>
 
       <!-- Right sidebar -->
-      <aside style="width: 300px; margin-top: 6em;">
+      <aside id="sidebar" style="width: 300px; margin-top: 6em; transition: all 0.3s ease;">
         <div style="position: sticky; top: 20px;">
-          <h3 style="margin-top: 0;">Recent Posts</h3>
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1em;">
+            <h3 style="margin: 0;">Recent Posts</h3>
+            <button id="sidebar-toggle" style="background: #267CB9; color: white; border: none; border-radius: 4px; width: 32px; height: 32px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center;" title="Hide sidebar">
+              ✕
+            </button>
+          </div>
           <div class="posts-list">
             
               <article style="margin-bottom: 1.5em;">
@@ -770,6 +775,57 @@ pre code {
           </div>
         </div>
       </aside>
+
+      <!-- Show sidebar button (appears when sidebar is hidden) -->
+      <button id="show-sidebar" style="position: fixed; top: 20px; right: 20px; z-index: 1000; background: #267CB9; color: white; border: none; border-radius: 4px; padding: 8px 12px; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.2); font-size: 14px; display: none;" title="Show sidebar">
+        Recent Posts ▶
+      </button>
+
+      <script>
+        // Sidebar toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+          const hideToggle = document.getElementById('sidebar-toggle');
+          const showToggle = document.getElementById('show-sidebar');
+          const sidebar = document.getElementById('sidebar');
+          const mainSection = document.querySelector('section');
+          
+          // Check for saved preference
+          const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+          if (isCollapsed) {
+            toggleSidebar(true);
+          }
+          
+          // Hide sidebar button click
+          hideToggle.addEventListener('click', function() {
+            toggleSidebar(true);
+            localStorage.setItem('sidebar-collapsed', 'true');
+          });
+          
+          // Show sidebar button click
+          showToggle.addEventListener('click', function() {
+            toggleSidebar(false);
+            localStorage.setItem('sidebar-collapsed', 'false');
+          });
+          
+          function toggleSidebar(collapse) {
+            if (collapse) {
+              sidebar.style.transform = 'translateX(100%)';
+              sidebar.style.opacity = '0';
+              mainSection.style.maxWidth = '900px';
+              mainSection.style.marginRight = 'auto';
+              mainSection.style.marginLeft = 'auto';
+              showToggle.style.display = 'block';
+            } else {
+              sidebar.style.transform = 'translateX(0)';
+              sidebar.style.opacity = '1';
+              mainSection.style.maxWidth = '800px';
+              mainSection.style.marginRight = '40px';
+              mainSection.style.marginLeft = '0';
+              showToggle.style.display = 'none';
+            }
+          }
+        });
+      </script>
 
       <style>
         /* Typography */

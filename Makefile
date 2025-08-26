@@ -1,4 +1,4 @@
-.PHONY: install serve build clean preview check-images
+.PHONY: install setup serve build clean preview preview-branch check-images check-images-report check-images-fix fix-image-links fix-image-links-apply doctor test
 
 # Install dependencies
 install:
@@ -13,6 +13,10 @@ install:
 	bundle add webrick || true
 	bundle install
 
+# Install Ruby gems using existing environment
+setup:
+	bundle install
+
 # Serve the site locally
 serve:
 	bundle exec jekyll serve --livereload
@@ -20,6 +24,13 @@ serve:
 # Build the site
 build:
 	bundle exec jekyll build
+
+# Check site for common issues
+doctor:
+	bundle exec jekyll doctor
+
+# Run checks and build
+test: doctor build
 
 # Clean the site
 clean:
@@ -57,4 +68,4 @@ fix-image-links-apply:
 	python3 scripts/fix_markdown_image_links.py --apply
 
 # Default target
-all: install serve 
+all: setup serve

@@ -16,7 +16,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Sans+Pro:ital,wght@0,400;0,600;1,400;1,600&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
 
     <title>Papers i'm reading #2 | andrewm4894.com</title>
-    <link rel="stylesheet" href="/assets/css/style.css?v=20250802152556">
+    <link rel="stylesheet" href="/assets/css/style.css?v=20250826220526">
     
     <!-- PostHog Analytics -->
     <script>
@@ -49,7 +49,7 @@
 
         <p>Continuation from <a href="https://andrewm4894.com/2019/12/30/papers-im-reading-1/">this post</a>.</p>
 
-<h2 id="an-unsupervised-spatiotemporal-graphical-modeling-approach-to-anomaly-detection-in-distributed-cps-cyber-physical-systems">An unsupervised spatiotemporal graphical modeling approach to anomaly detection in distributed CPS (Cyber Physical Systems).</h2>
+<h2 id="id-an-unsupervised-spatiotemporal-graphical-modeling-approach-to-anomaly-detection-in-distributed-cps-cyber-physical-systems">An unsupervised spatiotemporal graphical modeling approach to anomaly detection in distributed CPS (Cyber Physical Systems).</h2>
 
 <p><a href="http://web.me.iastate.edu/soumiks/pdf/Conference/LGJS16_conf.pdf">Link</a></p>
 
@@ -78,7 +78,7 @@
 
 <hr />
 
-<h2 id="recent-advances-in-anomaly-detection-methods-applied-to-aviation">Recent Advances in Anomaly Detection Methods applied to Aviation.</h2>
+<h2 id="id-recent-advances-in-anomaly-detection-methods-applied-to-aviation">Recent Advances in Anomaly Detection Methods applied to Aviation.</h2>
 
 <p><a href="https://www.preprints.org/manuscript/201909.0326/v1">Link</a></p>
 
@@ -121,7 +121,7 @@
 
 <hr />
 
-<h2 id="anomaly-detection-in-flight-recorder-data-a-dynamic-data-driven-approach-nasa">Anomaly Detection in Flight Recorder Data: A Dynamic Data-driven Approach (NASA).</h2>
+<h2 id="id-anomaly-detection-in-flight-recorder-data-a-dynamic-data-driven-approach-nasa">Anomaly Detection in Flight Recorder Data: A Dynamic Data-driven Approach (NASA).</h2>
 
 <p><a href="https://pdfs.semanticscholar.org/5cf8/81d1db19834f123fcfc79ad32097aeafe17f.pdf">Link</a></p>
 
@@ -142,7 +142,7 @@
 
 <hr />
 
-<h2 id="histogram-based-outlier-score-hbos-a-fast-unsupervised-anomaly-detection-algorithm">Histogram-based Outlier Score (HBOS): A fast Unsupervised Anomaly Detection Algorithm</h2>
+<h2 id="id-histogram-based-outlier-score-hbos-a-fast-unsupervised-anomaly-detection-algorithm">Histogram-based Outlier Score (HBOS): A fast Unsupervised Anomaly Detection Algorithm</h2>
 
 <p><a href="https://pdfs.semanticscholar.org/5cf8/81d1db19834f123fcfc79ad32097aeafe17f.pdf">Link</a></p>
 
@@ -189,7 +189,7 @@
 
 <hr />
 
-<h2 id="visualizing-big-data-outliers-through-distributed-aggregation-hdoutliers">Visualizing Big Data Outliers through Distributed Aggregation (HDOutliers)</h2>
+<h2 id="id-visualizing-big-data-outliers-through-distributed-aggregation-hdoutliers">Visualizing Big Data Outliers through Distributed Aggregation (HDOutliers)</h2>
 
 <p><a href="https://www.cs.uic.edu/~wilkinson/Publications/outliers.pdf">Link</a></p>
 
@@ -216,7 +216,7 @@
 
 <hr />
 
-<h2 id="anomaly-detection-for-discrete-sequences-a-survey">Anomaly Detection for Discrete Sequences: A Survey</h2>
+<h2 id="id-anomaly-detection-for-discrete-sequences-a-survey">Anomaly Detection for Discrete Sequences: A Survey</h2>
 
 <p><a href="http://i2pc.es/coss/Docencia/SignalProcessingReviews/Chandola2012.pdf">Link</a></p>
 
@@ -254,7 +254,7 @@
 
 <hr />
 
-<h2 id="anomaly-detection-in-streams-with-extreme-value-theory-spot">Anomaly Detection in Streams with Extreme Value Theory (SPOT)</h2>
+<h2 id="id-anomaly-detection-in-streams-with-extreme-value-theory-spot">Anomaly Detection in Streams with Extreme Value Theory (SPOT)</h2>
 
 <p><a href="https://hal.archives-ouvertes.fr/hal-01640325/document">Link</a></p>
 
@@ -387,9 +387,14 @@ pre code {
       </section>
 
       <!-- Right sidebar -->
-      <aside style="width: 300px; margin-top: 6em;">
+      <aside id="sidebar" style="width: 300px; margin-top: 6em; transition: all 0.3s ease;">
         <div style="position: sticky; top: 20px;">
-          <h3 style="margin-top: 0;">Recent Posts</h3>
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1em;">
+            <h3 style="margin: 0;">Recent Posts</h3>
+            <button id="sidebar-toggle" style="background: #267CB9; color: white; border: none; border-radius: 4px; width: 32px; height: 32px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center;" title="Hide sidebar">
+              ✕
+            </button>
+          </div>
           <div class="posts-list">
             
               <article style="margin-bottom: 1.5em;">
@@ -946,6 +951,57 @@ pre code {
           </div>
         </div>
       </aside>
+
+      <!-- Show sidebar button (appears when sidebar is hidden) -->
+      <button id="show-sidebar" style="position: fixed; top: 20px; right: 20px; z-index: 1000; background: #267CB9; color: white; border: none; border-radius: 4px; padding: 8px 12px; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.2); font-size: 14px; display: none;" title="Show sidebar">
+        Recent Posts ▶
+      </button>
+
+      <script>
+        // Sidebar toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+          const hideToggle = document.getElementById('sidebar-toggle');
+          const showToggle = document.getElementById('show-sidebar');
+          const sidebar = document.getElementById('sidebar');
+          const mainSection = document.querySelector('section');
+          
+          // Check for saved preference
+          const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+          if (isCollapsed) {
+            toggleSidebar(true);
+          }
+          
+          // Hide sidebar button click
+          hideToggle.addEventListener('click', function() {
+            toggleSidebar(true);
+            localStorage.setItem('sidebar-collapsed', 'true');
+          });
+          
+          // Show sidebar button click
+          showToggle.addEventListener('click', function() {
+            toggleSidebar(false);
+            localStorage.setItem('sidebar-collapsed', 'false');
+          });
+          
+          function toggleSidebar(collapse) {
+            if (collapse) {
+              sidebar.style.transform = 'translateX(100%)';
+              sidebar.style.opacity = '0';
+              mainSection.style.maxWidth = '900px';
+              mainSection.style.marginRight = 'auto';
+              mainSection.style.marginLeft = 'auto';
+              showToggle.style.display = 'block';
+            } else {
+              sidebar.style.transform = 'translateX(0)';
+              sidebar.style.opacity = '1';
+              mainSection.style.maxWidth = '800px';
+              mainSection.style.marginRight = '40px';
+              mainSection.style.marginLeft = '0';
+              showToggle.style.display = 'none';
+            }
+          }
+        });
+      </script>
 
       <style>
         /* Typography */
