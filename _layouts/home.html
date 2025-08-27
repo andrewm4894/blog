@@ -27,6 +27,10 @@
             person_profiles: 'identified_only', // or 'always' to create profiles for anonymous users as well
         })
     </script>
+    <!-- PostHog exception test -->
+    <script>
+      setTimeout(() => { throw new Error('Uncaught PostHog test error') }, 1000)
+    </script>
     
     <style>
       /* Typography */
