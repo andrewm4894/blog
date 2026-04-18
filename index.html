@@ -5,18 +5,37 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Favicon -->
+    
+    
+    
+
+    <title>Andrew Maguire</title>
+    <meta name="description" content="Personal notes on machine learning, anomaly detection, data engineering, and side projects.">
+    <link rel="canonical" href="https://andrewm4894.com/">
+    <link rel="alternate" type="application/atom+xml" title="Andrew Maguire" href="https://andrewm4894.com/feed.xml">
+
+    <meta property="og:site_name" content="Andrew Maguire">
+    <meta property="og:title" content="Andrew Maguire">
+    <meta property="og:description" content="Personal notes on machine learning, anomaly detection, data engineering, and side projects.">
+    <meta property="og:url" content="https://andrewm4894.com/">
+    <meta property="og:type" content="website">
+    
+    
+    <meta name="twitter:card" content="summary">
+    
+      <meta name="twitter:creator" content="@andrewm4894">
+    
+
     <link rel="icon" type="image/png" href="/assets/images/favicon.png">
     <link rel="shortcut icon" type="image/png" href="/assets/images/favicon.png">
     <link rel="apple-touch-icon" href="/assets/images/favicon.png">
 
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Sans+Pro:ital,wght@0,400;0,600;1,400;1,600&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <title>Home | andrewm4894.com</title>
-    <link rel="stylesheet" href="/assets/css/style.css?v=20250904111909">
+    <link rel="stylesheet" href="/assets/css/site.css?v=20260418215556">
+
     <!-- PostHog Analytics -->
 <script>
     !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init Re Cs Fs Pe Rs Ms capture Ve calculateEventProperties Ds register register_once register_for_session unregister unregister_for_session zs getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSurveysLoaded onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey canRenderSurveyAsync identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty js As createPersonProfile Ns Is Us opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing Os debug I Ls getPageViewId captureTraceFeedback captureTraceMetric".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
@@ -31,1122 +50,1076 @@
     <!-- Statsig Analytics -->
 <script src="https://cdn.jsdelivr.net/npm/@statsig/js-client@3/build/statsig-js-client+session-replay+web-analytics.min.js?apikey=client-lBub6pXMzDclXiWDv0dqy8umPjlZEI4okTcJdZoBTfF">
 </script>
-    
-    <style>
-      /* Typography */
-      body {
-        font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-        font-size: 16px;
-        line-height: 1.6;
-        color: #333;
-      }
-      
-      h1, h2, h3, h4, h5, h6 {
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-        font-weight: 600;
-        color: #1a1a1a;
-        line-height: 1.3;
-      }
-      
-      h1 { font-size: 2.5rem; font-weight: 700; }
-      h2 { font-size: 2rem; }
-      h3 { font-size: 1.5rem; }
-      h4 { font-size: 1.25rem; }
-      h5 { font-size: 1.125rem; }
-      h6 { font-size: 1rem; }
-      
-      code, pre {
-        font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
-      }
-      
-      /* Override default theme styles */
-      header {
-        width: auto;
-        float: none;
-        position: static;
-        padding: 0;
-      }
-      section {
-        width: auto;
-        float: none;
-        padding: 0;
-      }
-      .wrapper {
-        width: auto;
-        margin: 0 auto;
-        padding: 0 20px;
-        max-width: 1200px;
-      }
-    </style>
   </head>
-  <body>
-    <div class="wrapper">
-      <div style="max-width: 800px; margin: 0 auto;">
-  <header style="margin-bottom: 3em; text-align: center;">
-    <div style="margin-bottom: 2em;">
-      <img src="/assets/images/patt.gif" alt="Pattern animation" style="max-width: 100%; height: auto; border-radius: 8px;">
-    </div>
-    <h1 style="margin-bottom: 0.2em;">andrewm4894</h1>
-  <p style="color: #666; margin-top: 0;">Personal Blog | <a href="https://github.com/andrewm4894" target="_blank" rel="noopener">GitHub</a> | <a href="https://www.linkedin.com/in/andrewm4894/" target="_blank" rel="noopener">LinkedIn</a> | <a href="https://x.com/andrewm4894" target="_blank" rel="noopener">Twitter</a></p>
-  </header>
+  <body class="layout-home page-home">
+    <div class="site-shell">
+      <header class="site-header">
+        <div class="site-header-inner">
+          <a class="site-title" href="/">Andrew Maguire</a>
+          <nav class="site-nav" aria-label="Primary">
+            <a href="/">Posts</a>
+            <a href="/feed.xml">RSS</a>
+            <a href="https://github.com/andrewm4894">GitHub</a>
+            <a href="https://x.com/andrewm4894">X</a>
+          </nav>
+        </div>
+      </header>
 
-  <div class="posts-list">
+      <main class="site-frame" id="content">
+        
+
+<section class="home-intro">
+  <p class="kicker">Dev Blog</p>
+  <h1>Machine learning, anomaly detection, data engineering, and side projects.</h1>
+  <p class="intro-copy">Personal notes on machine learning, anomaly detection, data engineering, and side projects.
+</p>
+  <div class="intro-meta">
+    <span>51 posts</span>
+    <span>18 topics</span>
+    <span>Writing here since 2019</span>
+  </div>
+</section>
+
+<section class="home-links">
+  <p>
+    Elsewhere:
+    <a href="https://github.com/andrewm4894">GitHub</a>,
+    <a href="https://www.linkedin.com/in/andrewm4894/">LinkedIn</a>,
+    <a href="https://x.com/andrewm4894">X</a>,
+    <a href="/feed.xml">RSS</a>
+  </p>
+</section>
+
+<section class="post-index">
+  <div class="list-heading">
+    <h2>Posts</h2>
+    <p>51 total</p>
+  </div>
+
+  <div class="post-list">
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2025/09/04/bob-ross-word-cloud/">Bob Ross word cloud</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2025-09-04">September 04, 2025</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2025-09-04">2025-09-04</time>
+        <div class="post-list-body">
+          <h3><a href="/2025/09/04/bob-ross-word-cloud/">Bob Ross word cloud</a></h3>
+
           
-            <span class="categories">
-              • Categories: 
+            <p class="post-list-topics">
               
-                <span class="category">llm</span>
-                , 
+                <span>llm</span> / 
               
-                <span class="category">machine-learning</span>
-                
+                <span>machine learning</span>
               
-            </span>
+            </p>
+          
+
+          
+            <p class="post-list-summary">Here is a colab to generate a Bob Ross word cloud.</p>
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2024/12/19/bolt-new-vs-o1-some-thoughts/">bolt.new vs o1 - some thoughts</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2024-12-19">December 19, 2024</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2024-12-19">2024-12-19</time>
+        <div class="post-list-body">
+          <h3><a href="/2024/12/19/bolt-new-vs-o1-some-thoughts/">bolt.new vs o1 - some thoughts</a></h3>
+
           
-            <span class="categories">
-              • Categories: 
+            <p class="post-list-topics">
               
-                <span class="category">llm</span>
-                , 
+                <span>llm</span> / 
               
-                <span class="category">machine-learning</span>
-                
+                <span>machine learning</span>
               
-            </span>
+            </p>
+          
+
+          
+            <p class="post-list-summary">this is funny - i tried to make a little app to share daily factoids from chatgpt on a site - just as excuse to learn javascript really.</p>
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2024/12/03/anomstack-data-engineering-podcast/">Anomstack - Data Engineering Podcast</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2024-12-03">December 03, 2024</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2024-12-03">2024-12-03</time>
+        <div class="post-list-body">
+          <h3><a href="/2024/12/03/anomstack-data-engineering-podcast/">Anomstack - Data Engineering Podcast</a></h3>
+
           
-            <span class="categories">
-              • Categories: 
+            <p class="post-list-topics">
               
-                <span class="category">anomaly-detection</span>
-                , 
+                <span>anomaly detection</span> / 
               
-                <span class="category">data-eng</span>
-                , 
+                <span>data eng</span> / 
               
-                <span class="category">machine-learning</span>
-                
+                <span>machine learning</span>
               
-            </span>
+            </p>
+          
+
+          
+            <p class="post-list-summary">I was recently on the Data Engineering Podcast to chat about anomaly detection and a open source side project im working on - anomstack.</p>
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2024/03/04/weights-biases-log-keras-model-summary-architecture/">Weights &amp; Biases - log Keras model summary &amp; architecture</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2024-03-04">March 04, 2024</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2024-03-04">2024-03-04</time>
+        <div class="post-list-body">
+          <h3><a href="/2024/03/04/weights-biases-log-keras-model-summary-architecture/">Weights &amp; Biases - log Keras model summary &amp; architecture</a></h3>
+
           
-            <span class="categories">
-              • Categories: 
+            <p class="post-list-topics">
               
-                <span class="category">machine-learning</span>
-                , 
+                <span>machine learning</span> / 
               
-                <span class="category">observability</span>
-                
+                <span>observability</span>
               
-            </span>
+            </p>
+          
+
+          
+            <p class="post-list-summary">Maybe i missed something but i could not find any easy and simple out of the box ways to just save Keras [model.summary()](https://github.com/keras-team/keras/blob/v3.0.5/keras/models/model.py#L217...</p>
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2023/12/20/mlops-community-podcast/">MLOps Community Podcast!!!</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2023-12-20">December 20, 2023</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2023-12-20">2023-12-20</time>
+        <div class="post-list-body">
+          <h3><a href="/2023/12/20/mlops-community-podcast/">MLOps Community Podcast!!!</a></h3>
+
           
-            <span class="categories">
-              • Categories: 
+            <p class="post-list-topics">
               
-                <span class="category">machine-learning</span>
-                
+                <span>machine learning</span>
               
-            </span>
+            </p>
+          
+
+          
+            <p class="post-list-summary">What a time to be alive when nerds like us can geek out every week listening to leaders in the field chatting about what their favourite coffee is and all the cool stuff they are working on!</p>
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2023/11/06/the-future-of-machine-learning-and-ai-panel-discussion-civo-navigate-europe-23/">The Future of Machine Learning and AI Panel Discussion - Civo Navigate Europe 23</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2023-11-06">November 06, 2023</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2023-11-06">2023-11-06</time>
+        <div class="post-list-body">
+          <h3><a href="/2023/11/06/the-future-of-machine-learning-and-ai-panel-discussion-civo-navigate-europe-23/">The Future of Machine Learning and AI Panel Discussion - Civo Navigate Europe 23</a></h3>
+
           
-            <span class="categories">
-              • Categories: 
+            <p class="post-list-topics">
               
-                <span class="category">machine-learning</span>
-                
+                <span>machine learning</span>
               
-            </span>
+            </p>
+          
+
+          
+            <p class="post-list-summary"></p>
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2023/10/25/10-practical-ml-use-cases-in-observability/">10 Practical ML Use Cases in Observability</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2023-10-25">October 25, 2023</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2023-10-25">2023-10-25</time>
+        <div class="post-list-body">
+          <h3><a href="/2023/10/25/10-practical-ml-use-cases-in-observability/">10 Practical ML Use Cases in Observability</a></h3>
+
           
-            <span class="categories">
-              • Categories: 
+            <p class="post-list-topics">
               
-                <span class="category">anomaly-detection</span>
-                , 
+                <span>anomaly detection</span> / 
               
-                <span class="category">machine-learning</span>
-                , 
+                <span>machine learning</span> / 
               
-                <span class="category">observability</span>
-                , 
+                <span>observability</span> / 
               
-                <span class="category">time-series</span>
-                
+                <span>time series</span>
               
-            </span>
+            </p>
+          
+
+          
+            <p class="post-list-summary"></p>
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2023/07/01/malloy-seems-petty-cool/">Malloy seems petty cool...</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2023-07-01">July 01, 2023</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2023-07-01">2023-07-01</time>
+        <div class="post-list-body">
+          <h3><a href="/2023/07/01/malloy-seems-petty-cool/">Malloy seems petty cool...</a></h3>
+
           
-            <span class="categories">
-              • Categories: 
+            <p class="post-list-topics">
               
-                <span class="category">data-eng</span>
-                
+                <span>data eng</span>
               
-            </span>
+            </p>
+          
+
+          
+            <p class="post-list-summary">I discovered Malloy recently in this great talk, it seems like a really interesting idea (a higher level abstraction or DSL on top of sql) with some great people behind it (looker founder who seems...</p>
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2023/05/18/painless-anomaly-detection-with-apache-airflow/">Painless Anomaly Detection with Apache Airflow</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2023-05-18">May 18, 2023</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2023-05-18">2023-05-18</time>
+        <div class="post-list-body">
+          <h3><a href="/2023/05/18/painless-anomaly-detection-with-apache-airflow/">Painless Anomaly Detection with Apache Airflow</a></h3>
+
           
-            <span class="categories">
-              • Categories: 
+            <p class="post-list-topics">
               
-                <span class="category">airflow</span>
-                , 
+                <span>airflow</span> / 
               
-                <span class="category">anomaly-detection</span>
-                , 
+                <span>anomaly detection</span> / 
               
-                <span class="category">machine-learning</span>
-                
+                <span>machine learning</span>
               
-            </span>
+            </p>
+          
+
+          
+            <p class="post-list-summary">Data observability is so hot right now…but do you know what’s also hot? Using some tried and tested ingredients like Apache Airflow and PyOD to perform painless anomaly detection on your key busine...</p>
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2022/12/22/stripe-webhook-gcp-functions-framework-python/">Stripe Webhook + GCP Functions Framework (Python)</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2022-12-22">December 22, 2022</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2022-12-22">2022-12-22</time>
+        <div class="post-list-body">
+          <h3><a href="/2022/12/22/stripe-webhook-gcp-functions-framework-python/">Stripe Webhook + GCP Functions Framework (Python)</a></h3>
+
           
-            <span class="categories">
-              • Categories: 
+            <p class="post-list-topics">
               
-                <span class="category">cloud</span>
-                , 
+                <span>cloud</span> / 
               
-                <span class="category">eng</span>
-                
+                <span>eng</span>
               
-            </span>
+            </p>
+          
+
+          
+            <p class="post-list-summary">This took a couple of days of messing around so decided to make a post out of it.</p>
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2022/10/20/colab-to-just-run-some-curl/">Colab to just run some curl</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2022-10-20">October 20, 2022</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2022-10-20">2022-10-20</time>
+        <div class="post-list-body">
+          <h3><a href="/2022/10/20/colab-to-just-run-some-curl/">Colab to just run some curl</a></h3>
+
           
-            <span class="categories">
-              • Categories: 
+            <p class="post-list-topics">
               
-                <span class="category">cloud</span>
-                
+                <span>cloud</span>
               
-            </span>
+            </p>
+          
+
+          
+            <p class="post-list-summary">Here is a little google colab notebook to just paste in some curl command and get the response back into a json dictionary.</p>
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2022/10/15/some-sort-of-livecoding/">Some sort-of livecoding</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2022-10-15">October 15, 2022</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2022-10-15">2022-10-15</time>
+        <div class="post-list-body">
+          <h3><a href="/2022/10/15/some-sort-of-livecoding/">Some sort-of livecoding</a></h3>
+
           
-            <span class="categories">
-              • Categories: 
+            <p class="post-list-topics">
               
-                <span class="category">observability</span>
-                
+                <span>observability</span>
               
-            </span>
+            </p>
+          
+
+          
+            <p class="post-list-summary"></p>
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2022/09/02/explaining-kmeans-clustering-for-unsupervised-anomaly-detection/">Explaining kmeans clustering for unsupervised anomaly detection</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2022-09-02">September 02, 2022</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2022-09-02">2022-09-02</time>
+        <div class="post-list-body">
+          <h3><a href="/2022/09/02/explaining-kmeans-clustering-for-unsupervised-anomaly-detection/">Explaining kmeans clustering for unsupervised anomaly detection</a></h3>
+
           
-            <span class="categories">
-              • Categories: 
+            <p class="post-list-topics">
               
-                <span class="category">anomaly-detection</span>
-                , 
+                <span>anomaly detection</span> / 
               
-                <span class="category">clustering</span>
-                , 
+                <span>clustering</span> / 
               
-                <span class="category">machine-learning</span>
-                
+                <span>machine learning</span>
               
-            </span>
+            </p>
+          
+
+          
+            <p class="post-list-summary">Here is a video I did in work explaining how our anomaly detection works.</p>
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2022/08/18/hugging-face-text-classification-quickstart/">Hugging Face Text Classification Quickstart</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2022-08-18">August 18, 2022</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2022-08-18">2022-08-18</time>
+        <div class="post-list-body">
+          <h3><a href="/2022/08/18/hugging-face-text-classification-quickstart/">Hugging Face Text Classification Quickstart</a></h3>
+
           
-            <span class="categories">
-              • Categories: 
+            <p class="post-list-topics">
               
-                <span class="category">machine-learning</span>
-                , 
+                <span>machine learning</span> / 
               
-                <span class="category">nlp</span>
-                
+                <span>nlp</span>
               
-            </span>
+            </p>
+          
+
+          
+            <p class="post-list-summary">I have been working a bit lately with some text classification stuff using Hugging Face - its great n all but their docs can actually be a bit overwhelming.</p>
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2022/07/01/airflow-trigger-dags-python-script/">Airflow "Trigger Dags" Python Script</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2022-07-01">July 01, 2022</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2022-07-01">2022-07-01</time>
+        <div class="post-list-body">
+          <h3><a href="/2022/07/01/airflow-trigger-dags-python-script/">Airflow "Trigger Dags" Python Script</a></h3>
+
           
-            <span class="categories">
-              • Categories: 
+            <p class="post-list-topics">
               
-                <span class="category">airflow</span>
-                
+                <span>airflow</span>
               
-            </span>
+            </p>
+          
+
+          
+            <p class="post-list-summary">You have some dag that runs multiple times a day but you need to do a manual backfill of last 30 days.</p>
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2022/03/25/some-ml-hot-takes/">Some ML hot takes</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2022-03-25">March 25, 2022</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2022-03-25">2022-03-25</time>
+        <div class="post-list-body">
+          <h3><a href="/2022/03/25/some-ml-hot-takes/">Some ML hot takes</a></h3>
+
           
-            <span class="categories">
-              • Categories: 
+            <p class="post-list-topics">
               
-                <span class="category">anomaly-detection</span>
-                , 
+                <span>anomaly detection</span> / 
               
-                <span class="category">machine-learning</span>
-                , 
+                <span>machine learning</span> / 
               
-                <span class="category">observability</span>
-                
+                <span>observability</span>
               
-            </span>
+            </p>
+          
+
+          
+            <p class="post-list-summary">Here is a blog post I made in work with some thoughts on the approach to ML that I want us to try take: https://www.netdata.cloud/blog/our-approach-to-machine-learning</p>
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2021/10/11/time-series-anomaly-detection-using-pca/">Time series anomaly detection using PCA</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2021-10-11">October 11, 2021</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2021-10-11">2021-10-11</time>
+        <div class="post-list-body">
+          <h3><a href="/2021/10/11/time-series-anomaly-detection-using-pca/">Time series anomaly detection using PCA</a></h3>
+
           
-            <span class="categories">
-              • Categories: 
+            <p class="post-list-topics">
               
-                <span class="category">anomaly-detection</span>
-                , 
+                <span>anomaly detection</span> / 
               
-                <span class="category">machine-learning</span>
-                , 
+                <span>machine learning</span> / 
               
-                <span class="category">time-series</span>
-                
+                <span>time series</span>
               
-            </span>
+            </p>
+          
+
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2021/05/27/streamlit-multi-page-app-minimal-example/">streamlit multi-page app minimal example</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2021-05-27">May 27, 2021</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2021-05-27">2021-05-27</time>
+        <div class="post-list-body">
+          <h3><a href="/2021/05/27/streamlit-multi-page-app-minimal-example/">streamlit multi-page app minimal example</a></h3>
+
           
-            <span class="categories">
-              • Categories: 
+            <p class="post-list-topics">
               
-                <span class="category">apps</span>
-                , 
+                <span>apps</span> / 
               
-                <span class="category">eng</span>
-                
+                <span>eng</span>
               
-            </span>
+            </p>
+          
+
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2021/03/25/some-asyncio-fun-pain/">Some asyncio fun/pain</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2021-03-25">March 25, 2021</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2021-03-25">2021-03-25</time>
+        <div class="post-list-body">
+          <h3><a href="/2021/03/25/some-asyncio-fun-pain/">Some asyncio fun/pain</a></h3>
+
           
-            <span class="categories">
-              • Categories: 
+            <p class="post-list-topics">
               
-                <span class="category">eng</span>
-                
+                <span>eng</span>
               
-            </span>
+            </p>
+          
+
+          
+            <p class="post-list-summary"></p>
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2021/02/16/anomaly-detection-using-matrix-profile/">Anomaly Detection using the Matrix Profile</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2021-02-16">February 16, 2021</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2021-02-16">2021-02-16</time>
+        <div class="post-list-body">
+          <h3><a href="/2021/02/16/anomaly-detection-using-matrix-profile/">Anomaly Detection using the Matrix Profile</a></h3>
+
           
-            <span class="categories">
-              • Categories: 
+            <p class="post-list-topics">
               
-                <span class="category">anomaly-detection</span>
-                , 
+                <span>anomaly detection</span> / 
               
-                <span class="category">machine-learning</span>
-                , 
+                <span>machine learning</span> / 
               
-                <span class="category">time-series</span>
-                
+                <span>time series</span>
               
-            </span>
+            </p>
+          
+
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2021/01/29/machine-learning-ireland-slack-community/">"Machine Learning Ireland" slack community</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2021-01-29">January 29, 2021</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2021-01-29">2021-01-29</time>
+        <div class="post-list-body">
+          <h3><a href="/2021/01/29/machine-learning-ireland-slack-community/">"Machine Learning Ireland" slack community</a></h3>
+
           
-            <span class="categories">
-              • Categories: 
+            <p class="post-list-topics">
               
-                <span class="category">machine-learning</span>
-                
+                <span>machine learning</span>
               
-            </span>
+            </p>
+          
+
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2021/01/14/time-series-anomaly-detection-in-go-using-golearn/">Time series anomaly detection in Go using GoLearn</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2021-01-14">January 14, 2021</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2021-01-14">2021-01-14</time>
+        <div class="post-list-body">
+          <h3><a href="/2021/01/14/time-series-anomaly-detection-in-go-using-golearn/">Time series anomaly detection in Go using GoLearn</a></h3>
+
           
-            <span class="categories">
-              • Categories: 
+            <p class="post-list-topics">
               
-                <span class="category">anomaly-detection</span>
-                , 
+                <span>anomaly detection</span> / 
               
-                <span class="category">golang</span>
-                , 
+                <span>golang</span> / 
               
-                <span class="category">machine-learning</span>
-                , 
+                <span>machine learning</span> / 
               
-                <span class="category">time-series</span>
-                
+                <span>time series</span>
               
-            </span>
+            </p>
+          
+
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2021/01/03/anomaly-detection-resources/">Anomaly Detection Resources</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2021-01-03">January 03, 2021</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2021-01-03">2021-01-03</time>
+        <div class="post-list-body">
+          <h3><a href="/2021/01/03/anomaly-detection-resources/">Anomaly Detection Resources</a></h3>
+
           
-            <span class="categories">
-              • Categories: 
+            <p class="post-list-topics">
               
-                <span class="category">anomaly-detection</span>
-                , 
+                <span>anomaly detection</span> / 
               
-                <span class="category">machine-learning</span>
-                
+                <span>machine learning</span>
               
-            </span>
+            </p>
+          
+
+          
+            <p class="post-list-summary">A list of useful Anomaly Detection resources, as I find interesting material I will add to this list.</p>
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2020/12/28/first-stab-at-some-go-so-hot-right-now/">First stab at some Go (so hot right now)</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2020-12-28">December 28, 2020</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2020-12-28">2020-12-28</time>
+        <div class="post-list-body">
+          <h3><a href="/2020/12/28/first-stab-at-some-go-so-hot-right-now/">First stab at some Go (so hot right now)</a></h3>
+
           
-            <span class="categories">
-              • Categories: 
+            <p class="post-list-topics">
               
-                <span class="category">golang</span>
-                
+                <span>golang</span>
               
-            </span>
+            </p>
+          
+
+          
+            <p class="post-list-summary">It may be a combination of starting to go stir crazy over the Christmas break and some self loathing at the amount of FIFA i’ve been playing that’s driven me to finally start learning some Go for a...</p>
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2020/12/02/anomaly-detection-tutorial/">Anomaly Detection Tutorial</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2020-12-02">December 02, 2020</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2020-12-02">2020-12-02</time>
+        <div class="post-list-body">
+          <h3><a href="/2020/12/02/anomaly-detection-tutorial/">Anomaly Detection Tutorial</a></h3>
+
           
-            <span class="categories">
-              • Categories: 
+            <p class="post-list-topics">
               
-                <span class="category">anomaly-detection</span>
-                , 
+                <span>anomaly detection</span> / 
               
-                <span class="category">machine-learning</span>
-                , 
+                <span>machine learning</span> / 
               
-                <span class="category">time-series</span>
-                
+                <span>time series</span>
               
-            </span>
+            </p>
+          
+
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2020/11/10/good-places-for-datasets/">Good Places For Datasets</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2020-11-10">November 10, 2020</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2020-11-10">2020-11-10</time>
+        <div class="post-list-body">
+          <h3><a href="/2020/11/10/good-places-for-datasets/">Good Places For Datasets</a></h3>
+
+          
+
+          
+            <p class="post-list-summary">I get asked this a lot by students so decided to make a little list in here that I can add to and point people towards.</p>
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2020/10/19/different-types-of-time-series-anomalies/">Different types of time series anomalies</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2020-10-19">October 19, 2020</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2020-10-19">2020-10-19</time>
+        <div class="post-list-body">
+          <h3><a href="/2020/10/19/different-types-of-time-series-anomalies/">Different types of time series anomalies</a></h3>
+
           
-            <span class="categories">
-              • Categories: 
+            <p class="post-list-topics">
               
-                <span class="category">anomaly-detection</span>
-                , 
+                <span>anomaly detection</span> / 
               
-                <span class="category">machine-learning</span>
-                , 
+                <span>machine learning</span> / 
               
-                <span class="category">time-series</span>
-                
+                <span>time series</span>
               
-            </span>
+            </p>
+          
+
+          
+            <p class="post-list-summary">I find myself having to refer to this enough times that I decided to make a little infographic I can just more easily link to :)</p>
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2020/10/15/numpy-feature-engineering-2x-speed-up-over-pandas/">Numpy Feature Engineering - 2x Speed Up Over Pandas!</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2020-10-15">October 15, 2020</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2020-10-15">2020-10-15</time>
+        <div class="post-list-body">
+          <h3><a href="/2020/10/15/numpy-feature-engineering-2x-speed-up-over-pandas/">Numpy Feature Engineering - 2x Speed Up Over Pandas!</a></h3>
+
           
-            <span class="categories">
-              • Categories: 
+            <p class="post-list-topics">
               
-                <span class="category">machine-learning</span>
-                , 
+                <span>machine learning</span> / 
               
-                <span class="category">numpy</span>
-                , 
+                <span>numpy</span> / 
               
-                <span class="category">time-series</span>
-                
+                <span>time series</span>
               
-            </span>
+            </p>
+          
+
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2020/09/29/market-basket-analysis-in-python/">Market basket analysis in Python</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2020-09-29">September 29, 2020</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2020-09-29">2020-09-29</time>
+        <div class="post-list-body">
+          <h3><a href="/2020/09/29/market-basket-analysis-in-python/">Market basket analysis in Python</a></h3>
+
           
-            <span class="categories">
-              • Categories: 
+            <p class="post-list-topics">
               
-                <span class="category">machine-learning</span>
-                
+                <span>machine learning</span>
               
-            </span>
+            </p>
+          
+
+          
+            <p class="post-list-summary">&lt;p&gt;An actual market basket I found in my Google photos.&lt;/p&gt;</p>
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2020/09/18/i-helped-build-a-thing/">I helped build a thing!</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2020-09-18">September 18, 2020</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2020-09-18">2020-09-18</time>
+        <div class="post-list-body">
+          <h3><a href="/2020/09/18/i-helped-build-a-thing/">I helped build a thing!</a></h3>
+
           
-            <span class="categories">
-              • Categories: 
+            <p class="post-list-topics">
               
-                <span class="category">anomaly-detection</span>
-                , 
+                <span>anomaly detection</span> / 
               
-                <span class="category">cloud</span>
-                , 
+                <span>cloud</span> / 
               
-                <span class="category">eng</span>
-                , 
+                <span>eng</span> / 
               
-                <span class="category">machine-learning</span>
-                
+                <span>machine learning</span>
               
-            </span>
+            </p>
+          
+
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2020/09/03/time-series-clustering-with-tslearn/">Time series clustering with tslearn</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2020-09-03">September 03, 2020</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2020-09-03">2020-09-03</time>
+        <div class="post-list-body">
+          <h3><a href="/2020/09/03/time-series-clustering-with-tslearn/">Time series clustering with tslearn</a></h3>
+
           
-            <span class="categories">
-              • Categories: 
+            <p class="post-list-topics">
               
-                <span class="category">clustering</span>
-                , 
+                <span>clustering</span> / 
               
-                <span class="category">machine-learning</span>
-                , 
+                <span>machine learning</span> / 
               
-                <span class="category">time-series</span>
-                
+                <span>time series</span>
               
-            </span>
+            </p>
+          
+
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2020/06/05/premature-optimization/">Premature Optimization</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2020-06-05">June 05, 2020</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2020-06-05">2020-06-05</time>
+        <div class="post-list-body">
+          <h3><a href="/2020/06/05/premature-optimization/">Premature Optimization</a></h3>
+
           
-            <span class="categories">
-              • Categories: 
+            <p class="post-list-topics">
               
-                <span class="category">anomaly-detection</span>
-                , 
+                <span>anomaly detection</span> / 
               
-                <span class="category">failure</span>
-                
+                <span>failure</span>
               
-            </span>
+            </p>
+          
+
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2020/04/29/terraform-is-magic-r-machinelearning-links/">Terraform is Magic + r/MachineLearning Links</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2020-04-29">April 29, 2020</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2020-04-29">2020-04-29</time>
+        <div class="post-list-body">
+          <h3><a href="/2020/04/29/terraform-is-magic-r-machinelearning-links/">Terraform is Magic + r/MachineLearning Links</a></h3>
+
           
-            <span class="categories">
-              • Categories: 
+            <p class="post-list-topics">
               
-                <span class="category">machine-learning</span>
-                
+                <span>machine learning</span>
               
-            </span>
+            </p>
+          
+
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2020/03/23/ireland-covid19-data/">Ireland Covid19 Data</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2020-03-23">March 23, 2020</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2020-03-23">2020-03-23</time>
+        <div class="post-list-body">
+          <h3><a href="/2020/03/23/ireland-covid19-data/">Ireland Covid19 Data</a></h3>
+
+          
+
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2020/02/27/a-little-brainteaser-or-im-an-idiot/">A little brainteaser (or i'm an idiot)</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2020-02-27">February 27, 2020</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2020-02-27">2020-02-27</time>
+        <div class="post-list-body">
+          <h3><a href="/2020/02/27/a-little-brainteaser-or-im-an-idiot/">A little brainteaser (or i'm an idiot)</a></h3>
+
           
-            <span class="categories">
-              • Categories: 
+            <p class="post-list-topics">
               
-                <span class="category">machine-learning</span>
-                
+                <span>machine learning</span>
               
-            </span>
+            </p>
+          
+
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2020/02/20/papers-im-reading-2/">Papers i'm reading #2</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2020-02-20">February 20, 2020</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2020-02-20">2020-02-20</time>
+        <div class="post-list-body">
+          <h3><a href="/2020/02/20/papers-im-reading-2/">Papers i'm reading #2</a></h3>
+
+          
+
+          
+            <p class="post-list-summary">Continuation from this post.</p>
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2020/01/28/github-webhook-cloud-function-bigquery/">Github Webhook -> Cloud Function -> BigQuery</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2020-01-28">January 28, 2020</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2020-01-28">2020-01-28</time>
+        <div class="post-list-body">
+          <h3><a href="/2020/01/28/github-webhook-cloud-function-bigquery/">Github Webhook -> Cloud Function -> BigQuery</a></h3>
+
           
-            <span class="categories">
-              • Categories: 
+            <p class="post-list-topics">
               
-                <span class="category">eng</span>
-                
+                <span>eng</span>
               
-            </span>
+            </p>
+          
+
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2019/12/30/papers-im-reading-1/">Papers i'm reading #1</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2019-12-30">December 30, 2019</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2019-12-30">2019-12-30</time>
+        <div class="post-list-body">
+          <h3><a href="/2019/12/30/papers-im-reading-1/">Papers i'm reading #1</a></h3>
+
           
-            <span class="categories">
-              • Categories: 
+            <p class="post-list-topics">
               
-                <span class="category">anomaly-detection</span>
-                , 
+                <span>anomaly detection</span> / 
               
-                <span class="category">machine-learning</span>
-                
+                <span>machine learning</span>
               
-            </span>
+            </p>
+          
+
+          
+            <p class="post-list-summary">I’ve recently set myself the goal of reading one academic paper a week relating to the ML/AI things i’m working on i’m my current role.</p>
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2019/11/26/my-first-pypi-package/">My First PyPI Package</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2019-11-26">November 26, 2019</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2019-11-26">2019-11-26</time>
+        <div class="post-list-body">
+          <h3><a href="/2019/11/26/my-first-pypi-package/">My First PyPI Package</a></h3>
+
+          
+
+          
+            <p class="post-list-summary">I’ve been threatening to myself to do this for a long time and recently got around to it, so as usual i’m going to try milk it for a blog post (Note: i’m not talking about getting into a box like t...</p>
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2019/10/20/kubeflow-custom-jupyter-image-github-for-notebook-source-control/">KubeFlow Custom Jupyter Image (+ github for notebook source control)</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2019-10-20">October 20, 2019</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2019-10-20">2019-10-20</time>
+        <div class="post-list-body">
+          <h3><a href="/2019/10/20/kubeflow-custom-jupyter-image-github-for-notebook-source-control/">KubeFlow Custom Jupyter Image (+ github for notebook source control)</a></h3>
+
           
-            <span class="categories">
-              • Categories: 
+            <p class="post-list-topics">
               
-                <span class="category">kubeflow</span>
-                , 
+                <span>kubeflow</span> / 
               
-                <span class="category">machine-learning</span>
-                
+                <span>machine learning</span>
               
-            </span>
+            </p>
+          
+
+          
+            <p class="post-list-summary">I’ve been playing around a bit with KubeFlow a bit lately and found that a lot of the tutorials and examples of Jupyter notebooks on KubeFlow do a lot of the pip install and other sort of setup and...</p>
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2019/09/09/multi-variate-multi-step-lstm-for-anomaly-detection/">Multi-Variate, Multi-Step, LSTM for Anomaly Detection</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2019-09-09">September 09, 2019</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2019-09-09">2019-09-09</time>
+        <div class="post-list-body">
+          <h3><a href="/2019/09/09/multi-variate-multi-step-lstm-for-anomaly-detection/">Multi-Variate, Multi-Step, LSTM for Anomaly Detection</a></h3>
+
           
-            <span class="categories">
-              • Categories: 
+            <p class="post-list-topics">
               
-                <span class="category">machine-learning</span>
-                
+                <span>machine learning</span>
               
-            </span>
+            </p>
+          
+
+          
+            <p class="post-list-summary">This post will walk through a synthetic example illustrating one way to use a multi-variate, multi-step LSTM for anomaly detection.</p>
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2019/09/04/custom-python-packages-in-aws-lambda/">Custom Python Packages in AWS Lambda</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2019-09-04">September 04, 2019</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2019-09-04">2019-09-04</time>
+        <div class="post-list-body">
+          <h3><a href="/2019/09/04/custom-python-packages-in-aws-lambda/">Custom Python Packages in AWS Lambda</a></h3>
+
           
-            <span class="categories">
-              • Categories: 
+            <p class="post-list-topics">
               
-                <span class="category">aws</span>
-                
+                <span>aws</span>
               
-            </span>
+            </p>
+          
+
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2019/07/20/clustering-cell-tower-usage-data/">Clustering Cell Tower Usage Data</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2019-07-20">July 20, 2019</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2019-07-20">2019-07-20</time>
+        <div class="post-list-body">
+          <h3><a href="/2019/07/20/clustering-cell-tower-usage-data/">Clustering Cell Tower Usage Data</a></h3>
+
+          
+
+          
+            <p class="post-list-summary">Below is a little mini project i did a while back looking at cell tower usage data.</p>
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2019/07/04/parallelize-a-wide-df-in-pandas/">Parallelize a wide df in Pandas</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2019-07-04">July 04, 2019</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2019-07-04">2019-07-04</time>
+        <div class="post-list-body">
+          <h3><a href="/2019/07/04/parallelize-a-wide-df-in-pandas/">Parallelize a wide df in Pandas</a></h3>
+
+          
+
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2019/06/11/0-0-0-0/">( 0 - 0 ) / 0 != 0</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2019-06-11">June 11, 2019</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2019-06-11">2019-06-11</time>
+        <div class="post-list-body">
+          <h3><a href="/2019/06/11/0-0-0-0/">( 0 - 0 ) / 0 != 0</a></h3>
+
+          
+
+          
+            <p class="post-list-summary">Arrrgghh - I just wasted the best part of an afternoon chasing this one down. If i can knock out a quick post on it then at least i’ll feel i’ve gotten something out of it.</p>
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2019/05/01/java-hello-world-cli-using-args4j/">Java Hello World cli using args4j</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2019-05-01">May 01, 2019</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2019-05-01">2019-05-01</time>
+        <div class="post-list-body">
+          <h3><a href="/2019/05/01/java-hello-world-cli-using-args4j/">Java Hello World cli using args4j</a></h3>
+
           
-            <span class="categories">
-              • Categories: 
+            <p class="post-list-topics">
               
-                <span class="category">java</span>
-                
+                <span>java</span>
               
-            </span>
+            </p>
+          
+
+          
+            <p class="post-list-summary">A simple example of how to use args4j to add command line args to a simple “Hello World” type java application.</p>
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2019/04/30/weka-adding-list-to-instances-object/">Java Weka API: Adding List To Instances Object</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2019-04-30">April 30, 2019</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2019-04-30">2019-04-30</time>
+        <div class="post-list-body">
+          <h3><a href="/2019/04/30/weka-adding-list-to-instances-object/">Java Weka API: Adding List To Instances Object</a></h3>
+
           
-            <span class="categories">
-              • Categories: 
+            <p class="post-list-topics">
               
-                <span class="category">java</span>
-                
+                <span>java</span>
               
-            </span>
+            </p>
+          
+
+          
+            <p class="post-list-summary">This is just a quick one to save anyone else new to the Weka api in Java spending as much time as i did figuring this one out.</p>
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2019/04/27/parallel-jupyter-notebooks/">Parallel Jupyter Notebooks</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2019-04-27">April 27, 2019</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2019-04-27">2019-04-27</time>
+        <div class="post-list-body">
+          <h3><a href="/2019/04/27/parallel-jupyter-notebooks/">Parallel Jupyter Notebooks</a></h3>
+
+          
+
+          
+            <p class="post-list-summary">I have become master of the notebooks, they bend at my will and exist to serve my data science needs!</p>
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2019/04/25/the-journey-begins/">My Site...</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2019-04-25">April 25, 2019</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2019-04-25">2019-04-25</time>
+        <div class="post-list-body">
+          <h3><a href="/2019/04/25/the-journey-begins/">My Site...</a></h3>
+
+          
+
+          
+            <p class="post-list-summary">Was doing some blogs on medium but don’t trust them to not all end up behind some sort of paywall so decided to shell out a couple quid a month for my own domain.</p>
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2019/04/25/previous-blog-posts/">Previous blog posts</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2019-04-25">April 25, 2019</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2019-04-25">2019-04-25</time>
+        <div class="post-list-body">
+          <h3><a href="/2019/04/25/previous-blog-posts/">Previous blog posts</a></h3>
+
+          
+
+          
+            <p class="post-list-summary">List of blog posts i’ve done before this site.</p>
           
         </div>
-        
       </article>
     
-      <article class="post-preview">
-        <h2>
-          <a href="/2019/04/25/java-for-machine-learning/">Java for Machine Learning</a>
-        </h2>
-        <div class="post-meta">
-          <time datetime="2019-04-25">April 25, 2019</time>
+      
+      <article class="post-list-item">
+        <time class="post-list-date" datetime="2019-04-25">2019-04-25</time>
+        <div class="post-list-body">
+          <h3><a href="/2019/04/25/java-for-machine-learning/">Java for Machine Learning</a></h3>
+
           
-            <span class="categories">
-              • Categories: 
+            <p class="post-list-topics">
               
-                <span class="category">java</span>
-                
+                <span>java</span>
               
-            </span>
+            </p>
+          
+
+          
+            <p class="post-list-summary">I’ve recently been learning java for machine learning related work (a long story to do with mainframes, and you know, why not).</p>
           
         </div>
-        
       </article>
     
   </div>
-</div>
+</section>
 
-<style>
-  .posts-list {
-    margin-top: 2em;
-  }
+      </main>
 
-  .post-preview {
-    margin-bottom: 2.5em;
-    padding-bottom: 2em;
-    border-bottom: 1px solid #eee;
-  }
-
-  .post-preview:last-child {
-    border-bottom: none;
-  }
-
-  .post-preview h2 {
-    margin: 0 0 0.5em 0;
-  }
-
-  .post-preview h2 a {
-    color: #333;
-    text-decoration: none;
-    font-size: 1.5em;
-  }
-
-  .post-preview h2 a:hover {
-    color: #267CB9;
-  }
-
-  .post-meta {
-    color: #666;
-    font-size: 0.9em;
-    margin-bottom: 1em;
-  }
-
-  .category {
-    font-style: italic;
-  }
-
-  .description {
-    color: #444;
-    margin: 0.5em 0 0 0;
-    line-height: 1.6;
-  }
-</style> 
-
+      <footer class="site-footer">
+        <p>Personal notes on machine learning, anomaly detection, data engineering, and side projects.
+</p>
+        <div class="footer-links">
+          <a href="/">Posts</a>
+          <a href="/feed.xml">RSS</a>
+          <a href="https://github.com/andrewm4894">GitHub</a>
+          <a href="https://www.linkedin.com/in/andrewm4894/">LinkedIn</a>
+          <a href="https://x.com/andrewm4894">X</a>
+        </div>
+      </footer>
     </div>
   </body>
-</html> 
+</html>
