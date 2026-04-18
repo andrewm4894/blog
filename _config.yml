@@ -1,6 +1,16 @@
-title: andrewm4894.com
+title: Andrew Maguire
 description: >
-  Personal blog blah blah, migrated from WordPress.
+  Personal notes on machine learning, anomaly detection, data engineering, and side projects.
+tagline: Machine learning, anomaly detection, data engineering, and side projects.
+author:
+  name: Andrew Maguire
+social:
+  github: https://github.com/andrewm4894
+  github_handle: andrewm4894
+  linkedin: https://www.linkedin.com/in/andrewm4894/
+  twitter: https://x.com/andrewm4894
+twitter:
+  username: andrewm4894
 
 # Site configuration
 baseurl: ""  # No subpath since the entire domain serves the blog

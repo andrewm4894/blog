@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    {% assign current_title = page.title | default: site.title %}
+    {% capture meta_description %}
+      {% if page.description %}
+        {{ page.description }}
+      {% elsif page.excerpt %}
+        {{ page.excerpt | markdownify | strip_html | strip_newlines | replace: '  ', ' ' | truncate: 160 }}
+      {% else %}
+        {{ site.description }}
+      {% endif %}
+    {% endcapture %}
+    {% capture social_image %}{% if page.coverImage %}{% include post_image_url.html item=page %}{% endif %}{% endcapture %}
+
+    <title>{% if current_title == site.title %}{{ site.title }}{% else %}{{ current_title }} | {{ site.title }}{% endif %}</title>
+    <meta name="description" content="{{ meta_description | strip | escape }}">
+    <link rel="canonical" href="{{ page.url | absolute_url }}">
+    <link rel="alternate" type="application/atom+xml" title="{{ site.title }}" href="{{ '/feed.xml' | absolute_url }}">
+
+    <meta property="og:site_name" content="{{ site.title }}">
+    <meta property="og:title" content="{{ current_title | escape }}">
+    <meta property="og:description" content="{{ meta_description | strip | escape }}">
+    <meta property="og:url" content="{{ page.url | absolute_url }}">
+    <meta property="og:type" content="{% if page.layout == 'post' %}article{% else %}website{% endif %}">
+    {% if social_image != '' %}
+      {% if social_image contains '://' %}
+        <meta property="og:image" content="{{ social_image | strip }}">
+        <meta name="twitter:image" content="{{ social_image | strip }}">
+      {% else %}
+        <meta property="og:image" content="{{ social_image | strip | absolute_url }}">
+        <meta name="twitter:image" content="{{ social_image | strip | absolute_url }}">
+      {% endif %}
+    {% endif %}
+    {% if page.layout == 'post' %}
+      <meta property="article:published_time" content="{{ page.date | date_to_xmlschema }}">
+    {% endif %}
+    <meta name="twitter:card" content="{% if social_image != '' %}summary_large_image{% else %}summary{% endif %}">
+    {% if site.twitter and site.twitter.username %}
+      <meta name="twitter:creator" content="@{{ site.twitter.username }}">
+    {% endif %}
+
+    <link rel="icon" type="image/png" href="{{ '/assets/images/favicon.png' | relative_url }}">
+    <link rel="shortcut icon" type="image/png" href="{{ '/assets/images/favicon.png' | relative_url }}">
+    <link rel="apple-touch-icon" href="{{ '/assets/images/favicon.png' | relative_url }}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ '/assets/css/site.css' | relative_url }}?v={{ site.time | date: '%Y%m%d%H%M%S' }}">
+
+    {% include posthog.html %}
+    {% include statsig.html %}
+  </head>
+  <body class="layout-{{ page.layout | default: 'page' }}{% if page.url == '/' %} page-home{% endif %}">
+    <div class="site-shell">
+      <header class="site-header">
+        <div class="site-header-inner">
+          <a class="site-title" href="{{ '/' | relative_url }}">{{ site.author.name }}</a>
+          <nav class="site-nav" aria-label="Primary">
+            <a href="{{ '/' | relative_url }}">Posts</a>
+            <a href="{{ '/feed.xml' | relative_url }}">RSS</a>
+            <a href="{{ site.social.github }}">GitHub</a>
+            <a href="{{ site.social.twitter }}">X</a>
+          </nav>
+        </div>
+      </header>
+
+      <main class="site-frame" id="content">
+        {{ content }}
+      </main>
+
+      <footer class="site-footer">
+        <p>{{ site.description }}</p>
+        <div class="footer-links">
+          <a href="{{ '/' | relative_url }}">Posts</a>
+          <a href="{{ '/feed.xml' | relative_url }}">RSS</a>
+          <a href="{{ site.social.github }}">GitHub</a>
+          <a href="{{ site.social.linkedin }}">LinkedIn</a>
+          <a href="{{ site.social.twitter }}">X</a>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

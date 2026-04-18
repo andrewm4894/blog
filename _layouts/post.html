@@ -1,73 +1,75 @@
 ---
-layout: post_no_sidebar
+layout: default
 ---
 
-{{ content }}
+{% assign word_count = content | strip_html | number_of_words %}
+{% assign read_time = word_count | plus: 179 | divided_by: 180 %}
+{% if read_time < 1 %}
+  {% assign read_time = 1 %}
+{% endif %}
 
-<style>
-.cover-image {
-  margin-bottom: 2em;
-  max-width: 100%;
-  overflow: hidden;
-}
+<article class="post">
+  <p class="post-back"><a href="{{ '/' | relative_url }}">← all posts</a></p>
 
-.cover-image img {
-  width: 100%;
-  height: auto;
-  display: block;
-}
+  <header class="post-header">
+    <p class="kicker">Post</p>
+    <h1>{{ page.title }}</h1>
+    <div class="post-meta">
+      <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y-%m-%d" }}</time>
+      <span>{{ read_time }} min read</span>
+      {% if page.categories.size > 0 %}
+        <span>
+          {% for category in page.categories %}
+            {{ category | replace: '-', ' ' }}{% unless forloop.last %} / {% endunless %}
+          {% endfor %}
+        </span>
+      {% endif %}
+    </div>
+  </header>
 
-.post-meta {
-  color: #666;
-  margin-bottom: 2em;
-}
+  {% if page.coverImage %}
+    <figure class="post-cover">
+      <img src="{% include post_image_url.html item=page %}" alt="{{ page.title }} cover image">
+    </figure>
+  {% endif %}
 
-.category {
-  font-style: italic;
-}
+  <div class="post-content">
+    {{ content }}
+  </div>
 
-figure {
-  margin: 1.5em 0;
-  text-align: center;
-}
+  <nav class="post-pagination">
+    {% if page.previous %}
+      <a class="pagination-link" href="{{ page.previous.url | relative_url }}">
+        <span>Previous</span>
+        <strong>{{ page.previous.title }}</strong>
+      </a>
+    {% endif %}
+    {% if page.next %}
+      <a class="pagination-link pagination-link-next" href="{{ page.next.url | relative_url }}">
+        <span>Next</span>
+        <strong>{{ page.next.title }}</strong>
+      </a>
+    {% endif %}
+  </nav>
 
-figure img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-  margin: 0 auto;
-}
-
-figcaption {
-  color: #666;
-  font-style: italic;
-  margin-top: 0.5em;
-}
-
-img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-  margin: 1em auto;
-}
-
-code {
-  padding: 0.2em 0.4em;
-  background-color: #f6f8fa;
-  border-radius: 3px;
-  font-size: 85%;
-}
-
-pre code {
-  padding: 0;
-  background-color: transparent;
-}
-
-.language-plaintext {
-  color: #24292e;
-}
-
-.language-python {
-  color: #24292e;
-}
-</style> 
+  <section class="comments-panel">
+    <h2>Comments</h2>
+    <div id="comments">
+      <script src="https://giscus.app/client.js"
+              data-repo="andrewm4894/blog"
+              data-repo-id=""
+              data-category="General"
+              data-category-id=""
+              data-mapping="pathname"
+              data-strict="0"
+              data-reactions-enabled="1"
+              data-emit-metadata="0"
+              data-input-position="bottom"
+              data-theme="preferred_color_scheme"
+              data-lang="en"
+              crossorigin="anonymous"
+              async>
+      </script>
+    </div>
+  </section>
+</article>

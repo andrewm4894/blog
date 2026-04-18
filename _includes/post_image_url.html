@@ -1,0 +1,11 @@
+{% assign image = include.item.coverImage %}
+{% if image %}
+  {% if image contains '://' %}
+    {{ image }}
+  {% elsif image contains '/assets/' %}
+    {{ image | relative_url }}
+  {% else %}
+    {% assign image_base = include.item.path | remove: '_posts/' | remove: '.md' %}
+    {{ '/assets/images/' | append: image_base | append: '/' | append: image | relative_url }}
+  {% endif %}
+{% endif %}
