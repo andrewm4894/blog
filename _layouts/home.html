@@ -5,6 +5,9 @@ layout: default
 {% assign first_year = site.posts.last.date | date: "%Y" %}
 
 <section class="home-intro">
+  <div class="home-pattern">
+    <img src="{{ '/assets/images/patt.gif' | relative_url }}" alt="Animated pattern" loading="eager">
+  </div>
   <p class="kicker">Dev Blog</p>
   <h1>{{ site.tagline }}</h1>
   <p class="intro-copy">{{ site.description }}</p>
