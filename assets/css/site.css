@@ -261,6 +261,18 @@ figcaption {
   margin-bottom: 2.2rem;
 }
 
+.home-pattern {
+  margin-bottom: 1rem;
+}
+
+.home-pattern img {
+  display: block;
+  width: min(220px, 52vw);
+  height: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
 .intro-copy {
   max-width: 42rem;
   color: var(--muted);
